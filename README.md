@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 모각작 프로젝트 프론트엔드
 
-## Getting Started
+## 🎮 브랜치 규칙
+- `feature branch` : 새로운 이슈 구현
+    - 커밋유형/#이슈번호-이슈명요약(영어,명사)
+    - 카멜 케이스
+    - `Ex) feat/#2-loginPageApi`
+- `develop branch` : 실 개발 진행  (default branch)
+    - feature branch를 merge하는 용도
+    - 문서 수정
+    - 환경 설정
+- `main branch` : 개발 최종 완료 시 merge
+    - version 관리
+    - 배포용
+- `hotfix branch` : 배포 오류 긴급 수정
 
-First, run the development server:
+</br>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🎮 커밋 컨벤션
+### 일반 커밋
+- (#1) 🔗 Api: ㅇㅇ 기능 API 연동
+- (#2) 🪄 Feat: ㅇㅇ 이벤트 추가
+- (#이슈번호) 이모지 커밋유형: 커밋내용
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 머지 커밋
+- (#3) 🐻‍❄️ FRONT: ㅇㅇ 페이지 구현 및 머지
+- (#PR번호) 이모지 개발자이름: 이슈 내용 요약 및 머지
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| 라벨 유형 | 설명                                      |
+|----------------|-------------------------------------------|
+| 🔗 Api         | API 연동 추가 및 수정, 백엔드와 통신 구현 |
+| 🪄 Feat        | 새로운 이벤트 및 기능 추가, 코드 추가 및 수정 |
+| 💄 Design      | 페이지/컴포넌트 추가, 디자인 수정, UI    |
+| 🐛 Fix         | 버그, 오류 수정                          |
+| ⚒️ Refactor    | 코드 리팩토링 (디렉토리 구조 수정, 모듈 분리 등) |
+| ✨ Style       | 코드 의미에 영향을 주지 않는 변경사항 (오타 수정, 변수명 변경, 파일명 변경, 주석 추가를 단독으로 수행시) |
+| ⚙️ Chore       | 빌드 부분 혹은 패키지 매니저 수정 사항, 환경 셋팅, 라이브러리 추가 |
+| 📄 Docs        | 프로그램 코드 외 문서 추가 및 수정 (리드미 등) |
+| 🕹️ Test        | 테스트 코드, 테스트 페이지 추가 및 삭제 |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
