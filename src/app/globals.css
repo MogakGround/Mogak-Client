@@ -2,6 +2,161 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
+html,
+body {
   height: 100vh;
+}
+
+@layer utilities {
+  /* 공통 스타일 */
+  .font-bold {
+    font-style: normal;
+    font-weight: 700;
+  }
+  .font-semi {
+    font-style: normal;
+    font-weight: 600;
+  }
+  .font-medium {
+    font-style: normal;
+    font-weight: 500;
+  }
+  .font-regular {
+    font-style: normal;
+    font-weight: 400;
+  }
+
+  .line-50 {
+    line-height: 50px;
+  }
+  .line-48 {
+    line-height: 48px;
+  }
+  .line-36 {
+    line-height: 36px;
+  }
+  .line-34 {
+    line-height: 34px;
+  }
+  .line-32 {
+    line-height: 32px;
+  }
+  .line-26 {
+    line-height: 26px;
+  }
+  .line-24 {
+    line-height: 24px;
+  }
+  .line-22 {
+    line-height: 22px;
+  }
+  .line-20 {
+    line-height: 20px;
+  }
+
+  .letter-108 {
+    letter-spacing: -1.08px;
+  }
+  .letter-96 {
+    letter-spacing: -0.96px;
+  }
+  .letter-72 {
+    letter-spacing: -0.72px;
+  }
+  .letter-60 {
+    letter-spacing: -0.6px;
+  }
+  .letter-54 {
+    letter-spacing: -0.54px;
+  }
+  .letter-48 {
+    letter-spacing: -0.48px;
+  }
+  .letter-42 {
+    letter-spacing: -0.42px;
+  }
+  .letter-36 {
+    letter-spacing: -0.36px;
+  }
+  .letter-30 {
+    letter-spacing: -0.3px;
+  }
+
+  /* 개별 클래스 */
+  .bold-36 {
+    @apply text-[36px] font-bold line-50 letter-108;
+  }
+  .bold-32 {
+    @apply text-[32px] font-bold line-48 letter-96;
+  }
+
+  .reg-36 {
+    @apply text-[36px] font-regular line-50 letter-108;
+  }
+  .reg-32 {
+    @apply text-[32px] font-regular line-48 letter-96;
+  }
+  .reg-24 {
+    @apply text-[24px] font-regular line-34 letter-72;
+  }
+  .reg-20 {
+    @apply text-[20px] font-regular line-32 letter-60;
+  }
+  .reg-18 {
+    @apply text-[18px] font-regular line-26 letter-54;
+  }
+  .reg-16 {
+    @apply text-[16px] font-regular line-26 letter-48;
+  }
+  .reg-14 {
+    @apply text-[14px] font-regular line-22 letter-42;
+  }
+  .reg-12 {
+    @apply text-[12px] font-regular line-20 letter-36;
+  }
+  .reg-10 {
+    @apply text-[10px] font-regular line-18 letter-30;
+  }
+
+  .semi-24 {
+    @apply text-[24px] font-semi line-34 letter-72;
+  }
+  .semi-20 {
+    @apply text-[20px] font-semi line-32 letter-60;
+  }
+  .semi-18 {
+    @apply text-[18px] font-semi line-26 letter-54;
+  }
+  .semi-16 {
+    @apply text-[16px] font-semi line-24 letter-48;
+  }
+  .semi-14 {
+    @apply text-[14px] font-semi line-22 letter-42;
+  }
+  .semi-12 {
+    @apply text-[12px] font-semi line-20 letter-36;
+  }
+
+  .med-24 {
+    @apply text-[24px] font-medium line-36 letter-72;
+  }
+  .med-20 {
+    @apply text-[20px] font-medium line-32 letter-60;
+  }
+  .med-18 {
+    @apply text-[18px] font-medium line-26 letter-54;
+  }
+  .med-16 {
+    @apply text-[16px] font-medium line-26 letter-48;
+  }
+  .med-14 {
+    @apply text-[14px] font-medium line-22 letter-42;
+  }
+  .med-12 {
+    @apply text-[12px] font-medium line-20 letter-36;
+  }
+
+  .reg-underlined-14 {
+    @apply text-[14px] font-regular line-22 letter-42 underline decoration-solid;
+  }
 }
