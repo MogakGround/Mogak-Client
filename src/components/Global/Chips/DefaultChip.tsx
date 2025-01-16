@@ -113,7 +113,7 @@ export const getMoonIcon = (size:number, color: Color) => {
 
 const Chip = ({text, size, color}: Params) => {
     return (
-        <div className={`inline-flex items-center justify-center text-center px-3 py-[5px] rounded-[4px] ${getTextFont(size)} h-${size} ${getBackground(color)} ${getTextColor(color)}`}>
+        <div className={`inline-flex items-center justify-center text-center px-3 py-[5px] rounded-[4px] ${getBackground(color)} ${getTextFont(size)} ${getTextColor(color)} h-${size}`}>
             {text}
         </div>
     );
