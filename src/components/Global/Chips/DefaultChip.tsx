@@ -43,6 +43,17 @@ export const getTextFont = (size: number) => {
     }
 }
 
+export const getDetailTextFont = (size:number) => {
+    switch(size) {
+        case 30:
+            return "font-regular text-[10pt] "
+        case 38:
+            return "font-regular text-[12pt] "
+        case 44:
+            return "font-regular text-[12pt] "
+    }
+}
+
 
 
 const Chip = ({text, size, color}: Params) => {
