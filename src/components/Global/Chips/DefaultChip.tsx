@@ -1,4 +1,8 @@
 import { Color } from "@/constants/Color"
+import Image from 'next/image';
+import MoonSIcon from "@/assets/svg/moon-s.svg"
+import MoonMIcon from "@/assets/svg/moon-m.svg"
+import MoonLIcon from "@/assets/svg/moon-l.svg"
 
 interface Params {
     text: string;
@@ -54,6 +58,16 @@ export const getDetailTextFont = (size:number) => {
     }
 }
 
+export const getMoonIcon = (size:number) => {
+    switch(size) {
+        case 30:
+            return <Image src={MoonSIcon} alt="달 아이콘" width={16} height={16}/>
+        case 38:
+            return <Image src={MoonMIcon} alt="달 아이콘" width={16} height={16}/>
+        case 44:
+            return <Image src={MoonLIcon} alt="달 아이콘" width={20} height={20}/>
+    }
+}
 
 
 const Chip = ({text, size, color}: Params) => {
