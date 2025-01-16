@@ -15,7 +15,7 @@ const Chip = ({text, size, color}: Params) => {
             <div className={`${getTextFont(size)} ${getTextColor(color)} mr-2`}>
                 {text}
             </div>
-            {getMoonIcon(size)}
+            {getMoonIcon(size, color)}
         </div>
     );
 }
