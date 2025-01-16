@@ -42,6 +42,19 @@ export const getBackground = (color: Color) => {
     }
 }
 
+export const getBorderColor = (color: Color) => {
+    switch(color){
+        case Color.LIGHT:
+            return "border-grayscale-700 ";
+        case Color.DARK:
+            return "border-grayscale-800 ";
+        case Color.PRIMARY:
+            return "border-primaryT-20";
+        case Color.ACCENT:
+            return "border-accentT-20";
+    }
+}
+
 export const getTextFont = (size: number) => {
     switch(size) {
         case 30:
