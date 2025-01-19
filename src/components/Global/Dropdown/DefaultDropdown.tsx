@@ -39,6 +39,7 @@ const Dropdown = ({height, isDisabled, isError, isOpen, onDropdownClick, items, 
     setIsOpen(false);  // 드롭다운 닫기
   };
   */
+  
 
   // 드롭다운에 보여줄 텍스트
   const [text, setText] = useState(''); // 초기값
@@ -51,16 +52,16 @@ const Dropdown = ({height, isDisabled, isError, isOpen, onDropdownClick, items, 
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <div>
+    <div className={`items-center h-[${height}px] pl-4 pr-3 text-[14pt] w-[268px] font-regular rounded-[8px]
+        ${isDisabled? "bg-grayscale-800 text-grayscale-600" : 
+          !text? "bg-grayscale-800 border-grayscale-700 text-grayscale-400 border-[1.5px] hover:border-accentT-20 " :
+          isError? "bg-primaryT-5 border-primaryT-20 text-grayscale-50 border-[1.5px]" :
+          isFocused? "bg-accentT-5 border-accentT-20 text-grayscale-50 border-[1.5px]" : "bg-grayscale-800 border-grayscale-700 text-grayscale-50 border-[1.5px] hover:border-accentT-20 "
+        }`}
+    >
+
       {/* 드롭다운 버튼, 체크 순서: 비활성화 여부->텍스트무여부->에러여부->input포커스여부 */}
-      <div
-        onClick={onDropdownClick}
-        className={`inline-flex items-center h-${height} pl-4 pr-3 
-                  ${isDisabled? "bg-grayscale-800 " : "border-[1.5px] rounded-[8px] "}
-                  ${!text? "bg-grayscale-800 border-grayscale-700 hover:border-accentT-20" :
-                    isError? "bg-primaryT-5 border-primaryT-20" :
-                    isFocused? "bg-accentT-5 border-accentT-20" : "bg-grayscale-800 border-grayscale-700 hover:border-accentT-20"}`}
-      >
+      <div className="inline-flex ">
         <div >
           <input
             type="text"
@@ -68,22 +69,25 @@ const Dropdown = ({height, isDisabled, isError, isOpen, onDropdownClick, items, 
             onChange={handleTextChange}   // 입력 변경 처리
             onFocus={() => setIsFocused(true)}  // focus 시 포커스 상태 true
             onBlur={() => setIsFocused(false)}  // blur 시 포커스 상태 false
-            className={`text-[14pt] w-[212px] font-regular ${isDisabled? "text-grayscale-600 " : text ? 'text-grayscale-50' : "text-grayscale-400 "}`}
-
+            className={`w-[212px] h-[${height}px]
+                        ${isDisabled? "bg-grayscale-800 " :
+                        !text? "bg-grayscale-800" :
+                        isError? "bg-primaryT-5 " :
+                        isFocused? "bg-accentT-5 " : "bg-grayscale-800"}`}
             // 텍스트가 없으면 '플레이스 폴더'를 디폴트 값으로 표시
-            placeholder={text === '' ? '플레이스 폴더' : ''} 
+            placeholder={text === '' ? '플레이스 홀더' : ''} 
           />
         </div>
         
         {/* V, ^ 버튼 이미지 (활성화 상태에 따라 이미지 변경) */}
         {
         isDisabled?
-          <Image src={DArrowGrayIcon} alt="화살표" className="cursor-pointer" width={28} height={28} />
+          <Image src={DArrowGrayIcon} alt="화살표" className="cursor-pointer" width={28} height={28}/>
           :
         isFocused? 
-          <Image src={DArrowWhiteIcon} alt="화살표" className="cursor-pointer" width={28} height={28} />
+          <Image src={DArrowWhiteIcon} alt="화살표" className="cursor-pointer" width={28} height={28} onClick={onDropdownClick}/>
           :
-          <Image src={UArrowWhiteIcon} alt="화살표" className="cursor-pointer" width={28} height={28} />
+          <Image src={UArrowWhiteIcon} alt="화살표" className="cursor-pointer" width={28} height={28} onClick={onDropdownClick}/>
         }
       </div>
 

@@ -52,10 +52,10 @@ const Chip = ({textl, textr, color, isOn, onToggle}: Params) => {
     
     return (
         <div className={`inline-flex items-center justify-center text-center p-1 rounded-[40px] ${getBackground(color)}`}>
-            <div onClick={onToggle} className={`text-[14pt] font-medium rounded-[40px] px-[17px] py-[2px] ${getTextBackground(isOn, color)} ${getTextColor(isOn, color)}`}>
+            <div onClick={onToggle} className={`text-[14pt] font-medium rounded-[40px] px-[17px] py-[2px] cursor-pointer ${getTextBackground(isOn, color)} ${getTextColor(isOn, color)}`}>
                 {textl}
             </div>
-            <div onClick={onToggle} className={`text-[14pt] font-medium rounded-[40px] px-[17px] py-[2px] ${getTextBackground(!isOn, color)} ${getTextColor(!isOn, color)}`}>
+            <div onClick={onToggle} className={`text-[14pt] font-medium rounded-[40px] px-[17px] py-[2px] cursor-pointer ${getTextBackground(!isOn, color)} ${getTextColor(!isOn, color)}`}>
                 {textr}
             </div>
         </div>
