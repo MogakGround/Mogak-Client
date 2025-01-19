@@ -3,9 +3,8 @@ import { useState } from "react";
 import { Color } from "@/constants/Color"
 
 interface Params {
-    textl: string;
-    textr: string;
-    size: number;
+    textl: string;  // 왼왼쪽 버튼 텍스트
+    textr: string;  // 오른쪽 버튼 텍스트
     color: Color;
     // 부모 컴포넌트에서 다음과 같은 변수 함수 전달
     /*
@@ -45,10 +44,14 @@ export const getTextBackground = (isToggled:boolean, color: Color) => {
     }
 }
 
-const Chip = ({textl, textr, size, color, isOn, onToggle}: Params) => {
+/**
+ * 
+ * @param color: LIGHT, DARK 중 하나
+ */
+const Chip = ({textl, textr, color, isOn, onToggle}: Params) => {
     
     return (
-        <div className={`inline-flex items-center justify-center text-center p-1 rounded-[40px]  h-${size} ${getBackground(color)}`}>
+        <div className={`inline-flex items-center justify-center text-center p-1 rounded-[40px] ${getBackground(color)}`}>
             <div onClick={onToggle} className={`text-[14pt] font-medium rounded-[40px] px-[17px] py-[2px] ${getTextBackground(isOn, color)} ${getTextColor(isOn, color)}`}>
                 {textl}
             </div>
@@ -60,4 +63,3 @@ const Chip = ({textl, textr, size, color, isOn, onToggle}: Params) => {
 }
 
 export default Chip;
-  

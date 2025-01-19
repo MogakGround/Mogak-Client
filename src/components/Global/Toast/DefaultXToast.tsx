@@ -11,9 +11,10 @@ interface Params {
 
 /**
  * 
- * @param h: 46 또는 50
+ * @param h: 46, 50 중 하나
+ * @param color: LIGHT, DARK 중 하나
  */
-const Toast = ({text, description, size, color}: Params) => {
+const Toast = ({text, size, color}: Params) => {
     return (
         <div className={`flex w-fit items-center justify-center text-start px-3 py-4 rounded-[12px] ${getBackground(color)} h-${size}`}>
             {/* 아이콘 */}

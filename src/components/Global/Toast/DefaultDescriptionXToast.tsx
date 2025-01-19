@@ -11,7 +11,8 @@ interface Params {
 
 /**
  * 
- * @param h: 46 또는 50
+ * @param h: 46, 50 중 하나
+ * @param color: LIGHT, DARK 중 하나
  */
 const Toast = ({text, description, size, color}: Params) => {
     return (

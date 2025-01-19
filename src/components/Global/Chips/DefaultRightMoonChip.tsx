@@ -21,4 +21,3 @@ const Chip = ({text, size, color}: Params) => {
 }
 
 export default Chip;
-  

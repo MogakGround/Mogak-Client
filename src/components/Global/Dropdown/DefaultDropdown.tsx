@@ -19,6 +19,10 @@ interface Props {
   onItemClick: (item: string) => void;  // 아이템 클릭 이벤트 함수
 }
 
+/**
+ * 
+ * @param height: 48, 54 중 하나
+ */
 const Dropdown = ({height, isDisabled, isError, isOpen, onDropdownClick, items, onItemClick}: Props) => {
   /*
   // 드롭다운 클릭 여부
