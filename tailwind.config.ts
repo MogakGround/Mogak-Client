@@ -22,6 +22,7 @@ export default {
           200: '#BEC0C8',
           100: '#D5D7DE',
           50: '#F7F8F9',
+          10: 'rgba(255, 255, 255, 0.10)',
         },
         primary: {
           100: '#FF4C3B',
