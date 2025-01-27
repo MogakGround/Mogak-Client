@@ -3,12 +3,12 @@ import Image from 'next/image';
 import MoonGraySIcon from "@/assets/svg/moon-gray-s.svg"
 import MoonGrayMIcon from "@/assets/svg/moon-gray-m.svg"
 import MoonGrayLIcon from "@/assets/svg/moon-gray-l.svg"
-import MoonRedSIcon from "@/assets/svg/moon-red-s.svg"
-import MoonRedMIcon from "@/assets/svg/moon-red-m.svg"
-import MoonRedLIcon from "@/assets/svg/moon-red-l.svg"
-import MoonEmeraldSIcon from "@/assets/svg/moon-emerald-s.svg"
-import MoonEmeraldMIcon from "@/assets/svg/moon-emerald-m.svg"
-import MoonEmeraldLIcon from "@/assets/svg/moon-emerald-l.svg"
+import MoonPrimarySIcon from "@/assets/svg/moon-primary-s.svg"
+import MoonPrimaryMIcon from "@/assets/svg/moon-primary-m.svg"
+import MoonPrimaryLIcon from "@/assets/svg/moon-primary-l.svg"
+import MoonAccentSIcon from "@/assets/svg/moon-accent-s.svg"
+import MoonAccentMIcon from "@/assets/svg/moon-accent-m.svg"
+import MoonAccentLIcon from "@/assets/svg/moon-accent-l.svg"
 
 interface Params {
     text: string;
@@ -91,21 +91,21 @@ export const getMoonIcon = (size:number, color: Color) => {
     }else if(color === Color.PRIMARY) {
         switch(size) {
             case 30:
-                return <Image src={MoonRedSIcon} alt="레드색 소형 달" width={16} height={16}/>
+                return <Image src={MoonPrimarySIcon} alt="레드색 소형 달" width={16} height={16}/>
             case 38:
-                return <Image src={MoonRedMIcon} alt="레드색 중형 달" width={16} height={16}/>
+                return <Image src={MoonPrimaryMIcon} alt="레드색 중형 달" width={16} height={16}/>
             case 44:
-                return <Image src={MoonRedLIcon} alt="레드색 대형 달" width={20} height={20}/>
+                return <Image src={MoonPrimaryLIcon} alt="레드색 대형 달" width={20} height={20}/>
         }
 
     }else if(color === Color.ACCENT) {
         switch(size) {
             case 30:
-                return <Image src={MoonEmeraldSIcon} alt="에메랄드색 소형 달" width={16} height={16}/>
+                return <Image src={MoonAccentSIcon} alt="에메랄드색 소형 달" width={16} height={16}/>
             case 38:
-                return <Image src={MoonEmeraldMIcon} alt="에메랄드색 중형 달" width={16} height={16}/>
+                return <Image src={MoonAccentMIcon} alt="에메랄드색 중형 달" width={16} height={16}/>
             case 44:
-                return <Image src={MoonEmeraldLIcon} alt="에메랄드색 대형 달" width={20} height={20}/>
+                return <Image src={MoonAccentLIcon} alt="에메랄드색 대형 달" width={20} height={20}/>
         }
     }
 }

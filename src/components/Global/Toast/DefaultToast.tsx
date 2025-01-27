@@ -1,7 +1,7 @@
 import { Color } from "@/constants/Color"
 import Image from 'next/image';
-import XDarkIcon from "@/assets/svg/x-red-dark.svg"
-import XLightIcon from "@/assets/svg/x-red-light.svg"
+import XDarkIcon from "@/assets/svg/x-primary-dark.svg"
+import XLightIcon from "@/assets/svg/x-primary-light.svg"
 
 interface Params {
     text: string;
