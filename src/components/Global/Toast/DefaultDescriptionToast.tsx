@@ -1,5 +1,5 @@
 import { Color } from "@/constants/Color"
-import { getBackground, getTextColor, getTextFont, getDescriptionTextFont } from "@/components/Global/Toast/DefaultToast"
+import { getBackground, getTextColor, getTextFont, getDescriptionTextFont } from "@/components/global/toast/DefaultToast"
 
 interface Params {
     text: string;
