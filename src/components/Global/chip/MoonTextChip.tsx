@@ -1,5 +1,5 @@
 import { IconArrow, MoonTextChipProps } from '@/components/global/chip/chip.types'
-import { chipBaseStyle, chipBackgroundStyles, chipTextStyles, textChipSizeStyles, chipTextFont, chipDetailTextFont, chipMoonIcon } from '@/components/global/chip/chip.style'
+import { chipBaseStyle, chipBackgroundStyles, chipTextStyles, chipTextFont, chipDetailTextFont, textChipSizeStyles, chipMoonIcon } from '@/components/global/chip/chip.style'
 
 /**
  * 사용 예시
@@ -19,7 +19,7 @@ const Chip = ({variant, theme, size, text, detailText, iconArrow, handleClick}: 
         <div className={`${chipBaseStyle} ${chipBackgroundStyles[theme][variant]} ${textChipSizeStyles[size]}`} onClick={handleClick}>
             {iconArrow === IconArrow.LEFT && (
                 <div className="mr-2">
-                {chipMoonIcon(size, theme)}
+                {chipMoonIcon(theme, size)}
                 </div>
             )}
             
@@ -35,7 +35,7 @@ const Chip = ({variant, theme, size, text, detailText, iconArrow, handleClick}: 
 
             {iconArrow === IconArrow.RIGHT && (
                 <div className="ml-2">
-                    {chipMoonIcon(size, theme)}
+                    {chipMoonIcon(theme, size)}
                 </div>
             )}
         </div>

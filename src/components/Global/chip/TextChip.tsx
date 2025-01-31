@@ -1,5 +1,5 @@
 import { TextChipProps } from '@/components/global/chip/chip.types'
-import { chipBaseStyle, chipBackgroundStyles, chipTextStyles, textChipSizeStyles, chipTextFont, chipDetailTextFont, chipMoonIcon } from '@/components/global/chip/chip.style'
+import { chipBaseStyle, chipBackgroundStyles, chipTextStyles, chipTextFont, chipDetailTextFont, textChipSizeStyles } from '@/components/global/chip/chip.style'
 
 /**
  * 사용 예시

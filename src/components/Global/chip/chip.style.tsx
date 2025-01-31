@@ -126,14 +126,14 @@ const chipMoonIconStyles = {
   },
 };
 
-export const chipMoonIcon = (size: ChipSize, color: ChipTheme) => {
-  const iconSrc = chipMoonIconStyles[color]?.[size];
+export const chipMoonIcon = (theme: ChipTheme, size: ChipSize) => {
+  const iconSrc = chipMoonIconStyles[theme]?.[size];
 
   if (!iconSrc) {
     return null;
   }
 
-  const altText = `${color} ${size} moon icon`;
+  const altText = `${theme} ${size} moon icon`;
 
   return <Image src={iconSrc} alt={altText} width={size === ChipSize.lg ? 20 : 16} height={size === ChipSize.lg ? 20 : 16} />;
 };
