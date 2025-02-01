@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import LogoIcon from "@/assets/svg/logo.svg"
 
-const Header = () => {
+const GNB = () => {
     const [pageNumber, setPageNumber] = useState<number>(1);
 
     const handleLogoClick = () => {
@@ -42,4 +42,4 @@ const Header = () => {
     );
 }
 
-export default Header;
+export default GNB;

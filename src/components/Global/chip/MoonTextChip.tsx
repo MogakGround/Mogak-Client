@@ -14,7 +14,7 @@ import { chipBaseStyle, chipBackgroundStyles, chipTextStyles, chipTextFont, chip
   handleClick={chipEvent}
 />
  */
-const Chip = ({variant, theme, size, text, detailText, iconArrow, handleClick}: MoonTextChipProps) => {
+const MoonTextChip = ({variant, theme, size, text, detailText, iconArrow, handleClick}: MoonTextChipProps) => {
     return (
         <div className={`${chipBaseStyle} ${chipBackgroundStyles[theme][variant]} ${textChipSizeStyles[size]}`} onClick={handleClick}>
             {iconArrow === IconArrow.LEFT && (
@@ -42,4 +42,4 @@ const Chip = ({variant, theme, size, text, detailText, iconArrow, handleClick}: 
     );
 }
 
-export default Chip;
+export default MoonTextChip;

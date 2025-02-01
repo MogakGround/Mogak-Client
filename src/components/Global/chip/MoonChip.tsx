@@ -11,7 +11,7 @@ import { chipBaseStyle, chipBackgroundStyles, iconChipSizeStyles, chipMoonIcon }
   handleClick={chipEvent}
 />
  */
-const Chip = ({variant, theme, size}: MoonChipProps) => {
+const MoonChip = ({variant, theme, size}: MoonChipProps) => {
     return (
         <div className={`${chipBaseStyle} ${chipBackgroundStyles[theme][variant]} ${iconChipSizeStyles[size]}`}>
             {chipMoonIcon(theme, size)}
@@ -19,4 +19,4 @@ const Chip = ({variant, theme, size}: MoonChipProps) => {
     );
 }
 
-export default Chip;
+export default MoonChip;

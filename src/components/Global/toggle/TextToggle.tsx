@@ -12,7 +12,7 @@ import { toggleBaseStyle, toggleBackgroundStyles, toggleTextStyle } from '@/comp
   textr="Off" 
 />
  */
-const Toggle = ({theme, isOn, onToggle, textl, textr}: TextToggleProps) => {
+const TextToggle = ({theme, isOn, onToggle, textl, textr}: TextToggleProps) => {
     
     return (
         <div className={`${toggleBaseStyle} ${toggleBackgroundStyles[theme]}`}>
@@ -26,4 +26,4 @@ const Toggle = ({theme, isOn, onToggle, textl, textr}: TextToggleProps) => {
     );
 }
 
-export default Toggle;
+export default TextToggle;

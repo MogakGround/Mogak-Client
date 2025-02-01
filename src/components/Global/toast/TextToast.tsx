@@ -12,7 +12,7 @@ import { toastBaseStyle, toastBackgroundStyles, toastTextStyles, toastTextFont, 
   handleClick={toastEvent}
 />
  */
-const Toast = ({theme, size, text, detailText, handleClick}: TextToastProps) => {
+const TextToast = ({theme, size, text, detailText, handleClick}: TextToastProps) => {
     return (
         <div className={`${toastBaseStyle} ${toastBackgroundStyles[theme]} ${toastSizeStyles[size]} ${detailText? "flex-row w-fit text-start ": "inline-flex text-center"}`} onClick={handleClick}>
             <div className={`${toastTextStyles[theme]} ${toastTextFont(size)} `}>
@@ -27,4 +27,4 @@ const Toast = ({theme, size, text, detailText, handleClick}: TextToastProps) => 
     );
 }
 
-export default Toast;
+export default TextToast;

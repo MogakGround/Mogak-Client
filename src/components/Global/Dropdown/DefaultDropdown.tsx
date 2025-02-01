@@ -23,7 +23,7 @@ interface Props {
  * 
  * @param height: 48, 54 중 하나
  */
-const Dropdown = ({height, isDisabled, isError, isOpen, onDropdownClick, items, onItemClick}: Props) => {
+const DefaultDropdown = ({height, isDisabled, isError, isOpen, onDropdownClick, items, onItemClick}: Props) => {
   /*
   // 드롭다운 클릭 여부
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -113,4 +113,4 @@ const Dropdown = ({height, isDisabled, isError, isOpen, onDropdownClick, items, 
   );
 };
 
-export default Dropdown;
+export default DefaultDropdown;

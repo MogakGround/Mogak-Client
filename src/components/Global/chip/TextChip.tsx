@@ -13,7 +13,7 @@ import { chipBaseStyle, chipBackgroundStyles, chipTextStyles, chipTextFont, chip
   handleClick={chipEvent}
 />
  */
-const Chip = ({variant, theme, size, text, detailText, handleClick}: TextChipProps) => {
+const TextChip = ({variant, theme, size, text, detailText, handleClick}: TextChipProps) => {
     return (
         <div className={`${chipBaseStyle} ${chipBackgroundStyles[theme][variant]} ${textChipSizeStyles[size]}`} onClick={handleClick}>
             <div className={`${chipTextStyles[theme][variant]} ${chipTextFont(size)} ${detailText ? '' : 'mr-2'}`}>
@@ -28,4 +28,4 @@ const Chip = ({variant, theme, size, text, detailText, handleClick}: TextChipPro
     );
 }
 
-export default Chip;
+export default TextChip;

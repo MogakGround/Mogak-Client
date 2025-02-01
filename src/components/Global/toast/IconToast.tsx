@@ -12,7 +12,7 @@ import { toastBaseStyle, toastBackgroundStyles, toastTextStyles, toastTextFont, 
   handleClick={toastEvent}
 />
  */
-const Toast = ({theme, size, text, detailText, handleClick}: IconToastProps) => {
+const IconToast = ({theme, size, text, detailText, handleClick}: IconToastProps) => {
     return (
         <div className={`flex w-fit text-start ${toastBaseStyle} ${toastBackgroundStyles[theme]} ${toastSizeStyles[size]}`} onClick={handleClick}>
             {/* 아이콘 */}
@@ -33,4 +33,4 @@ const Toast = ({theme, size, text, detailText, handleClick}: IconToastProps) => 
     );
 }
 
-export default Toast;
+export default IconToast;
