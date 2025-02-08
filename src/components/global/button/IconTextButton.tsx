@@ -11,6 +11,7 @@ export default function IconTextButton({
   text,
   handleClick,
   iconArrow,
+  fullWidth = false,
   type = 'button',
 }: IconTextButtonProps) {
   const iconColor = (!disabled ? iconColors[theme]?.[variant] : 'gray') as keyof typeof ARROW_ICON_SRC
@@ -22,6 +23,7 @@ export default function IconTextButton({
         ${baseButton}
         ${buttonSizes[size]}
         ${buttonStyles[theme][variant]}
+        ${fullWidth ? 'w-full' : ''}
         ${disabled ? '!bg-grayscale-600 !text-grayscale-400 cursor-not-allowed' : ''}
       `}
       onClick={handleClick}
