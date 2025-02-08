@@ -2,8 +2,7 @@ import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'
 
-import Header from '@/components/layout/Header'
-import Footer from '@/components/layout/Footer'
+import GNB from '@/components/layout/GNB'
 
 const pretendard = localFont({
   src: [
@@ -42,10 +41,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={pretendard.className}>
-        <Header />
-        <main>{children}</main>
-        <Footer />
+      <body className={`${pretendard.className} flex flex-col min-h-screen bg-bg`}>
+        <div id="portalModal" />
+        <GNB />
+        <main className="w-full flex-1">{children}</main>
       </body>
     </html>
   )
