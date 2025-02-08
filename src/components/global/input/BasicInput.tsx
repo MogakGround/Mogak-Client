@@ -20,7 +20,7 @@ export default function BasicInput({
     <input
       ref={inputRef}
       name={name || 'text'}
-      className={`rounded-lg border-[1.5px] outline-none
+      className={`w-full rounded-lg border-[1.5px] outline-none
         ${inputSizes[size]}
         ${getStatusStyles(status)}
       `}
