@@ -1,5 +1,11 @@
 import { IButtonProps } from '@/components/global/button/button.types'
-import { baseButton, buttonStyles, iconButtonSizes, iconColors, iconSizes } from '@/components/global/button/buttonStyle'
+import {
+  baseButton,
+  buttonStyles,
+  iconButtonSizes,
+  iconColors,
+  iconSizes,
+} from '@/components/global/button/buttonStyle'
 import { ARROW_ICON_SRC } from '@/constants/ArrowIcon'
 import Image from 'next/image'
 
