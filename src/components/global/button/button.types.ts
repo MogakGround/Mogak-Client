@@ -27,6 +27,7 @@ export interface IButtonProps {
   size: ButtonSize
   disabled?: boolean
   handleClick: () => void
+  fullWidth?: boolean
   type?: 'button' | 'submit' | 'reset'
 }
 
