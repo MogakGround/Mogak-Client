@@ -8,6 +8,10 @@ import FirstIcon from '@/assets/svg/arrow-firstpage.svg'
 import PrevIcon from '@/assets/svg/arrow-prevpage.svg'
 import NextIcon from '@/assets/svg/arrow-nextpage.svg'
 import LastIcon from '@/assets/svg/arrow-lastpage.svg'
+import DisabledFirstIcon from '@/assets/svg/arrow-firstpage-disabled.svg'
+import DisabledPrevIcon from '@/assets/svg/arrow-prevpage-disabled.svg'
+import DisabledNextIcon from '@/assets/svg/arrow-nextpage-disabled.svg'
+import DisabledLastIcon from '@/assets/svg/arrow-lastpage-disabled.svg'
 
 interface PagenationProps {
   currentPageNumber: number
@@ -64,12 +68,17 @@ const Pagenation = ({ currentPageNumber, lastPageNumber, handlePageChange }: Pag
     <div className="flex items-center">
       {/* << 버튼 - 첫 페이지로 이동 */}
       <button onClick={handleFirstPage} disabled={isFirstGroup}>
-        <Image src={FirstIcon} alt="FirstIcon" width={buttonSize} height={buttonSize} />
+        <Image
+          src={isFirstGroup ? DisabledFirstIcon : FirstIcon}
+          alt="FirstIcon"
+          width={buttonSize}
+          height={buttonSize}
+        />
       </button>
 
       {/* < 버튼 - 이전 페이지 그룹으로 이동 */}
       <button onClick={handlePrevPageGroup} disabled={isFirstGroup} className="mr-2">
-        <Image src={PrevIcon} alt="PrevIcon" width={buttonSize} height={buttonSize} />
+        <Image src={isFirstGroup ? DisabledPrevIcon : PrevIcon} alt="PrevIcon" width={buttonSize} height={buttonSize} />
       </button>
 
       {/* 페이지 버튼들 */}
@@ -93,12 +102,12 @@ const Pagenation = ({ currentPageNumber, lastPageNumber, handlePageChange }: Pag
 
       {/* > 버튼 - 다음 페이지 그룹으로 이동 */}
       <button onClick={handleNextPageGroup} disabled={isLastGroup} className="ml-2">
-        <Image src={NextIcon} alt="NextIcon" width={buttonSize} height={buttonSize} />
+        <Image src={isLastGroup ? DisabledNextIcon : NextIcon} alt="NextIcon" width={buttonSize} height={buttonSize} />
       </button>
 
       {/* >> 버튼 - 마지막 페이지로 이동 */}
       <button onClick={handleLastPage} disabled={isLastGroup}>
-        <Image src={LastIcon} alt="LastIcon" width={buttonSize} height={buttonSize} />
+        <Image src={isLastGroup ? DisabledLastIcon : LastIcon} alt="LastIcon" width={buttonSize} height={buttonSize} />
       </button>
     </div>
   )
