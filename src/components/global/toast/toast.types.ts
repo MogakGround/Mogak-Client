@@ -34,6 +34,14 @@ export interface TextToastProps extends ToastProps {
   text: string
   detailText?: string
 }
+export interface AutoDisappearTextToastProps extends TextToastProps {
+  duration: number
+}
 
 // 아이콘 토스트
 export interface IconToastProps extends TextToastProps {}
+
+// 아이콘 토스트
+export interface AutoDisappearIconToastProps extends IconToastProps {
+  duration: number
+}

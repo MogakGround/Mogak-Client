@@ -13,7 +13,7 @@ import {
  * 
 <TextToast
   theme={ToastTheme.LIGHT} 
-  size={ToastSize.lg} 
+  size={ToastSize.sm} 
   text={`첫째줄텍스트\n둘째줄텍스트`}
   detailText={`첫째줄상세내용\n둘째줄상세내용`} 
   handleClick={toastEvent}
