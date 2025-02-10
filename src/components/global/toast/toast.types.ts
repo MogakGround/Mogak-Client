@@ -21,7 +21,6 @@ export enum ToastSize {
   //xxl = 'xxl',
 }
 
-
 // 공통 프롭스
 interface ToastProps {
   //variant: ToastVariant
@@ -37,5 +36,4 @@ export interface TextToastProps extends ToastProps {
 }
 
 // 아이콘 토스트
-export interface IconToastProps extends TextToastProps {
-}
+export interface IconToastProps extends TextToastProps {}
