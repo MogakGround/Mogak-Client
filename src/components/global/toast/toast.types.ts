@@ -14,10 +14,10 @@ export enum ToastTheme {
 // 크기
 export enum ToastSize {
   //xs = 'xs',
-  //sm = 30,
-  //md = 38,
-  lg = 46,
-  xl = 50,
+  sm = 46,
+  md = 50,
+  //lg = 'lg',
+  //xl = 'xl',
   //xxl = 'xxl',
 }
 

@@ -28,7 +28,7 @@ const TextToast = ({ theme, size, text, detailText, handleClick }: TextToastProp
         ${toastBackgroundStyles[theme]}`}
       onClick={handleClick}
     >
-      <div className={`whitespace-pre-wrap ${toastTextStyles[theme]} ${toastTextFont(size)} `}>{text}</div>
+      <div className={`whitespace-pre-wrap ${toastTextStyles[theme]} ${toastTextFont(size, detailText)} `}>{text}</div>
       {detailText && (
         <div className={`whitespace-pre-wrap ${toastDetailTextFont(size)} text-grayscale-300`}>{detailText}</div>
       )}

@@ -21,32 +21,32 @@ export const toastTextStyles: ToastStyles = {
   [ToastTheme.DARK]: 'text-grayscale-50',
 }
 
-export const toastTextFont = (size: ToastSize) => {
+export const toastTextFont = (size: ToastSize, detailText?: string) => {
   switch (size) {
-    case ToastSize.lg:
-      return 'font-medium text-[14pt] '
-    case ToastSize.xl:
-      return 'font-medium text-[16pt] '
+    case ToastSize.sm:
+      return !detailText ? 'font-medium text-[14pt] ' : 'font-medium text-[16pt]'
+    case ToastSize.md:
+      return !detailText ? 'font-medium text-[18pt] ' : 'font-semibold text-[18pt]'
   }
 }
 
 export const toastDetailTextFont = (size: ToastSize) => {
   switch (size) {
-    case ToastSize.lg:
+    case ToastSize.sm:
       return 'font-regular text-[12pt] '
-    case ToastSize.xl:
+    case ToastSize.md:
       return 'font-regular text-[14pt] '
   }
 }
 
 const toastXIconStyles = {
   [ToastTheme.LIGHT]: {
-    [ToastSize.lg]: XLightIcon,
-    [ToastSize.xl]: XLightIcon,
+    [ToastSize.sm]: XLightIcon,
+    [ToastSize.md]: XLightIcon,
   },
   [ToastTheme.DARK]: {
-    [ToastSize.lg]: XDarkIcon,
-    [ToastSize.xl]: XDarkIcon,
+    [ToastSize.sm]: XDarkIcon,
+    [ToastSize.md]: XDarkIcon,
   },
 }
 

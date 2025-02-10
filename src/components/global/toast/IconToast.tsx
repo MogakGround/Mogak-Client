@@ -33,7 +33,7 @@ const IconToast = ({ theme, size, text, detailText, handleClick }: IconToastProp
 
       {/* 텍스트 */}
       <div className={`${detailText ? '' : 'inline-flex '}`}>
-        <p className={`whitespace-pre-wrap ${toastTextStyles[theme]} ${toastTextFont(size)} `}>{text}</p>
+        <p className={`whitespace-pre-wrap ${toastTextStyles[theme]} ${toastTextFont(size, detailText)} `}>{text}</p>
         {detailText && (
           <p className={`whitespace-pre-wrap ${toastDetailTextFont(size)} text-grayscale-300`}>{detailText}</p>
         )}
