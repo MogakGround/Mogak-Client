@@ -7,9 +7,17 @@ interface IModalProps {
   isOpen: boolean
   handleCloseModal: () => void
   children: React.ReactNode
+  hasOverlay?: boolean
+  closeOnOutsideClick?: boolean
 }
 
-export default function Modal({ isOpen, handleCloseModal, children }: IModalProps) {
+export default function Modal({
+  isOpen,
+  handleCloseModal,
+  children,
+  hasOverlay = true,
+  closeOnOutsideClick = true,
+}: IModalProps) {
   const modalRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -36,8 +44,10 @@ export default function Modal({ isOpen, handleCloseModal, children }: IModalProp
   return (
     <Portal>
       <div
-        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50"
-        onClick={handleCloseModal}
+        className={`fixed inset-0 flex items-center justify-center z-50 ${
+          hasOverlay ? 'bg-black bg-opacity-70' : 'bg-transparent'
+        }`}
+        onClick={closeOnOutsideClick ? handleCloseModal : undefined}
       >
         <div
           ref={modalRef}
