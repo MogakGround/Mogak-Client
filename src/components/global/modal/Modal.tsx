@@ -3,12 +3,18 @@
 import { useEffect, useRef } from 'react'
 import Portal from './Portal'
 
+export enum ModalBackground {
+  gray700 = 'bg-grayscale-700',
+  gray800 = 'bg-grayscale-800',
+}
+
 interface IModalProps {
   isOpen: boolean
   handleCloseModal: () => void
   children: React.ReactNode
   hasOverlay?: boolean
   closeOnOutsideClick?: boolean
+  backgroundColor?: ModalBackground
 }
 
 export default function Modal({
@@ -17,6 +23,7 @@ export default function Modal({
   children,
   hasOverlay = true,
   closeOnOutsideClick = true,
+  backgroundColor = ModalBackground.gray700,
 }: IModalProps) {
   const modalRef = useRef<HTMLDivElement | null>(null)
 
@@ -52,7 +59,7 @@ export default function Modal({
         <div
           ref={modalRef}
           tabIndex={-1}
-          className="relative p-[24px] z-50 bg-grayscale-700 shadow-lg rounded-[20px] w-[416px]"
+          className={`relative p-[24px] z-50 shadow-lg rounded-[20px] w-[416px] ${backgroundColor}`}
           onClick={(e) => e.stopPropagation()}
         >
           {children}
