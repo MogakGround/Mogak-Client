@@ -4,6 +4,7 @@ import { IconInputProps } from './input.types'
 import { getStatusStyles, inputSizes } from './inputStyles'
 import Search from '@/assets/svg/search.svg'
 import SearchDisabled from '@/assets/svg/search-disabled.svg'
+import cn from '@/utils/cn'
 
 export default function IconInput({
   name,
@@ -22,11 +23,12 @@ export default function IconInput({
 
   return (
     <div
-      className={`w-full flex items-center gap-2 rounded-lg border-[1.5px] px-4 py-3
-        ${isFocused ? 'border-accentT-30' : ''}
-        ${getStatusStyles(status)}
-        ${inputSizes[size]}
-      `}
+      className={cn(
+        'w-full flex items-center gap-2 rounded-lg border-[1.5px] px-4 py-3',
+        isFocused && 'border-accentT-30',
+        getStatusStyles(status),
+        inputSizes[size]
+      )}
     >
       <span>
         {iconArrow === 'left' && <Image src={!disabled ? Search : SearchDisabled} alt="icon" width={24} height={24} />}
