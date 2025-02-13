@@ -52,7 +52,7 @@ export default function Modal({
         <div
           ref={modalRef}
           tabIndex={-1}
-          className="relative p-6 z-50 bg-grayscale-700 shadow-lg rounded-[20px] w-[416px]"
+          className="relative p-[24px] z-50 bg-grayscale-700 shadow-lg rounded-[20px] w-[416px]"
           onClick={(e) => e.stopPropagation()}
         >
           {children}

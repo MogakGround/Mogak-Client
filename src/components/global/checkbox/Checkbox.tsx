@@ -26,7 +26,7 @@ export default function Checkbox({
       <label htmlFor={id} className={`${checkboxSize[size]} cursor-pointer ${isDisabled ? 'cursor-not-allowed' : ''}`}>
         <Image src={checkboxColor} alt={isChecked ? 'Checked' : 'Unchecked'} className="w-full h-full" />
       </label>
-      <span className="ml-1 text-white">{text || ''}</span>
+      <span className="ml-[3px] text-white">{text || ''}</span>
     </div>
   )
 }

@@ -18,7 +18,7 @@ export default function TextField({ placeholder, value, disabled = false, maxLen
 
   return (
     <div
-      className={`w-full flex flex-col gap-2 rounded-lg border-[1.5px] px-4 py-3
+      className={`w-full flex flex-col gap-[8px] rounded-lg border-[1.5px] px-[16px] py-[12px] reg-16
       ${isFocused ? 'border-accentT-30' : ''}
       ${getStatusStyles(status)}`}
     >

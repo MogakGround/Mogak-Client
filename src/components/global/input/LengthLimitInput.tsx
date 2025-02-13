@@ -20,7 +20,7 @@ export default function LengthLimitInput({
 
   return (
     <div
-      className={`w-full flex gap-2 rounded-lg border-[1.5px] px-4 py-3
+      className={`w-full flex gap-2 rounded-lg border-[1.5px] py-[11px] px-[16px] reg-16
         ${isFocused ? 'border-accentT-30' : ''}
         ${getStatusStyles(status)}
         ${inputSizes[size]}
