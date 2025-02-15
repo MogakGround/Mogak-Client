@@ -29,11 +29,16 @@ export interface IButtonProps {
   handleClick: () => void
   fullWidth?: boolean
   type?: 'button' | 'submit' | 'reset'
+  iconSrc?: string
+  className?: string
 }
 
 export interface IBasicButtonProps extends IButtonProps {
-  text: string
+  text?: string
+  children?: React.ReactNode
 }
 export interface IconTextButtonProps extends IBasicButtonProps {
   iconArrow: IconArrow
+  iconSrc?: string
+  iconWidth?: number
 }
