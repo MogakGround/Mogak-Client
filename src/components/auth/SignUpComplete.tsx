@@ -1,26 +1,6 @@
 import IllustBlockIcon from '@/assets/svg/illust_block.svg'
 import IllustSearchIcon from '@/assets/svg/illust_search.svg'
-import Image from 'next/image'
-
-const SignUpOption = ({
-  icon,
-  width,
-  height,
-  title,
-  description,
-}: {
-  width: number
-  height: number
-  icon: string
-  title: string
-  description: string
-}) => (
-  <div className="w-full h-[86px] relative rounded-[12px] border border-grayscale-600 bg-grayscale-700 overflow-hidden flex flex-col items-center justify-center px-4 py-2 hover:border-accentT-30">
-    <Image src={icon} width={width} height={height} alt={title} className="absolute left-0" />
-    <h3 className="semi-16 text-grayscale-50 mb-[2px] z-[2]">{title}</h3>
-    <p className="reg-12 text-grayscale-400 text-center z-[2]">{description}</p>
-  </div>
-)
+import SignUpCompleteOption from './SignUpCompleteOption'
 
 export default function SignUpComplete() {
   return (
@@ -30,14 +10,14 @@ export default function SignUpComplete() {
         <p className="text-grayscale-400 reg-14">모각그라운드에서 자유로운 모각작을 시작해볼까요?</p>
       </div>
       <div className="w-full flex flex-col gap-[12px] mb-[60px]">
-        <SignUpOption
+        <SignUpCompleteOption
           icon={IllustBlockIcon}
           width={98}
           height={120}
           title="모각방을 직접 만들래요"
           description="직접 모각방장이 되어 빠르게 모각작을 시작할 수 있어요"
         />
-        <SignUpOption
+        <SignUpCompleteOption
           icon={IllustSearchIcon}
           width={120}
           height={118}
