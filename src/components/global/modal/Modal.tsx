@@ -1,5 +1,4 @@
 'use client'
-
 import { useEffect, useRef } from 'react'
 import Portal from './Portal'
 
@@ -51,10 +50,10 @@ export default function Modal({
   return (
     <Portal>
       <div
-        className={`fixed inset-0 flex items-center justify-center z-50 ${
-          hasOverlay ? 'bg-black bg-opacity-70' : 'bg-transparent'
-        }`}
-        onClick={closeOnOutsideClick ? handleCloseModal : undefined}
+        className={`fixed inset-0 flex items-center justify-center
+          ${hasOverlay ? 'bg-black bg-opacity-70' : 'bg-transparent'}
+          ${!hasOverlay ? 'z-[50]' : 'z-[61]'}`}
+        {...(closeOnOutsideClick ? { onClick: handleCloseModal } : {})}
       >
         <div
           ref={modalRef}

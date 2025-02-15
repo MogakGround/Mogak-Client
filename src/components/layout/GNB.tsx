@@ -19,7 +19,7 @@ const GNB = () => {
   }
 
   return (
-    <div className="flex justify-between items-center text-center bg-bg h-[60px]">
+    <div className="flex justify-between items-center text-center bg-bg h-[60px] z-[60]">
       <Image
         src={LogoIcon}
         alt="로고"
