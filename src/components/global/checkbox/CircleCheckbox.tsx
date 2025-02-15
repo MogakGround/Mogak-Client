@@ -29,7 +29,7 @@ export default function CircleCheckbox({
       >
         <Image src={checkboxColor} alt={isChecked ? 'Checked' : 'Unchecked'} className="w-full h-full" />
       </label>
-      <span className="ml-2 text-white">{text || ''}</span>
+      <span className="ml-[6px] text-white">{text || ''}</span>
     </div>
   )
 }

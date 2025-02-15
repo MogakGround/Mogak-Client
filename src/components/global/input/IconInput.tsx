@@ -24,8 +24,9 @@ export default function IconInput({
   return (
     <div
       className={cn(
-        'w-full flex items-center gap-2 rounded-lg border-[1.5px] px-4 py-3',
+        'w-full flex items-center gap-[8px] rounded-lg border-[1.5px] py-[11px] reg-16',
         isFocused && 'border-accentT-30',
+        iconArrow === 'left' ? 'pl-[16px] pr-[12px]' : 'p1-[12px] pr-[16px]',
         getStatusStyles(status),
         inputSizes[size]
       )}
