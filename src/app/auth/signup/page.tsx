@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { ToastSize, ToastTheme } from '@/components/global/toast/toast.types'
 import useModal from '@/components/global/modal/hooks/useModal'
@@ -8,10 +8,14 @@ import IconToast from '@/components/global/toast/IconToast'
 import AuthLayout from '@/components/auth/AuthLayout'
 
 export default function SignUpPage() {
-  const { isOpen, handleCloseModal } = useModal({ initialIsOpen: true })
+  const { isOpen, handleOpenModal, handleCloseModal } = useModal()
   const [isToastShow, setIsToastShow] = useState(false)
   const [toastMsg, setToastMsg] = useState('')
   const [isSignUp, setIsSignUp] = useState(false)
+
+  useEffect(() => {
+    handleOpenModal()
+  }, [])
 
   const showToastMessage = (message: string) => {
     setToastMsg(message)
