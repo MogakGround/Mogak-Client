@@ -33,11 +33,7 @@ export default function SignUpModal({ isOpen, handleCloseModal, handleSignIn, sh
       {isSignUpComplete ? (
         <SignUpComplete />
       ) : (
-        <SignUpForm
-          handleCloseModal={handleCloseModal}
-          showToastMessage={showToastMessage}
-          handleSignUpComplete={handleSignUpComplete}
-        />
+        <SignUpForm showToastMessage={showToastMessage} handleSignUpComplete={handleSignUpComplete} />
       )}
     </Modal>
   )

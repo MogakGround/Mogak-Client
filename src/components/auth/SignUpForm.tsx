@@ -4,12 +4,11 @@ import PortfolioInput from './PortfolioInput'
 import SignUpButtonGroup from './SignUpButtonGroup'
 
 interface ISignUpFormProps {
-  handleCloseModal: () => void
   showToastMessage: (message: string) => void
   handleSignUpComplete: () => void // 가입 완료 상태 변경 함수 추가
 }
 
-export default function SignUpForm({ handleCloseModal, showToastMessage, handleSignUpComplete }: ISignUpFormProps) {
+export default function SignUpForm({ showToastMessage, handleSignUpComplete }: ISignUpFormProps) {
   const [signUpForm, setSignUpForm] = useState({ nickname: '', portfolioLink: '' })
   const [isNicknameChecked, setIsNicknameChecked] = useState(true)
 
@@ -45,11 +44,7 @@ export default function SignUpForm({ handleCloseModal, showToastMessage, handleS
         checkNickname={checkNicknameAvailability}
       />
       <PortfolioInput name="portfolioLink" value={signUpForm.portfolioLink} handleChange={handleChange} />
-      <SignUpButtonGroup
-        closeModal={handleCloseModal}
-        isNicknameChecked={isNicknameChecked}
-        handleSignUpComplete={handleSignUpComplete}
-      />
+      <SignUpButtonGroup isNicknameChecked={isNicknameChecked} handleSignUpComplete={handleSignUpComplete} />
     </>
   )
 }
