@@ -41,7 +41,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`${pretendard.className} flex flex-col min-h-screen bg-bg`}>
+      <body className={`${pretendard.className} bg-bg`}>
         <div id="portalModal" />
         <GNB />
         <main className="w-full flex-1">{children}</main>
