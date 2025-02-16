@@ -5,9 +5,14 @@
 html,
 body {
   height: 100vh;
+  font-family: var(--font-pretendard);
 }
 
 @layer utilities {
+  .font-riasans {
+    font-family: var(--font-riasans), sans-serif;
+  }
+  
   /* 공통 스타일 */
   .font-bold {
     font-style: normal;
