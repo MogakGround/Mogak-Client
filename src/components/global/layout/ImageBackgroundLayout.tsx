@@ -1,9 +1,9 @@
-interface IAuthLayoutProps {
+interface IImageBackgroundLayoutProps {
   children: React.ReactNode
   isSignUp?: boolean
 }
 
-export default function AuthLayout({ children, isSignUp }: IAuthLayoutProps) {
+export default function ImageBackgroundLayout({ children, isSignUp }: IImageBackgroundLayoutProps) {
   return (
     <section className="relative w-full h-full flex flex-col items-center justify-center bg-cover bg-center bg-[url('/images/bg-image.jpg')]">
       <div className="absolute inset-0 top-0 w-full h-full overflow-hidden">
