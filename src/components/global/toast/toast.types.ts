@@ -14,13 +14,12 @@ export enum ToastTheme {
 // 크기
 export enum ToastSize {
   //xs = 'xs',
-  //sm = 30,
-  //md = 38,
-  lg = 46,
-  xl = 50,
+  sm = 46,
+  md = 50,
+  //lg = 'lg',
+  //xl = 'xl',
   //xxl = 'xxl',
 }
-
 
 // 공통 프롭스
 interface ToastProps {
@@ -35,7 +34,14 @@ export interface TextToastProps extends ToastProps {
   text: string
   detailText?: string
 }
+export interface AutoDisappearTextToastProps extends TextToastProps {
+  duration: number
+}
 
 // 아이콘 토스트
-export interface IconToastProps extends TextToastProps {
+export interface IconToastProps extends TextToastProps {}
+
+// 아이콘 토스트
+export interface AutoDisappearIconToastProps extends IconToastProps {
+  duration: number
 }
