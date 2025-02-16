@@ -36,7 +36,7 @@ export default function RootLayout({
       <body className={`${pretendard.className} flex flex-col min-h-screen bg-bg`}>
         <div id="portalModal" />
         <GNB />
-        <main className="w-full flex-1">{children}</main>
+        <main className="w-full h-[calc(100%-60px)] overflow-y-auto">{children}</main>
       </body>
     </html>
   )
