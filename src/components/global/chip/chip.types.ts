@@ -29,7 +29,6 @@ export enum IconArrow {
   RIGHT,
 }
 
-
 // 공통 프롭스
 interface ChipProps {
   variant: ChipVariant
@@ -45,10 +44,14 @@ export interface TextChipProps extends ChipProps {
 }
 
 // 아이콘 텍스트 칩
-export interface MoonTextChipProps extends TextChipProps {
+export interface MoonIconTextChipProps extends TextChipProps {
   iconArrow: IconArrow
 }
 
-// 아이콘 칩
-export interface MoonChipProps extends ChipProps {
+export interface IconTextChipProps extends MoonIconTextChipProps {
+  iconArrow: IconArrow
+  iconImageSrc: string
 }
+
+// 아이콘 칩
+export interface MoonIconChipProps extends ChipProps {}
