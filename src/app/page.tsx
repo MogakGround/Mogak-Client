@@ -160,7 +160,7 @@ export default function Home() {
     }))
   }
 
-  // 조건에 맞는 모각방 구하기기
+  // 조건에 맞는 모각방 구하기
   const countRooms = () => {
     let filtered: MogakRoomProps[] = []
 
@@ -205,6 +205,20 @@ export default function Home() {
     )
 
     return uniqueFiltered
+  }
+
+  const isRoom = (room: MogakRoomProps) => {
+    if (room.sunup && room.sun && room.sundown && room.moon && toggleTimes['time1'].active) return true
+
+    if (room.sunup && toggleTimes['time2'].active) return true
+
+    if (room.sun && toggleTimes['time3'].active) return true
+
+    if (room.sundown && toggleTimes['time4'].active) return true
+
+    if (room.moon && toggleTimes['time5'].active) return true
+
+    return false
   }
 
   // 페이지네이션 및 필터링을 고려한 현재 페이지의 방들을 설정
@@ -308,90 +322,25 @@ export default function Home() {
           ) : (
             <>
               <div className="grid grid-cols-4 mt-[12px]">
-                {currentRooms.map((room, index) =>
-                  room.sunup && room.sun && room.sundown && room.moon && toggleTimes['time1'].active ? (
-                    <MogakRoom
-                      index={room.index}
-                      key={index}
-                      title={room.title}
-                      description={room.description}
-                      thumbnailImageSrc={room.thumbnailImageSrc}
-                      capacity={room.capacity}
-                      headcount={room.headcount}
-                      sunup={room.sunup}
-                      sun={room.sun}
-                      sundown={room.sundown}
-                      moon={room.moon}
-                      secret={room.secret}
-                      onClick={room.onClick}
-                    />
-                  ) : room.sunup && toggleTimes['time2'].active ? (
-                    <MogakRoom
-                      index={room.index}
-                      key={index}
-                      title={room.title}
-                      description={room.description}
-                      thumbnailImageSrc={room.thumbnailImageSrc}
-                      capacity={room.capacity}
-                      headcount={room.headcount}
-                      sunup={room.sunup}
-                      sun={room.sun}
-                      sundown={room.sundown}
-                      moon={room.moon}
-                      secret={room.secret}
-                      onClick={room.onClick}
-                    />
-                  ) : room.sun && toggleTimes['time3'].active ? (
-                    <MogakRoom
-                      index={room.index}
-                      key={index}
-                      title={room.title}
-                      description={room.description}
-                      thumbnailImageSrc={room.thumbnailImageSrc}
-                      capacity={room.capacity}
-                      headcount={room.headcount}
-                      sunup={room.sunup}
-                      sun={room.sun}
-                      sundown={room.sundown}
-                      moon={room.moon}
-                      secret={room.secret}
-                      onClick={room.onClick}
-                    />
-                  ) : room.sundown && toggleTimes['time4'].active ? (
-                    <MogakRoom
-                      index={room.index}
-                      key={index}
-                      title={room.title}
-                      description={room.description}
-                      thumbnailImageSrc={room.thumbnailImageSrc}
-                      capacity={room.capacity}
-                      headcount={room.headcount}
-                      sunup={room.sunup}
-                      sun={room.sun}
-                      sundown={room.sundown}
-                      moon={room.moon}
-                      secret={room.secret}
-                      onClick={room.onClick}
-                    />
-                  ) : room.moon && toggleTimes['time5'].active ? (
-                    <MogakRoom
-                      index={room.index}
-                      key={index}
-                      title={room.title}
-                      description={room.description}
-                      thumbnailImageSrc={room.thumbnailImageSrc}
-                      capacity={room.capacity}
-                      headcount={room.headcount}
-                      sunup={room.sunup}
-                      sun={room.sun}
-                      sundown={room.sundown}
-                      moon={room.moon}
-                      secret={room.secret}
-                      onClick={room.onClick}
-                    />
-                  ) : (
-                    <></>
-                  )
+                {currentRooms.map(
+                  (room, index) =>
+                    isRoom(room) && (
+                      <MogakRoom
+                        index={room.index}
+                        key={index}
+                        title={room.title}
+                        description={room.description}
+                        thumbnailImageSrc={room.thumbnailImageSrc}
+                        capacity={room.capacity}
+                        headcount={room.headcount}
+                        sunup={room.sunup}
+                        sun={room.sun}
+                        sundown={room.sundown}
+                        moon={room.moon}
+                        secret={room.secret}
+                        onClick={room.onClick}
+                      />
+                    )
                 )}
               </div>
               <div className="flex justify-center items-center mt-[60px]">
