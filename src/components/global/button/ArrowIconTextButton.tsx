@@ -1,4 +1,4 @@
-import { IconTextButtonProps } from '@/components/global/button/button.types'
+import { ArrowIconTextButtonProps } from '@/components/global/button/button.types'
 import {
   baseButton,
   textButtonSizes,
@@ -19,7 +19,7 @@ export default function ArrowIconTextButton({
   iconArrow,
   fullWidth = false,
   type = 'button',
-}: IconTextButtonProps) {
+}: ArrowIconTextButtonProps) {
   const iconColor = (!disabled ? iconColors[theme]?.[variant] : 'gray') as keyof typeof ARROW_ICON_SRC
   const iconSize = size && iconSizes[size]
 

@@ -34,7 +34,11 @@ export interface IButtonProps {
 export interface IBasicButtonProps extends IButtonProps {
   text: string
 }
+export interface ArrowIconTextButtonProps extends IBasicButtonProps {
+  iconArrow: IconArrow
+}
 export interface IconTextButtonProps extends IBasicButtonProps {
+  iconSrc: string
   iconArrow: IconArrow
 }
 export interface IconButtonProps extends IButtonProps {
