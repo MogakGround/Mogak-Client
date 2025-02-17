@@ -24,6 +24,8 @@ const mogakRooms: MogakRoomProps[] = [
     sun: true,
     sundown: true,
     moon: true,
+    secret: false,
+    onClick: () => null,
   },
   {
     index: 2,
@@ -36,6 +38,8 @@ const mogakRooms: MogakRoomProps[] = [
     sun: true,
     sundown: false,
     moon: true,
+    secret: true,
+    onClick: () => null,
   },
   {
     index: 3,
@@ -48,6 +52,8 @@ const mogakRooms: MogakRoomProps[] = [
     sun: true,
     sundown: true,
     moon: true,
+    secret: false,
+    onClick: () => null,
   },
   {
     index: 4,
@@ -60,6 +66,8 @@ const mogakRooms: MogakRoomProps[] = [
     sun: true,
     sundown: false,
     moon: true,
+    secret: false,
+    onClick: () => null,
   },
   {
     index: 5,
@@ -72,6 +80,8 @@ const mogakRooms: MogakRoomProps[] = [
     sun: true,
     sundown: true,
     moon: true,
+    secret: true,
+    onClick: () => null,
   },
   {
     index: 6,
@@ -84,6 +94,8 @@ const mogakRooms: MogakRoomProps[] = [
     sun: false,
     sundown: true,
     moon: false,
+    secret: false,
+    onClick: () => null,
   },
   {
     index: 7,
@@ -96,6 +108,8 @@ const mogakRooms: MogakRoomProps[] = [
     sun: false,
     sundown: false,
     moon: true,
+    secret: false,
+    onClick: () => null,
   },
   {
     index: 8,
@@ -108,6 +122,8 @@ const mogakRooms: MogakRoomProps[] = [
     sun: true,
     sundown: false,
     moon: false,
+    secret: false,
+    onClick: () => null,
   },
 ]
 ////////////////////////////////////////////////////
@@ -225,6 +241,8 @@ export default function Home() {
                   sun={room.sun}
                   sundown={room.sundown}
                   moon={room.moon}
+                  secret={room.secret}
+                  onClick={room.onClick}
                 />
               )
           )}
@@ -290,6 +308,8 @@ export default function Home() {
                   sun={room.sun}
                   sundown={room.sundown}
                   moon={room.moon}
+                  secret={room.secret}
+                  onClick={room.onClick}
                 />
               ) : room.sunup && toggleTimes['time2'].active ? (
                 <MogakRoom
@@ -304,6 +324,8 @@ export default function Home() {
                   sun={room.sun}
                   sundown={room.sundown}
                   moon={room.moon}
+                  secret={room.secret}
+                  onClick={room.onClick}
                 />
               ) : room.sun && toggleTimes['time3'].active ? (
                 <MogakRoom
@@ -318,6 +340,8 @@ export default function Home() {
                   sun={room.sun}
                   sundown={room.sundown}
                   moon={room.moon}
+                  secret={room.secret}
+                  onClick={room.onClick}
                 />
               ) : room.sundown && toggleTimes['time4'].active ? (
                 <MogakRoom
@@ -332,6 +356,8 @@ export default function Home() {
                   sun={room.sun}
                   sundown={room.sundown}
                   moon={room.moon}
+                  secret={room.secret}
+                  onClick={room.onClick}
                 />
               ) : room.moon && toggleTimes['time5'].active ? (
                 <MogakRoom
@@ -346,6 +372,8 @@ export default function Home() {
                   sun={room.sun}
                   sundown={room.sundown}
                   moon={room.moon}
+                  secret={room.secret}
+                  onClick={room.onClick}
                 />
               ) : (
                 <></>
