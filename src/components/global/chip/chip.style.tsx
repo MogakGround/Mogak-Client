@@ -17,7 +17,7 @@ type ChipStyles = {
   }
 }
 
-export const chipBaseStyle = 'inline-flex items-center justify-center text-center rounded-[4px] '
+export const chipBaseStyle = 'inline-flex items-center justify-center text-center rounded-[4px] cursor-pointer'
 
 export const chipBackgroundStyles: ChipStyles = {
   [ChipTheme.LIGHT]: {
@@ -61,14 +61,14 @@ export const chipTextStyles: ChipStyles = {
   [ChipTheme.ACCENT]: {
     [ChipVariant.DEFAULT]: 'text-accent-100',
     [ChipVariant.HIGHLIGHT]: 'text-primary-100',
-    [ChipVariant.STROKE]: 'text-primary-100',
+    [ChipVariant.STROKE]: 'text-accent-100',
   },
 }
 
 export const textChipSizeStyles = {
-  [ChipSize.sm]: 'h-[30px] px-3 py-[5px] ',
-  [ChipSize.md]: 'h-[38px] px-3 py-[5px] ',
-  [ChipSize.lg]: 'h-[44px] px-3 py-[5px] ',
+  [ChipSize.sm]: 'h-[30px] px-[12px] py-[5px] ',
+  [ChipSize.md]: 'h-[38px] px-[12px] py-[8px] ',
+  [ChipSize.lg]: 'h-[44px] px-[12px] py-[10px] ',
 }
 
 export const iconChipSizeStyles = {

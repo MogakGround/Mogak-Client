@@ -39,7 +39,7 @@ const IconTextChip = ({
       onClick={handleClick}
     >
       {iconArrow === IconArrow.LEFT && (
-        <div className="mr-2">
+        <div className="mr-[8px]">
           <Image
             src={iconImageSrc}
             alt={'icon'}
@@ -50,7 +50,7 @@ const IconTextChip = ({
       )}
 
       <div
-        className={`${chipTextStyles[theme][variant]} ${chipTextFont(size)} ${detailText || iconArrow === IconArrow.RIGHT ? '' : 'mr-2'}`}
+        className={`${chipTextStyles[theme][variant]} ${chipTextFont(size)} ${detailText || iconArrow === IconArrow.RIGHT ? (size === ChipSize.sm ? 'mr-[6px]' : 'mr-[8px]') : ''}`}
       >
         {text}
       </div>
@@ -60,7 +60,7 @@ const IconTextChip = ({
       )}
 
       {iconArrow === IconArrow.RIGHT && (
-        <div className="ml-2">
+        <div className="ml-[8px]">
           <Image
             src={iconImageSrc}
             alt={'icon'}

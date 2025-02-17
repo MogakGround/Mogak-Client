@@ -1,4 +1,4 @@
-import { IconArrow, MoonIconTextChipProps } from '@/components/global/chip/chip.types'
+import { ChipSize, IconArrow, MoonIconTextChipProps } from '@/components/global/chip/chip.types'
 import {
   chipBaseStyle,
   chipBackgroundStyles,
@@ -36,10 +36,10 @@ const MoonIconTextChip = ({
       className={`${chipBaseStyle} ${chipBackgroundStyles[theme][variant]} ${textChipSizeStyles[size]}`}
       onClick={handleClick}
     >
-      {iconArrow === IconArrow.LEFT && <div className="mr-2">{chipMoonIcon(theme, size)}</div>}
+      {iconArrow === IconArrow.LEFT && <div className="mr-[8px]">{chipMoonIcon(theme, size)}</div>}
 
       <div
-        className={`${chipTextStyles[theme][variant]} ${chipTextFont(size)} ${detailText || iconArrow === IconArrow.RIGHT ? '' : 'mr-2'}`}
+        className={`${chipTextStyles[theme][variant]} ${chipTextFont(size)} ${detailText || iconArrow === IconArrow.RIGHT ? (size === ChipSize.sm ? 'mr-[6px]' : 'mr-[8px]') : ''}`}
       >
         {text}
       </div>
@@ -48,7 +48,7 @@ const MoonIconTextChip = ({
         <div className={`${chipDetailTextFont(size)} text-grayscale-400`}>{detailText}</div>
       )}
 
-      {iconArrow === IconArrow.RIGHT && <div className="ml-2">{chipMoonIcon(theme, size)}</div>}
+      {iconArrow === IconArrow.RIGHT && <div className="ml-[8px]">{chipMoonIcon(theme, size)}</div>}
     </div>
   )
 }
