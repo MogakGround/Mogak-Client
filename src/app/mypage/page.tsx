@@ -167,8 +167,8 @@ const mogakRooms2: MogakRoomProps[] = [
 export default function MyPage() {
   // 사용자 정보
   const [profileIcon, setProfileIcon] = useState<string>('')
-  const [nickname, setNickname] = useState<string>('임시닉네임')
-  const [profileLink, setProfileLink] = useState<string>('https://link')
+  const [nickname, setNickname] = useState<string>('임시닉네임 인애')
+  const [profileLink, setProfileLink] = useState<string>('https://github.com/inaemon')
   const [workHours, setWorkHours] = useState<string>('25')
   const [workSeconds, setWorkSeconds] = useState<string>('41')
   const [rank, setRank] = useState<string>('26')
@@ -231,16 +231,18 @@ export default function MyPage() {
             </div>
 
             {/* 프로필 링크 */}
-            <IconTextButton
-              theme={ButtonTheme.accent}
-              variant={ButtonVariant.default}
-              size={ButtonSize.lg}
-              iconSrc={LinkAccentLgIcon}
-              iconArrow={IconArrow.left}
-              text={profileLink}
-              link={true}
-              handleClick={() => null}
-            />
+            <a href={profileLink} target="_blank" rel="noopener noreferrer">
+              <IconTextButton
+                theme={ButtonTheme.accent}
+                variant={ButtonVariant.default}
+                size={ButtonSize.lg}
+                iconSrc={LinkAccentLgIcon}
+                iconArrow={IconArrow.left}
+                text={profileLink}
+                link={true}
+                handleClick={() => null}
+              />
+            </a>
           </div>
 
           {isSetting && (
