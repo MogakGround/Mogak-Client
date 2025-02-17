@@ -27,10 +27,8 @@ export default function CreateRoomBtnGroup({
   }
 
   const handleClickNext = () => {
-    if (nextStatus === 'complete') {
-      if (handleClickComplete) {
-        handleClickComplete()
-      }
+    if (nextStatus === 'complete' && handleClickComplete) {
+      handleClickComplete()
     } else {
       roomStatusChange(nextStatus)
     }
