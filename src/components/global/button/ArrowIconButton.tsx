@@ -9,7 +9,7 @@ import {
 import { ARROW_ICON_SRC } from '@/constants/ArrowIcon'
 import Image from 'next/image'
 
-export default function IconButton({
+export default function ArrowIconButton({
   variant,
   theme,
   size,

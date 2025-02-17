@@ -37,3 +37,7 @@ export interface IBasicButtonProps extends IButtonProps {
 export interface IconTextButtonProps extends IBasicButtonProps {
   iconArrow: IconArrow
 }
+export interface HeadcountIconTextButtonProps extends IButtonProps {
+  headcount: number
+  capacity: number
+}

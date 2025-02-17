@@ -1,9 +1,15 @@
 import { IconTextButtonProps } from '@/components/global/button/button.types'
-import { baseButton, buttonSizes, buttonStyles, iconColors, iconSizes } from '@/components/global/button/buttonStyle'
+import {
+  baseButton,
+  textButtonSizes,
+  buttonStyles,
+  iconColors,
+  iconSizes,
+} from '@/components/global/button/buttonStyle'
 import { ARROW_ICON_SRC } from '@/constants/ArrowIcon'
 import Image from 'next/image'
 
-export default function IconTextButton({
+export default function ArrowIconTextButton({
   variant,
   theme,
   size,
@@ -21,7 +27,7 @@ export default function IconTextButton({
     <button
       className={`
         ${baseButton}
-        ${buttonSizes[size]}
+        ${textButtonSizes[size]}
         ${buttonStyles[theme][variant]}
         ${fullWidth ? 'w-full' : ''}
         ${disabled ? '!bg-grayscale-600 !text-grayscale-400 cursor-not-allowed' : ''}
