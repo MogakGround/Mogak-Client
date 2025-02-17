@@ -5,7 +5,7 @@ import BasicButton from '@/components/global/button/BasicButton'
 
 interface ICreateRoomBtnGroupProps {
   previousStatus: RoomNewStatus | 'initial'
-  nextStatus: RoomNewStatus | 'complete'
+  nextStatus: RoomNewStatus
   nextButtonDisabled?: boolean
   roomStatusChange: (status: RoomNewStatus) => void
   handleClickComplete?: () => void
