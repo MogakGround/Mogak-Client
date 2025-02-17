@@ -167,11 +167,12 @@ const mogakRooms2: MogakRoomProps[] = [
 export default function MyPage() {
   // 사용자 정보
   const [profileIcon, setProfileIcon] = useState<string>('')
-  const [nickname, setNickname] = useState<string>('닉네임')
+  const [nickname, setNickname] = useState<string>('임시닉네임')
   const [profileLink, setProfileLink] = useState<string>('https://link')
   const [workHours, setWorkHours] = useState<string>('25')
   const [workSeconds, setWorkSeconds] = useState<string>('41')
   const [rank, setRank] = useState<string>('26')
+  const [isSetting, setSettting] = useState<boolean>(false)
 
   // 모각방 탭 핸들링
   const [toggleTab, setToggleTab] = useState<boolean>(false)
@@ -204,7 +205,7 @@ export default function MyPage() {
   return (
     <div className="">
       {/**프로필 */}
-      <div className="flex justify-between items-center w-full px-[80px] pt-[40px]">
+      <div className="flex justify-between items-start w-full px-[80px] mt-[40px] h-[162px]">
         <div className="flex px-[20px]">
           {/* 프로필 이미지 */}
           <div className="flex justify-center items-center rounded-full border-2 border-gray-600 w-[92px] h-[92px] bg-gray-800">
@@ -225,7 +226,7 @@ export default function MyPage() {
                 variant={ButtonVariant.default}
                 size={ButtonSize.sm}
                 iconSrc={PensilGraySmIcon}
-                handleClick={() => null}
+                handleClick={() => setSettting(!isSetting)}
               />
             </div>
 
@@ -241,6 +242,17 @@ export default function MyPage() {
               handleClick={() => null}
             />
           </div>
+
+          {isSetting && (
+            <div className="ml-[9px]">
+              <ProfileSettingButton
+                nickname={nickname}
+                setNickname={setNickname}
+                link={profileLink}
+                setLink={setProfileLink}
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex ">
@@ -255,7 +267,7 @@ export default function MyPage() {
       </div>
 
       {/* 모각방 토글 버튼 */}
-      <div className="flex border-b-[2px] border-gray-800 px-[80px] pt-[64px]">
+      <div className="flex border-b-[2px] border-gray-800 px-[80px]">
         <p className={`${toggleTab ? onTab : offTab} px-[11px] pb-[14px]`} onClick={handleTab1}>
           7일 간 들어갔던 모각방
         </p>
