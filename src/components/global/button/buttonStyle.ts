@@ -27,7 +27,8 @@ export const buttonStyles: ButtonStyles = {
   },
 }
 
-export const buttonSizes = {
+export const textButtonSizes = {
+  xxs: 'py-[4px] px-[12px] reg-12',
   xs: 'py-[4px] px-[12px] reg-12',
   sm: 'py-[6px] px-[14px] reg-12',
   md: 'py-[7px] px-[14px] semi-14',
@@ -36,6 +37,7 @@ export const buttonSizes = {
   xxl: 'py-[14px] px-[20px] semi-16',
 }
 export const iconButtonSizes = {
+  xxs: 'p-[6px]',
   xs: 'p-[6px]',
   sm: 'p-[8px]',
   md: 'p-[10px]',
@@ -43,7 +45,17 @@ export const iconButtonSizes = {
   xl: 'p-[12px]',
   xxl: 'p-[14px]',
 }
+export const headcountButtonSizes = {
+  xxs: '',
+  xs: 'py-[4px] px-[8px]',
+  sm: 'py-[6px] px-[14px]',
+  md: '',
+  lg: '',
+  xl: '',
+  xxl: '',
+}
 export const iconSizes = {
+  xxs: 16,
   xs: 16,
   sm: 16,
   md: 16,
