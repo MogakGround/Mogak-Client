@@ -4,6 +4,7 @@ import Image from 'next/image'
 import BasicButton from '@/components/global/button/BasicButton'
 import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
 import { useEffect, useState } from 'react'
+import cn from '@/utils/cn'
 
 interface ProfileSettingModalProps {
   nickname: string
@@ -89,10 +90,10 @@ export default function ProfileSettingModal({
           />
           {/* 버튼 */}
           <button
-            className={`rounded-[8px] ${!isChecked ? 'bg-grayscale-50' : 'bg-grayscale-600'}`}
+            className={cn('rounded-[8px]', !isChecked ? 'bg-grayscale-50' : 'bg-grayscale-600')}
             onClick={() => handleCheckNickname(newNickname)}
           >
-            <p className={`semi-16 px-[17px] py-[12px] ${!isChecked ? 'text-grayscale-800' : 'text-grayscale-400'}`}>
+            <p className={cn('semi-16 px-[17px] py-[12px]', !isChecked ? 'text-grayscale-800' : 'text-grayscale-400')}>
               중복확인
             </p>
           </button>

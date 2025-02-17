@@ -4,6 +4,7 @@ import Image from 'next/image'
 import top1Icon from '@/assets/svg/mypage/1st.svg'
 import top2Icon from '@/assets/svg/mypage/2nd.svg'
 import top3Icon from '@/assets/svg/mypage/3rd.svg'
+import cn from '@/utils/cn'
 
 export default function TodayBlock({
   isRank,
@@ -22,7 +23,10 @@ export default function TodayBlock({
 }) {
   return (
     <div
-      className={`flex relative bg-gray-900 border-gray-700 border-[1.5px] rounded-[12px] p-[20px] w-[307px] h-[122px] ${!data2 && 'justify-between'}`}
+      className={cn(
+        'flex relative bg-gray-900 border-gray-700 border-[1.5px] rounded-[12px] p-[20px] w-[307px] h-[122px]',
+        !data2 && 'justify-between'
+      )}
     >
       <div className="flex-row">
         <div className="flex items-center mb-[17px]">
@@ -46,12 +50,22 @@ export default function TodayBlock({
 
           <>
             <p
-              className={`font-RiaSans text-[24px] text-extrabold ${!isRank ? 'text-white' : data3 === '1' || '2' || '3' ? 'text-accent-100 ' : 'text-white '}`}
+              className={cn(
+                'font-RiaSans text-[24px] text-extrabold',
+                !isRank ? 'text-white' : data3 === '1' || '2' || '3' ? 'text-accent-100 ' : 'text-white '
+              )}
             >
               {data3}
             </p>
             <p
-              className={`reg-20 ml-[8px] mr-[20px] ${!isRank ? 'text-grayscale-200' : data3 === '1' || '2' || '3' ? 'text-accent-100 ' : 'text-grayscale-200 '}`}
+              className={cn(
+                'reg-20 ml-[8px] mr-[20px]',
+                !isRank
+                  ? 'text-grayscale-200'
+                  : data3 === '1' || '2' || '3'
+                    ? 'text-accent-100 '
+                    : 'text-grayscale-200 '
+              )}
             >
               {!isRank ? '초' : '위'}
             </p>
