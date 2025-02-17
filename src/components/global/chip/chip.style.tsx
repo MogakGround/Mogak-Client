@@ -80,22 +80,22 @@ export const iconChipSizeStyles = {
 export const chipTextFont = (size: ChipSize) => {
   switch (size) {
     case ChipSize.sm:
-      return 'font-medium text-[12pt] '
+      return 'med-12'
     case ChipSize.md:
-      return 'font-semibold text-[14pt] '
+      return 'semi-14'
     case ChipSize.lg:
-      return 'font-semibold text-[16pt] '
+      return 'semi-16'
   }
 }
 
 export const chipDetailTextFont = (size: ChipSize) => {
   switch (size) {
     case ChipSize.sm:
-      return 'font-regular text-[10pt] '
+      return 'reg-10'
     case ChipSize.md:
-      return 'font-regular text-[12pt] '
+      return 'reg-12'
     case ChipSize.lg:
-      return 'font-regular text-[12pt] '
+      return 'reg-12'
   }
 }
 
