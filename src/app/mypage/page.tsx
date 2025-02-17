@@ -12,6 +12,7 @@ import { ButtonSize, ButtonTheme, ButtonVariant, IconArrow } from '@/components/
 import IconTextButton from '@/components/global/button/IconTextButton'
 import MogakRoom, { MogakRoomProps } from '@/components/app/home/MogakRoom'
 import Pagenation from '@/components/global/pagenation/Pagenation'
+import TodayBlock from '@/components/app/mypage/TodayBlock'
 
 ////////////////////////////////////////////////////
 // 임시
@@ -243,29 +244,11 @@ export default function MyPage() {
 
         <div className="flex ">
           {/* 누적 시간 블록 */}
-          <div className="flex-row bg-gray-900 border-gray-700 border-[1.5px] rounded-[12px] p-[20px] w-[307px]">
-            <div className="flex items-center mb-[17px]">
-              <Image src={TimeIcon} alt="time" className="w-[24px] h-[24px]" />
-              <p className="text-grayscale-300 semi-16 ml-[8px]">오늘의 누적 작업시간</p>
-            </div>
-            <div className="flex items-center">
-              <p className="font-RiaSans text-white text-[24px] text-extrabold">{workHours}</p>
-              <p className="text-grayscale-200 reg-20 ml-[8px] mr-[20px]">분</p>
-              <p className="font-RiaSans text-white text-[24px] text-extrabold">{workSeconds}</p>
-              <p className="text-grayscale-200 reg-20 ml-[8px]">초</p>
-            </div>
-          </div>
+          <TodayBlock title="오늘의 누적 작업시간" icon={TimeIcon} data1={workHours} data2={workSeconds} />
 
           {/* 랭킹 블록 */}
-          <div className="bg-gray-900 border-gray-700 border-[1.5px] rounded-[12px] p-[20px] ml-[16px] w-[307px]">
-            <div className="flex items-center mb-[17px]">
-              <Image src={RankBarIcon} alt="time" className="w-[24px] h-[24px]" />
-              <p className="text-grayscale-300 semi-16 ml-[8px]">오늘의 작업자 랭킹</p>
-            </div>
-            <div className="flex items-center">
-              <p className="font-RiaSans text-white text-[24px] text-extrabold">{rank}</p>
-              <p className="text-grayscale-200 reg-20 ml-[8px] mr-[20px]">위</p>
-            </div>
+          <div className="ml-[16px]">
+            <TodayBlock title="오늘의 작업자 랭킹" icon={RankBarIcon} data1={rank} />
           </div>
         </div>
       </div>
