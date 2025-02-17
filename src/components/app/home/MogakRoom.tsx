@@ -12,6 +12,7 @@ import MoonIconChip from '@/components/global/chip/MoonIconChip'
 import HeadcountIconTextButton from '@/components/global/button/HeadcountIconTextButton'
 import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
 import IconButton from '@/components/global/button/IconButton'
+import cn from '@/utils/cn'
 
 export interface MogakRoomProps {
   index: number
@@ -47,7 +48,10 @@ export default function MogakRoom({
   return (
     <div>
       <div
-        className={`relative w-[305px] h-[160px] rounded-[10px] ${hover ? 'border-[1.5px] border-accentT-40 shadow-accentT60-25' : ''}`}
+        className={cn(
+          'relative w-[305px] h-[160px] rounded-[10px] ',
+          hover && 'border-[1.5px] border-accentT-40 shadow-accentT60-25'
+        )}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         onClick={onClick}
@@ -78,7 +82,7 @@ export default function MogakRoom({
         <Image src={thumbnailImageSrc} alt="thumbnail" className="w-[305px] h-[160px]" />
       </div>
       <div className="mx-[8px] mt-[16px]">
-        <p className={`semi-16 ${hover ? 'text-accent-100' : 'text-white'}`}>{title}</p>
+        <p className={cn('semi-16', hover ? 'text-accent-100' : 'text-white')}>{title}</p>
         <p className="reg-14 text-grayscale-400">{description}</p>
         <div className="flex mt-[16px] gap-[4px] ">
           {sunup && (
