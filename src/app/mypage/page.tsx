@@ -13,6 +13,7 @@ import IconTextButton from '@/components/global/button/IconTextButton'
 import MogakRoom, { MogakRoomProps } from '@/components/app/home/MogakRoom'
 import Pagenation from '@/components/global/pagenation/Pagenation'
 import TodayBlock from '@/components/app/mypage/TodayBlock'
+import ProfileSettingButton from '@/components/app/mypage/ProfileSettingButton'
 
 ////////////////////////////////////////////////////
 // 임시
