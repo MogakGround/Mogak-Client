@@ -55,10 +55,13 @@ export interface MoonIconTextChipProps extends TextChipProps {
   iconArrow: IconArrow
 }
 
-export interface IconTextChipProps extends MoonIconTextChipProps {
+export interface IconTextChipProps extends TextChipProps {
   iconArrow: IconArrow
   iconImageSrc: string
 }
 
 // 아이콘 칩
 export interface MoonIconChipProps extends ChipProps {}
+export interface IconChipProps extends ChipProps {
+  iconImageSrc: string
+}
