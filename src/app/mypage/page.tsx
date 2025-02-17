@@ -41,6 +41,7 @@ export default function MyPage() {
             iconSrc={LinkAccentLgIcon}
             iconArrow={IconArrow.left}
             text="https://link"
+            link={true}
             handleClick={() => null}
           />
         </div>

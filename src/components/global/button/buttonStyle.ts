@@ -36,6 +36,15 @@ export const textButtonSizes = {
   xl: 'py-[12px] px-[20px] semi-16',
   xxl: 'py-[14px] px-[20px] semi-16',
 }
+export const linkButtonSizes = {
+  xxs: '',
+  xs: '',
+  sm: '',
+  md: '',
+  lg: 'py-[11px] px-[16px] reg-14 underline',
+  xl: '',
+  xxl: '',
+}
 export const iconButtonSizes = {
   xxs: 'p-[6px] h-[28px]',
   xs: 'p-[8px] h-[30px]',

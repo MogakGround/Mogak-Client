@@ -1,5 +1,11 @@
 import { IconTextButtonProps } from '@/components/global/button/button.types'
-import { baseButton, textButtonSizes, buttonStyles, iconSizes } from '@/components/global/button/buttonStyle'
+import {
+  baseButton,
+  textButtonSizes,
+  buttonStyles,
+  iconSizes,
+  linkButtonSizes,
+} from '@/components/global/button/buttonStyle'
 import Image from 'next/image'
 
 export default function IconTextButton({
@@ -13,6 +19,7 @@ export default function IconTextButton({
   iconArrow,
   fullWidth = false,
   type = 'button',
+  link = false,
 }: IconTextButtonProps) {
   const iconSize = size && iconSizes[size]
 
@@ -20,7 +27,7 @@ export default function IconTextButton({
     <button
       className={`
         ${baseButton}
-        ${textButtonSizes[size]}
+        ${link ? linkButtonSizes[size] : textButtonSizes[size]}
         ${buttonStyles[theme][variant]}
         ${fullWidth ? 'w-full' : ''}
         ${disabled ? '!bg-grayscale-600 !text-grayscale-400 cursor-not-allowed' : ''}

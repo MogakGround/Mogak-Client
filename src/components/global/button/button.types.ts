@@ -40,6 +40,7 @@ export interface ArrowIconTextButtonProps extends IBasicButtonProps {
 export interface IconTextButtonProps extends IBasicButtonProps {
   iconSrc: string
   iconArrow: IconArrow
+  link?: boolean
 }
 export interface IconButtonProps extends IButtonProps {
   iconSrc: string
