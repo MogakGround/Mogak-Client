@@ -12,18 +12,23 @@ import { toggleBaseStyle, toggleBackgroundStyles, toggleTextStyle } from '@/comp
   textr="Off" 
 />
  */
-const TextToggle = ({theme, isOn, onToggle, textl, textr}: TextToggleProps) => {
-    
-    return (
-        <div className={`${toggleBaseStyle} ${toggleBackgroundStyles[theme]}`}>
-            <div onClick={onToggle} className={`text-[14pt] font-medium rounded-[40px] px-[17px] py-[2px] cursor-pointer ${toggleTextStyle(theme, isOn)}`}>
-                {textl}
-            </div>
-            <div onClick={onToggle} className={`text-[14pt] font-medium rounded-[40px] px-[17px] py-[2px] cursor-pointer ${toggleTextStyle(theme, !isOn)}`}>
-                {textr}
-            </div>
-        </div>
-    );
+const TextToggle = ({ theme, isOn, onToggle, textl, textr }: TextToggleProps) => {
+  return (
+    <div className={`${toggleBaseStyle} ${toggleBackgroundStyles[theme]}`}>
+      <div
+        onClick={onToggle}
+        className={`med-14 rounded-[40px] px-[17px] py-[2px] cursor-pointer ${toggleTextStyle(theme, isOn)}`}
+      >
+        {textl}
+      </div>
+      <div
+        onClick={onToggle}
+        className={`med-14 rounded-[40px] px-[17px] py-[2px] cursor-pointer ${toggleTextStyle(theme, !isOn)}`}
+      >
+        {textr}
+      </div>
+    </div>
+  )
 }
 
-export default TextToggle;
+export default TextToggle

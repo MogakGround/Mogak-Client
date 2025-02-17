@@ -2,10 +2,10 @@
 import { useEffect, useState } from 'react'
 
 import { ToastSize, ToastTheme } from '@/components/global/toast/toast.types'
+import ImageBackgroundLayout from '@/components/global/layout/ImageBackgroundLayout'
 import useModal from '@/components/global/modal/hooks/useModal'
 import SignUpModal from '@/components/auth/SignUpModal'
 import IconToast from '@/components/global/toast/IconToast'
-import AuthLayout from '@/components/auth/AuthLayout'
 
 export default function SignUpPage() {
   const { isOpen, handleOpenModal, handleCloseModal } = useModal()
@@ -27,7 +27,7 @@ export default function SignUpPage() {
   }
 
   return (
-    <AuthLayout isSignUp={isSignUp}>
+    <ImageBackgroundLayout isSignUp={isSignUp}>
       <SignUpModal
         isOpen={isOpen}
         handleCloseModal={handleCloseModal}
@@ -43,6 +43,6 @@ export default function SignUpPage() {
           handleClick={() => setIsToastShow(false)}
         />
       )}
-    </AuthLayout>
+    </ImageBackgroundLayout>
   )
 }

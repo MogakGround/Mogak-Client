@@ -9,6 +9,7 @@ export interface ITextField {
 }
 
 export interface ITextFieldProps extends ITextField {
+  name: string
   placeholder: string
   handleChange: (e: ChangeEvent<HTMLTextAreaElement>) => void
 }
