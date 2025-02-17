@@ -20,6 +20,7 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: { ria: ['RiaSans', 'pretendard'] },
       colors: {
         bg: '#060812',
         white: '#FFFFFF',

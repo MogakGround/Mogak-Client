@@ -4,7 +4,7 @@ type ToggleStyles = {
   [key in ToggleTheme]: string
 }
 
-export const toggleBaseStyle = 'inline-flex items-center justify-center text-center p-[4px] rounded-[40px] '
+export const toggleBaseStyle = 'inline-flex items-center justify-center text-center p-4 rounded-[40px] '
 
 export const toggleBackgroundStyles: ToggleStyles = {
   [ToggleTheme.LIGHT]: 'bg-grayscale-700',

@@ -1,5 +1,12 @@
 import { TextChipProps } from '@/components/global/chip/chip.types'
-import { chipBaseStyle, chipBackgroundStyles, chipTextStyles, chipTextFont, chipDetailTextFont, textChipSizeStyles } from '@/components/global/chip/chip.style'
+import {
+  chipBaseStyle,
+  chipBackgroundStyles,
+  chipTextStyles,
+  chipTextFont,
+  chipDetailTextFont,
+  textChipSizeStyles,
+} from '@/components/global/chip/chip.style'
 
 /**
  * 사용 예시
@@ -13,19 +20,18 @@ import { chipBaseStyle, chipBackgroundStyles, chipTextStyles, chipTextFont, chip
   handleClick={chipEvent}
 />
  */
-const TextChip = ({variant, theme, size, text, detailText, handleClick}: TextChipProps) => {
-    return (
-        <div className={`${chipBaseStyle} ${chipBackgroundStyles[theme][variant]} ${textChipSizeStyles[size]}`} onClick={handleClick}>
-            <div className={`${chipTextStyles[theme][variant]} ${chipTextFont(size)} ${detailText ? '' : 'mr-2'}`}>
-                {text}
-            </div>
-            {detailText && (
-                <div className={`${chipDetailTextFont(size)} text-grayscale-400`}>
-                {detailText}
-                </div>
-            )}
-        </div>
-    );
+const TextChip = ({ variant, theme, size, text, detailText, handleClick }: TextChipProps) => {
+  return (
+    <div
+      className={`${chipBaseStyle} ${chipBackgroundStyles[theme][variant]} ${textChipSizeStyles[size]}`}
+      onClick={handleClick}
+    >
+      <div className={`${chipTextStyles[theme][variant]} ${chipTextFont(size)} ${detailText ? '' : 'mr-2'}`}>
+        {text}
+      </div>
+      {detailText && <div className={`${chipDetailTextFont(size)} text-grayscale-400`}>{detailText}</div>}
+    </div>
+  )
 }
 
-export default TextChip;
+export default TextChip

@@ -1,16 +1,15 @@
 import { ChipVariant, ChipTheme, ChipSize } from '@/components/global/chip/chip.types'
 
-import Image from 'next/image';
-import MoonGraySIcon from "@/assets/svg/moon-gray-s.svg"
-import MoonGrayMIcon from "@/assets/svg/moon-gray-m.svg"
-import MoonGrayLIcon from "@/assets/svg/moon-gray-l.svg"
-import MoonPrimarySIcon from "@/assets/svg/moon-primary-s.svg"
-import MoonPrimaryMIcon from "@/assets/svg/moon-primary-m.svg"
-import MoonPrimaryLIcon from "@/assets/svg/moon-primary-l.svg"
-import MoonAccentSIcon from "@/assets/svg/moon-accent-s.svg"
-import MoonAccentMIcon from "@/assets/svg/moon-accent-m.svg"
-import MoonAccentLIcon from "@/assets/svg/moon-accent-l.svg"
-
+import Image from 'next/image'
+import MoonGraySIcon from '@/assets/svg/moon-gray-s.svg'
+import MoonGrayMIcon from '@/assets/svg/moon-gray-m.svg'
+import MoonGrayLIcon from '@/assets/svg/moon-gray-l.svg'
+import MoonPrimarySIcon from '@/assets/svg/moon-primary-s.svg'
+import MoonPrimaryMIcon from '@/assets/svg/moon-primary-m.svg'
+import MoonPrimaryLIcon from '@/assets/svg/moon-primary-l.svg'
+import MoonAccentSIcon from '@/assets/svg/moon-accent-s.svg'
+import MoonAccentMIcon from '@/assets/svg/moon-accent-m.svg'
+import MoonAccentLIcon from '@/assets/svg/moon-accent-l.svg'
 
 type ChipStyles = {
   [key in ChipTheme]: {
@@ -18,8 +17,7 @@ type ChipStyles = {
   }
 }
 
-
-export const chipBaseStyle = 'inline-flex items-center justify-center text-center rounded-[4px] ';
+export const chipBaseStyle = 'inline-flex items-center justify-center text-center rounded-[4px] '
 
 export const chipBackgroundStyles: ChipStyles = {
   [ChipTheme.LIGHT]: {
@@ -68,40 +66,38 @@ export const chipTextStyles: ChipStyles = {
 }
 
 export const textChipSizeStyles = {
-  [ChipSize.sm]: 'h-[30px] px-3 py-[5px] ',
-  [ChipSize.md]: 'h-[38px] px-3 py-[5px] ',
-  [ChipSize.lg]: 'h-[44px] px-3 py-[5px] ',
-};
+  [ChipSize.sm]: 'h-[30px] px-12 py-[5px] ',
+  [ChipSize.md]: 'h-[38px] px-12 py-[5px] ',
+  [ChipSize.lg]: 'h-[44px] px-12 py-[5px] ',
+}
 
 export const iconChipSizeStyles = {
   [ChipSize.sm]: 'h-[30px] p-[5px]',
   [ChipSize.md]: 'h-[38px] p-[8px]',
   [ChipSize.lg]: 'h-[44px] p-[10px]',
-};
-
+}
 
 export const chipTextFont = (size: ChipSize) => {
-    switch(size) {
-        case ChipSize.sm:
-            return "font-medium text-[12pt] "
-        case ChipSize.md:
-            return "font-semibold text-[14pt] "
-        case ChipSize.lg:
-            return "font-semibold text-[16pt] "
-    }
+  switch (size) {
+    case ChipSize.sm:
+      return 'font-medium text-[12px] '
+    case ChipSize.md:
+      return 'font-semibold text-[14px] '
+    case ChipSize.lg:
+      return 'font-semibold text-[16px] '
+  }
 }
 
 export const chipDetailTextFont = (size: ChipSize) => {
-    switch(size) {
-        case ChipSize.sm:
-            return "font-regular text-[10pt] "
-        case ChipSize.md:
-            return "font-regular text-[12pt] "
-        case ChipSize.lg:
-            return "font-regular text-[12pt] "
-    }
+  switch (size) {
+    case ChipSize.sm:
+      return 'font-regular text-[10px] '
+    case ChipSize.md:
+      return 'font-regular text-[12px] '
+    case ChipSize.lg:
+      return 'font-regular text-[12px] '
+  }
 }
-
 
 const chipMoonIconStyles = {
   [ChipTheme.LIGHT]: {
@@ -124,19 +120,21 @@ const chipMoonIconStyles = {
     [ChipSize.md]: MoonAccentMIcon,
     [ChipSize.lg]: MoonAccentLIcon,
   },
-};
+}
 
 export const chipMoonIcon = (theme: ChipTheme, size: ChipSize) => {
-  const iconSrc = chipMoonIconStyles[theme]?.[size];
+  const iconSrc = chipMoonIconStyles[theme]?.[size]
 
   if (!iconSrc) {
-    return null;
+    return null
   }
 
-  const altText = `${theme} ${size} moon icon`;
+  const altText = `${theme} ${size} moon icon`
 
-  return <Image src={iconSrc} alt={altText} width={size === ChipSize.lg ? 20 : 16} height={size === ChipSize.lg ? 20 : 16} />;
-};
+  return (
+    <Image src={iconSrc} alt={altText} width={size === ChipSize.lg ? 20 : 16} height={size === ChipSize.lg ? 20 : 16} />
+  )
+}
 
 /*
 export const chipMoonIcon = (size: ChipSize, color: ChipTheme) => {

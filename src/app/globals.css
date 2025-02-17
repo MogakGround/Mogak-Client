@@ -4,7 +4,22 @@
 
 html,
 body {
-  height: 100vh;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+@font-face {
+  font-family: 'RiaSans';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/RiaSans-ExtraBold.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@layer base {
+  body {
+    @apply bg-bg;
+    @apply text-white;
+  }
 }
 
 @layer utilities {

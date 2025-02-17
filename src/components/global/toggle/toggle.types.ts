@@ -16,10 +16,13 @@ interface ToggleProps {
   theme: ToggleTheme
 
   // 초기 상태
-  isOn: boolean;
+  isOn: boolean
 
   // 토글 이벤트
   onToggle: () => void
+
+  //각 토글 className
+  className?: string
 }
 
 // 텍스트 토글
