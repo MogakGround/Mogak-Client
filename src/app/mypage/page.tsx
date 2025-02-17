@@ -169,9 +169,10 @@ export default function MyPage() {
   const [profileIcon, setProfileIcon] = useState<string>('')
   const [nickname, setNickname] = useState<string>('임시닉네임 인애')
   const [profileLink, setProfileLink] = useState<string>('https://github.com/inaemon')
-  const [workHours, setWorkHours] = useState<string>('25')
+  const [workHours, setWorkHours] = useState<string>('16')
+  const [workMinutes, setWorkMinutes] = useState<string>('25')
   const [workSeconds, setWorkSeconds] = useState<string>('41')
-  const [rank, setRank] = useState<string>('26')
+  const [rank, setRank] = useState<string>('1')
   const [isSetting, setSettting] = useState<boolean>(false)
 
   // 모각방 탭 핸들링
@@ -259,11 +260,18 @@ export default function MyPage() {
 
         <div className="flex ">
           {/* 누적 시간 블록 */}
-          <TodayBlock title="오늘의 누적 작업시간" icon={TimeIcon} data1={workHours} data2={workSeconds} />
+          <TodayBlock
+            title="오늘의 누적 작업시간"
+            isRank={false}
+            icon={TimeIcon}
+            data1={workHours}
+            data2={workMinutes}
+            data3={workSeconds}
+          />
 
           {/* 랭킹 블록 */}
           <div className="ml-[16px]">
-            <TodayBlock title="오늘의 작업자 랭킹" icon={RankBarIcon} data1={rank} />
+            <TodayBlock title="오늘의 작업자 랭킹" isRank={true} icon={RankBarIcon} data3={rank} />
           </div>
         </div>
       </div>
