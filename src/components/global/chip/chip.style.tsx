@@ -72,9 +72,9 @@ export const textChipSizeStyles = {
 }
 
 export const iconChipSizeStyles = {
-  [ChipSize.sm]: 'h-[30px] p-[5px]',
-  [ChipSize.md]: 'h-[38px] p-[8px]',
-  [ChipSize.lg]: 'h-[44px] p-[10px]',
+  [ChipSize.sm]: 'w-[26px] h-[26px] p-[5px]',
+  [ChipSize.md]: 'w-[32px] h-[32px] p-[8px]',
+  [ChipSize.lg]: 'w-[40px] h-[40px] p-[10px]',
 }
 
 export const chipTextFont = (size: ChipSize) => {

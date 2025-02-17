@@ -23,7 +23,6 @@ const IconChip = ({ variant, theme, size, iconImageSrc, handleClick }: IconChipP
       className={`${chipBaseStyle} ${chipBackgroundStyles[theme][variant]} ${iconChipSizeStyles[size]}`}
       onClick={handleClick}
     >
-      {chipMoonIcon(theme, size)}
       <Image
         src={iconImageSrc}
         alt="icon"
