@@ -2,12 +2,8 @@
 
 import { useState } from 'react'
 
-interface IModalHookProps {
-  initialIsOpen?: boolean
-}
-
-export default function useModal({ initialIsOpen = false }: IModalHookProps = {}) {
-  const [isOpen, setIsOpen] = useState(initialIsOpen)
+export default function useModal() {
+  const [isOpen, setIsOpen] = useState(false)
 
   const handleOpenModal = () => setIsOpen(true)
   const handleCloseModal = () => setIsOpen(false)

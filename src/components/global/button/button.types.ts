@@ -42,3 +42,11 @@ export interface IconTextButtonProps extends IBasicButtonProps {
   iconSrc?: string
   iconWidth?: number
 }
+
+export interface IRoundedSquareButtonProps {
+  text: string
+  handleClick: () => void
+  disabled?: boolean
+  fullWidth?: boolean
+  type?: 'button' | 'submit' | 'reset'
+}

@@ -3,7 +3,14 @@ import { getLenthStyles, getStatusStyles } from './textFieldStyles'
 import { ITextFieldProps } from './textFiled.types'
 import useTextField from './useTextField'
 
-export default function TextField({ placeholder, value, disabled = false, maxLength, handleChange }: ITextFieldProps) {
+export default function TextField({
+  placeholder,
+  name,
+  value,
+  disabled = false,
+  maxLength,
+  handleChange,
+}: ITextFieldProps) {
   const { text, status, isFocused, handleStatusChange, handleFocus, handleBlur } = useTextField({
     value,
     maxLength,
@@ -18,11 +25,12 @@ export default function TextField({ placeholder, value, disabled = false, maxLen
 
   return (
     <div
-      className={`w-full flex flex-col gap-[8px] rounded-lg border-[1.5px] px-[16px] py-[12px] reg-16
+      className={`w-full h-full flex flex-col gap-[8px] rounded-lg border-[1.5px] px-[16px] py-[12px] reg-16 placeholder:whitespace-pre-line"
       ${isFocused ? 'border-accentT-30' : ''}
       ${getStatusStyles(status)}`}
     >
       <textarea
+        name={name}
         value={text}
         placeholder={placeholder}
         onChange={handleInputChange}

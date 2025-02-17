@@ -13,13 +13,14 @@ import cn from '@/utils/cn'
   textr="Off" 
 />
  */
+
 const TextToggle = ({ theme, isOn, onToggle, textl, textr, className }: TextToggleProps) => {
   return (
     <div className={`${toggleBaseStyle} ${toggleBackgroundStyles[theme]}`}>
       <div
         onClick={onToggle}
         className={cn(
-          'text-[14px] font-medium rounded-[40px] px-[17px] py-[2px] cursor-pointer',
+          'med-14 rounded-[40px] px-[17px] py-[2px] cursor-pointer',
           className,
           toggleTextStyle(theme, isOn)
         )}
@@ -29,7 +30,7 @@ const TextToggle = ({ theme, isOn, onToggle, textl, textr, className }: TextTogg
       <div
         onClick={onToggle}
         className={cn(
-          'text-[14px] font-medium rounded-[40px] px-[17px] py-[2px] cursor-pointer',
+          'med-14 rounded-[40px] px-[17px] py-[2px] cursor-pointer',
           className,
           toggleTextStyle(theme, !isOn)
         )}
