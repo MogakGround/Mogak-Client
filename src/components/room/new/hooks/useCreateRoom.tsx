@@ -8,7 +8,7 @@ export interface IRoomNewFormProps {
   setRoomNewForm: (roomNewForm: IRoomNewForm) => void
 }
 
-export type RoomNewStatus = 'step1' | 'step2' | 'step3'
+export type RoomNewStatus = 'step1' | 'step2' | 'step3' | 'complete'
 export interface IRoomNewForm {
   name: string
   description: string

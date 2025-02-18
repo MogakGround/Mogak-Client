@@ -4,8 +4,23 @@
 
 html,
 body {
-  height: 100vh;
-  font-family: var(--font-pretendard);
+  min-height: 100vh;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+@font-face {
+  font-family: 'RiaSans';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/RiaSans-ExtraBold.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@layer base {
+  body {
+    @apply bg-bg;
+    @apply text-white;
+  }
 }
 
 /* 스크롤바 배경 없애기 */

@@ -8,7 +8,7 @@ type ButtonStyles = {
   [key in ButtonTheme]: IButtonStyle
 }
 
-export const baseButton = 'inline-flex items-center justify-center rounded-[40px] gap-[6px]'
+export const baseButton = 'inline-flex h-fit items-center justify-center rounded-[40px] gap-[6px]'
 export const buttonStyles: ButtonStyles = {
   [ButtonTheme.text]: {
     default: 'bg-transparent text-grayscale-50',

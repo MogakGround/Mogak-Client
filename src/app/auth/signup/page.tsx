@@ -37,7 +37,7 @@ export default function SignUpPage() {
       {isToastShow && (
         <IconToast
           theme={ToastTheme.LIGHT}
-          size={ToastSize.lg}
+          size={ToastSize.md}
           text=""
           detailText={toastMsg}
           handleClick={() => setIsToastShow(false)}
