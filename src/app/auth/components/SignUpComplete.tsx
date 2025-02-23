@@ -16,6 +16,7 @@ export default function SignUpComplete() {
           height={120}
           title="모각방을 직접 만들래요"
           description="직접 모각방장이 되어 빠르게 모각작을 시작할 수 있어요"
+          link="/room/new"
         />
         <SignUpCompleteOption
           icon={IllustSearchIcon}
@@ -23,6 +24,7 @@ export default function SignUpComplete() {
           height={118}
           title="일단 둘러볼게요!"
           description="바로 홈으로 이동하여 둘러볼 수 있어요"
+          link="/"
         />
       </div>
       <div className="flex flex-col bg-grayscale-800 rounded-lg">
