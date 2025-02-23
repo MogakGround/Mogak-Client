@@ -39,7 +39,9 @@ export interface AutoDisappearTextToastProps extends TextToastProps {
 }
 
 // 아이콘 토스트
-export interface IconToastProps extends TextToastProps {}
+export interface IconToastProps extends TextToastProps {
+  success?: boolean
+}
 
 // 아이콘 토스트
 export interface AutoDisappearIconToastProps extends IconToastProps {

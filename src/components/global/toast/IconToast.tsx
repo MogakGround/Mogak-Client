@@ -1,4 +1,5 @@
 import { IconToastProps } from '@/components/global/toast/toast.types'
+import Image from 'next/image'
 import {
   iconToastBaseStyle,
   toastBackgroundStyles,
@@ -7,7 +8,7 @@ import {
   toastDetailTextFont,
   toastXIcon,
 } from '@/components/global/toast/toast.style'
-
+import GoodIcon from '@/assets/svg/good-accent.svg'
 /**
  * 사용 예시
  * 🚨주의: 텍스트를 ""가 아닌 {``} 백틱으로 전달해야 whitespace-pre-wrap가 먹힘
@@ -20,7 +21,7 @@ import {
   handleClick={toastEvent}
 />
  */
-const IconToast = ({ theme, size, text, detailText, handleClick }: IconToastProps) => {
+const IconToast = ({ theme, size, text, detailText, success = false, handleClick }: IconToastProps) => {
   return (
     <div
       className={`
@@ -29,7 +30,9 @@ const IconToast = ({ theme, size, text, detailText, handleClick }: IconToastProp
       onClick={handleClick}
     >
       {/* 아이콘 */}
-      <div className="mr-3">{toastXIcon(theme, size)}</div>
+      <div className="mr-[12px]">
+        {success ? <Image src={GoodIcon} width={20} height={20} alt="success" /> : toastXIcon(theme, size)}
+      </div>
 
       {/* 텍스트 */}
       <div className={`${detailText ? '' : 'inline-flex '}`}>
