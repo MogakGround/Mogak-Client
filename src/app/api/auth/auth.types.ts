@@ -1,5 +1,5 @@
 export interface PostAuthLoginRequest {
-  code: string
+  kakaoCode: string
 }
 
 interface PostAuthLoginResponseData {

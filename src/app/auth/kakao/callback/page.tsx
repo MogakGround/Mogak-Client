@@ -14,7 +14,7 @@ export default function KakaoCallbackPage() {
     const handleKakaoLogin = async () => {
       if (kakaoCode) {
         try {
-          const res = await postAuthLogin({ code: kakaoCode })
+          const res = await postAuthLogin({ kakaoCode })
 
           if (res.code === 200) {
             localStorage.setItem('accessToken', res.data.accessToken)
