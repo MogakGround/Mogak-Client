@@ -3,7 +3,6 @@
 import { useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { postAuthLogin } from '@/app/api/auth/api'
-import { AxiosError } from 'axios'
 
 export default function KakaoCallbackPage() {
   const router = useRouter()
@@ -16,19 +15,15 @@ export default function KakaoCallbackPage() {
         try {
           const res = await postAuthLogin({ kakaoCode })
 
-          if (res.code === 200) {
+          if (res.data.status === 'success') {
             localStorage.setItem('accessToken', res.data.accessToken)
             localStorage.setItem('refreshToken', res.data.refreshToken)
             router.push('/')
+          } else {
+            router.push(`/auth/signup?kakaoId=${res.data.kakaoId}`)
           }
         } catch (error) {
-          if (error instanceof AxiosError) {
-            if (error.response?.status === 404) {
-              router.push(`/auth/signup?code=${kakaoCode}`)
-            } else {
-              console.error(error)
-            }
-          }
+          console.error(error)
         }
       }
     }

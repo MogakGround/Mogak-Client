@@ -27,12 +27,12 @@ export default function SignUpModal({ isOpen, handleCloseModal, handleSignUpChan
   const [isSignUpComplete, setIsSignUpComplete] = useState(false)
 
   const searchParams = useSearchParams()
-  const kakaoCode = searchParams.get('code')
+  const kakaoId = searchParams.get('kakaoId')
 
   const handleSignUpComplete = async () => {
     try {
       await postAuthSignUp({
-        kakaoCode: kakaoCode ?? '',
+        kakaoId: kakaoId ?? '',
         nickName: signUpForm.nickname,
         portfolioUrl: signUpForm.portfolioLink,
       })

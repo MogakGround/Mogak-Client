@@ -3,8 +3,8 @@ export interface PostAuthLoginRequest {
 }
 
 interface PostAuthLoginResponseData {
-  userId: number
-  isNewUser: boolean
+  kakaoId?: number
+  status: 'success' | 'fail'
   accessToken: string
   refreshToken: string
 }
@@ -15,7 +15,7 @@ export interface PostAuthLoginResponse {
 }
 
 export interface PostAuthSignUpRequest {
-  kakaoCode: string
+  kakaoId: string
   nickName: string
   portfolioUrl: string
 }

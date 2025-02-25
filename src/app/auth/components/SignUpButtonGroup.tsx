@@ -4,13 +4,13 @@ import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/butt
 
 interface ISignUpButtonGroupProps {
   isNicknameChecked: boolean
-  handleSignUpComplete: (kakaoCode: string) => void
+  handleSignUpComplete: (kakaoId: string) => void
 }
 
 export default function SignUpButtonGroup({ isNicknameChecked, handleSignUpComplete }: ISignUpButtonGroupProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const kakaoCode = searchParams.get('code')
+  const kakaoId = searchParams.get('kakaoId')
 
   const handleSignInClick = () => {
     router.push('/auth/signin')
@@ -33,7 +33,7 @@ export default function SignUpButtonGroup({ isNicknameChecked, handleSignUpCompl
           disabled={!isNicknameChecked}
           fullWidth={true}
           text="가입 완료하기"
-          handleClick={() => handleSignUpComplete(kakaoCode ?? '')}
+          handleClick={() => handleSignUpComplete(kakaoId ?? '')}
         />
       </div>
     </div>
