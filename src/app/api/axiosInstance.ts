@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios'
+import { useAuthStore } from '@/store/authStore'
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -10,10 +11,11 @@ const axiosInstance: AxiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-    const token = localStorage.getItem('accessToken')
+    const { accessToken } = useAuthStore.getState()
+
     config.headers = config.headers || {}
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`
     }
     return config as InternalAxiosRequestConfig
   },

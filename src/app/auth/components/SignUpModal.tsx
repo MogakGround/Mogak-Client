@@ -2,6 +2,7 @@
 import { ChangeEvent, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { postAuthSignUp } from '@/app/api/auth/api'
+import { useAuthStore } from '@/store/authStore'
 
 import { ToastSize, ToastTheme } from '@/components/global/toast/toast.types'
 import useToast from '@/components/global/toast/hooks/useToast'
@@ -23,6 +24,7 @@ export interface IFormInputProps {
 
 export default function SignUpModal({ isOpen, handleCloseModal, handleSignUpChange }: SignUpModalProps) {
   const { isToastShow, toastMessage, handleShowIconToast, handleCloseToast, handleResetToast } = useToast()
+  const { setAccessToken, setRefreshToken } = useAuthStore()
   const [signUpForm, setSignUpForm] = useState({ nickname: '', portfolioLink: '' })
   const [isSignUpComplete, setIsSignUpComplete] = useState(false)
 
@@ -38,8 +40,8 @@ export default function SignUpModal({ isOpen, handleCloseModal, handleSignUpChan
       })
 
       if (res.data.accessToken && res.data.refreshToken) {
-        localStorage.setItem('accessToken', res.data.accessToken)
-        localStorage.setItem('refreshToken', res.data.refreshToken)
+        setAccessToken(res.data.accessToken)
+        setRefreshToken(res.data.refreshToken)
       }
     } catch (error) {
       console.error(error)
