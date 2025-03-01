@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { postAuthLogin } from '@/app/api/auth/api'
 import { useAuthStore } from '@/store/authStore'
@@ -10,7 +10,11 @@ export default function KakaoCallbackPage() {
 
   const router = useRouter()
   const searchParams = useSearchParams()
-  const kakaoCode = searchParams.get('code')
+  const [kakaoCode, setKakaoCode] = useState<string | null>(null)
+
+  useEffect(() => {
+    setKakaoCode(searchParams.get('code'))
+  }, [searchParams])
 
   useEffect(() => {
     const handleKakaoLogin = async () => {

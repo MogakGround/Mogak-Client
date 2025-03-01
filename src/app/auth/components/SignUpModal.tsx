@@ -1,5 +1,5 @@
 'use client'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { postAuthSignUp } from '@/app/api/auth/api'
 import { useAuthStore } from '@/store/authStore'
@@ -29,7 +29,11 @@ export default function SignUpModal({ isOpen, handleCloseModal, handleSignUpChan
   const [isSignUpComplete, setIsSignUpComplete] = useState(false)
 
   const searchParams = useSearchParams()
-  const kakaoId = searchParams.get('kakaoId')
+  const [kakaoId, setKakaoId] = useState<string | null>(null)
+
+  useEffect(() => {
+    setKakaoId(searchParams.get('kakaoId'))
+  }, [searchParams])
 
   const handleSignUpComplete = async () => {
     try {
