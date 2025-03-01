@@ -29,8 +29,8 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
+      const { clearTokens } = useAuthStore.getState()
+      clearTokens()
       window.location.href = '/auth/signin'
     }
     return Promise.reject(error)
