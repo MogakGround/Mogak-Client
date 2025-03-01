@@ -1,6 +1,5 @@
 'use client'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { postAuthSignUp } from '@/app/api/auth/api'
 import { useAuthStore } from '@/store/authStore'
 
@@ -27,13 +26,14 @@ export default function SignUpModal({ isOpen, handleCloseModal, handleSignUpChan
   const { setAccessToken, setRefreshToken } = useAuthStore()
   const [signUpForm, setSignUpForm] = useState({ nickname: '', portfolioLink: '' })
   const [isSignUpComplete, setIsSignUpComplete] = useState(false)
-
-  const searchParams = useSearchParams()
   const [kakaoId, setKakaoId] = useState<string | null>(null)
 
   useEffect(() => {
-    setKakaoId(searchParams.get('kakaoId'))
-  }, [searchParams])
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      setKakaoId(params.get('kakaoId'))
+    }
+  }, [])
 
   const handleSignUpComplete = async () => {
     try {

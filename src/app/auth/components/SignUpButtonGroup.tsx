@@ -1,5 +1,5 @@
 'use client'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import BasicButton from '@/components/global/button/BasicButton'
 import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
 import { useEffect, useState } from 'react'
@@ -11,12 +11,14 @@ interface ISignUpButtonGroupProps {
 
 export default function SignUpButtonGroup({ isNicknameChecked, handleSignUpComplete }: ISignUpButtonGroupProps) {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const [kakaoId, setKakaoId] = useState<string | null>(null)
 
   useEffect(() => {
-    setKakaoId(searchParams.get('kakaoId'))
-  }, [searchParams])
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      setKakaoId(params.get('kakaoId'))
+    }
+  }, [])
 
   const handleSignInClick = () => {
     router.push('/auth/signin')
