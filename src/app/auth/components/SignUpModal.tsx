@@ -31,11 +31,16 @@ export default function SignUpModal({ isOpen, handleCloseModal, handleSignUpChan
 
   const handleSignUpComplete = async () => {
     try {
-      await postAuthSignUp({
+      const res = await postAuthSignUp({
         kakaoId: kakaoId ?? '',
         nickName: signUpForm.nickname,
         portfolioUrl: signUpForm.portfolioLink,
       })
+
+      if (res.data.accessToken && res.data.refreshToken) {
+        localStorage.setItem('accessToken', res.data.accessToken)
+        localStorage.setItem('refreshToken', res.data.refreshToken)
+      }
     } catch (error) {
       console.error(error)
     }

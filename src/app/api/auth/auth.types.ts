@@ -19,8 +19,12 @@ export interface PostAuthSignUpRequest {
   nickName: string
   portfolioUrl: string
 }
+
 export interface PostAuthSignUpResponse {
-  userId: number
-  accessToken: string
-  refreshToken: string
+  code: number
+  message: string
+  data: {
+    accessToken: string
+    refreshToken: string
+  }
 }
