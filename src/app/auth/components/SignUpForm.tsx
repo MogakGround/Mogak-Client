@@ -3,7 +3,7 @@ import { getCheckNickname } from '@/app/api/user/api'
 import NicknameInput from './NicknameInput'
 import PortfolioInput from './PortfolioInput'
 import SignUpButtonGroup from './SignUpButtonGroup'
-import { AxiosError } from 'axios'
+import { ErrorResponse } from '@/app/api/api.types'
 
 interface ISignUpFormProps {
   handleShowIconToast: (text: string, success: boolean) => void
@@ -35,16 +35,13 @@ export default function SignUpForm({
     handleResetToast()
 
     try {
-      const res = await getCheckNickname({ nickname: signUpForm.nickname })
-
-      if (res.code === 200) {
-        handleShowIconToast('와우 멋지네요! 사용할 수 있는 닉네임이에요', true)
-        setIsNicknameChecked(true)
-      }
+      await getCheckNickname({ nickname: signUpForm.nickname })
+      handleShowIconToast('와우 멋지네요! 사용할 수 있는 닉네임이에요', true)
+      setIsNicknameChecked(true)
     } catch (error) {
       console.error(error)
-      if (error instanceof AxiosError) {
-        if (error.response?.data.code === 409) {
+      if (error instanceof ErrorResponse) {
+        if (error.code === 409) {
           handleShowIconToast(`이미 사용 중인 닉네임이에요.\n다른 멋진 닉네임으로 입력해볼까요?`, false)
           setIsNicknameChecked(false)
         }
