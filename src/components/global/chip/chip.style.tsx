@@ -17,7 +17,7 @@ type ChipStyles = {
   }
 }
 
-export const chipBaseStyle = 'inline-flex items-center justify-center text-center rounded-[4px] '
+export const chipBaseStyle = 'inline-flex items-center justify-center text-center rounded-[4px] cursor-pointer'
 
 export const chipBackgroundStyles: ChipStyles = {
   [ChipTheme.LIGHT]: {
@@ -61,41 +61,41 @@ export const chipTextStyles: ChipStyles = {
   [ChipTheme.ACCENT]: {
     [ChipVariant.DEFAULT]: 'text-accent-100',
     [ChipVariant.HIGHLIGHT]: 'text-primary-100',
-    [ChipVariant.STROKE]: 'text-primary-100',
+    [ChipVariant.STROKE]: 'text-accent-100',
   },
 }
 
 export const textChipSizeStyles = {
-  [ChipSize.sm]: 'h-[30px] px-12 py-[5px] ',
-  [ChipSize.md]: 'h-[38px] px-12 py-[5px] ',
-  [ChipSize.lg]: 'h-[44px] px-12 py-[5px] ',
+  [ChipSize.sm]: 'h-[30px] px-[12px] py-[5px] ',
+  [ChipSize.md]: 'h-[38px] px-[12px] py-[8px] ',
+  [ChipSize.lg]: 'h-[44px] px-[12px] py-[10px] ',
 }
 
 export const iconChipSizeStyles = {
-  [ChipSize.sm]: 'h-[30px] p-[5px]',
-  [ChipSize.md]: 'h-[38px] p-[8px]',
-  [ChipSize.lg]: 'h-[44px] p-[10px]',
+  [ChipSize.sm]: 'w-[26px] h-[26px] p-[5px]',
+  [ChipSize.md]: 'w-[32px] h-[32px] p-[8px]',
+  [ChipSize.lg]: 'w-[40px] h-[40px] p-[10px]',
 }
 
 export const chipTextFont = (size: ChipSize) => {
   switch (size) {
     case ChipSize.sm:
-      return 'font-medium text-[12px] '
+      return 'med-12'
     case ChipSize.md:
-      return 'font-semibold text-[14px] '
+      return 'semi-14'
     case ChipSize.lg:
-      return 'font-semibold text-[16px] '
+      return 'semi-16'
   }
 }
 
 export const chipDetailTextFont = (size: ChipSize) => {
   switch (size) {
     case ChipSize.sm:
-      return 'font-regular text-[10px] '
+      return 'reg-10'
     case ChipSize.md:
-      return 'font-regular text-[12px] '
+      return 'reg-12'
     case ChipSize.lg:
-      return 'font-regular text-[12px] '
+      return 'reg-12'
   }
 }
 
@@ -135,37 +135,3 @@ export const chipMoonIcon = (theme: ChipTheme, size: ChipSize) => {
     <Image src={iconSrc} alt={altText} width={size === ChipSize.lg ? 20 : 16} height={size === ChipSize.lg ? 20 : 16} />
   )
 }
-
-/*
-export const chipMoonIcon = (size: ChipSize, color: ChipTheme) => {
-  if (color === ChipTheme.LIGHT || color === ChipTheme.DARK) {
-    switch (size) {
-      case ChipSize.sm:
-        return <Image src={MoonGraySIcon} alt="회색 소형 달" width={16} height={16} />;
-      case ChipSize.md:
-        return <Image src={MoonGrayMIcon} alt="회색 중형 달" width={16} height={16} />;
-      case ChipSize.lg:
-        return <Image src={MoonGrayLIcon} alt="회색 대형 달" width={20} height={20} />;
-    }
-  } else if (color === ChipTheme.PRIMARY) {
-    switch (size) {
-      case ChipSize.sm:
-        return <Image src={MoonPrimarySIcon} alt="레드색 소형 달" width={16} height={16} />;
-      case ChipSize.md:
-        return <Image src={MoonPrimaryMIcon} alt="레드색 중형 달" width={16} height={16} />;
-      case ChipSize.lg:
-        return <Image src={MoonPrimaryLIcon} alt="레드색 대형 달" width={20} height={20} />;
-    }
-  } else if (color === ChipTheme.ACCENT) {
-    switch (size) {
-      case ChipSize.sm:
-        return <Image src={MoonAccentSIcon} alt="에메랄드색 소형 달" width={16} height={16} />;
-      case ChipSize.md:
-        return <Image src={MoonAccentMIcon} alt="에메랄드색 중형 달" width={16} height={16} />;
-      case ChipSize.lg:
-        return <Image src={MoonAccentLIcon} alt="에메랄드색 대형 달" width={20} height={20} />;
-    }
-  }
-  return null;
-};
-*/

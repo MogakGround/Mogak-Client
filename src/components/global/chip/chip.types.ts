@@ -23,6 +23,12 @@ export enum ChipSize {
   //xxl = 'xxl',
 }
 
+// 디테일 텍스트 방향
+export enum DetailTextArrow {
+  LEFT,
+  RIGHT,
+}
+
 // 아이콘 방향
 export enum IconArrow {
   LEFT,
@@ -41,12 +47,21 @@ interface ChipProps {
 export interface TextChipProps extends ChipProps {
   text: string
   detailText?: string
+  detailTextArrow?: DetailTextArrow
 }
 
 // 아이콘 텍스트 칩
-export interface MoonTextChipProps extends TextChipProps {
+export interface MoonIconTextChipProps extends TextChipProps {
   iconArrow: IconArrow
 }
 
+export interface IconTextChipProps extends TextChipProps {
+  iconArrow: IconArrow
+  iconImageSrc: string
+}
+
 // 아이콘 칩
-export interface MoonChipProps extends ChipProps {}
+export interface MoonIconChipProps extends ChipProps {}
+export interface IconChipProps extends ChipProps {
+  iconImageSrc: string
+}

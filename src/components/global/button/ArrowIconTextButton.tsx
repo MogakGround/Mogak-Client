@@ -1,10 +1,16 @@
 import { IconTextButtonProps } from '@/components/global/button/button.types'
-import { baseButton, buttonSizes, buttonStyles, iconColors, iconSizes } from '@/components/global/button/buttonStyle'
+import {
+  baseButton,
+  textButtonSizes,
+  buttonStyles,
+  iconColors,
+  iconSizes,
+} from '@/components/global/button/buttonStyle'
 import { ARROW_ICON_SRC } from '@/constants/ArrowIcon'
 import cn from '@/utils/cn'
 import Image from 'next/image'
 
-export default function IconTextButton({
+export default function ArrowIconTextButton({
   variant,
   theme,
   size,
@@ -24,14 +30,13 @@ export default function IconTextButton({
 
   return (
     <button
-      className={cn(
-        baseButton,
-        buttonSizes[size],
-        buttonStyles[theme][variant],
-        fullWidth && 'w-full',
-        disabled && '!bg-grayscale-600 !text-grayscale-400 cursor-not-allowed',
-        className
-      )}
+      className={`
+        ${baseButton}
+        ${textButtonSizes[size]}
+        ${buttonStyles[theme][variant]}
+        ${fullWidth ? 'w-full' : ''}
+        ${disabled ? '!bg-grayscale-600 !text-grayscale-400 cursor-not-allowed' : ''}
+      `}
       onClick={handleClick}
       type={type}
       disabled={disabled}

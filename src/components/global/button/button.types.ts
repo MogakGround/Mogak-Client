@@ -50,3 +50,10 @@ export interface IRoundedSquareButtonProps {
   fullWidth?: boolean
   type?: 'button' | 'submit' | 'reset'
 }
+export interface IconButtonProps extends IButtonProps {
+  iconSrc: string
+}
+export interface HeadcountIconTextButtonProps extends IButtonProps {
+  headcount: number
+  capacity: number
+}

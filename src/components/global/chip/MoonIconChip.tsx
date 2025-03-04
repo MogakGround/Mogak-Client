@@ -1,4 +1,4 @@
-import { MoonChipProps } from '@/components/global/chip/chip.types'
+import { IconArrow, MoonIconChipProps } from '@/components/global/chip/chip.types'
 import {
   chipBaseStyle,
   chipBackgroundStyles,
@@ -9,14 +9,14 @@ import {
 /**
  * 사용 예시
  * 
-<MoonChip 
+<MoonIconChip 
   variant={ChipVariant.DEFAULT} 
   theme={ChipTheme.PRIMARY} 
   size={ChipSize.md} 
   handleClick={chipEvent}
 />
  */
-const MoonChip = ({ variant, theme, size }: MoonChipProps) => {
+const MoonIconChip = ({ variant, theme, size }: MoonIconChipProps) => {
   return (
     <div className={`${chipBaseStyle} ${chipBackgroundStyles[theme][variant]} ${iconChipSizeStyles[size]}`}>
       {chipMoonIcon(theme, size)}
@@ -24,4 +24,4 @@ const MoonChip = ({ variant, theme, size }: MoonChipProps) => {
   )
 }
 
-export default MoonChip
+export default MoonIconChip

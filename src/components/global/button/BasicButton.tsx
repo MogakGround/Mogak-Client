@@ -1,6 +1,6 @@
 import { IBasicButtonProps } from './button.types'
-import { baseButton, buttonStyles, buttonSizes } from '@/components/global/button/buttonStyle'
 import { ButtonTheme } from './button.types'
+import { baseButton, buttonStyles, textButtonSizes } from '@/components/global/button/buttonStyle'
 
 export default function BasicButton({
   variant,
@@ -16,7 +16,7 @@ export default function BasicButton({
     <button
       className={`
         ${baseButton}
-        ${buttonSizes[size]}
+        ${textButtonSizes[size]}
         ${buttonStyles[theme][variant]}
         ${fullWidth ? 'w-full' : ''}
         ${disabled ? (theme === ButtonTheme.text ? '!text-grayscale-400 cursor-not-allowed' : '!bg-grayscale-600 !text-grayscale-400 cursor-not-allowed') : ''}

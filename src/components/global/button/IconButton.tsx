@@ -1,13 +1,6 @@
-import { IButtonProps } from '@/components/global/button/button.types'
-import {
-  baseButton,
-  buttonStyles,
-  iconButtonSizes,
-  iconColors,
-  iconSizes,
-} from '@/components/global/button/buttonStyle'
-import { ARROW_ICON_SRC } from '@/constants/ArrowIcon'
 import cn from '@/utils/cn'
+import { IconButtonProps } from '@/components/global/button/button.types'
+import { baseButton, buttonStyles, iconButtonSizes, iconSizes } from '@/components/global/button/buttonStyle'
 import Image from 'next/image'
 
 export default function IconButton({
@@ -16,12 +9,11 @@ export default function IconButton({
   size,
   disabled,
   fullWidth = false,
+  iconSrc,
   handleClick,
   type = 'button',
-  iconSrc,
   className,
-}: IButtonProps) {
-  const iconColor = (!disabled ? iconColors[theme]?.[variant] : 'gray') as keyof typeof ARROW_ICON_SRC
+}: IconButtonProps) {
   const iconSize = size && iconSizes[size]
 
   return (
@@ -38,7 +30,7 @@ export default function IconButton({
       type={type}
       disabled={disabled}
     >
-      <Image src={iconSrc || ARROW_ICON_SRC[iconColor]} alt="icon" width={iconSize} height={iconSize} />
+      <Image src={iconSrc} alt="icon" width={iconSize} height={iconSize} />
     </button>
   )
 }
