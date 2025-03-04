@@ -37,7 +37,7 @@ export interface IBasicButtonProps extends IButtonProps {
   text?: string
   children?: React.ReactNode
 }
-export interface IconTextButtonProps extends IBasicButtonProps {
+export interface ArrowIconTextButtonProps extends IBasicButtonProps {
   iconArrow: IconArrow
   iconSrc?: string
   iconWidth?: number
@@ -49,6 +49,11 @@ export interface IRoundedSquareButtonProps {
   disabled?: boolean
   fullWidth?: boolean
   type?: 'button' | 'submit' | 'reset'
+}
+export interface IconTextButtonProps extends IBasicButtonProps {
+  iconSrc: string
+  iconArrow: IconArrow
+  link?: boolean
 }
 export interface IconButtonProps extends IButtonProps {
   iconSrc: string
