@@ -31,25 +31,14 @@ axiosInstance.interceptors.response.use(
   (error: AxiosError) => {
     if (!error.response) {
       alert('네트워크 오류가 발생했습니다. 다시 시도해 주세요.')
-      throw {
-        success: false,
-        status: 0,
-        code: 0,
-        message: 'Network Error',
-      } as ErrorResponse
+      throw new ErrorResponse(0, 0, 'Network Error')
     }
 
     const { status, data } = error.response
     const message = (data as { message?: string })?.message || 'An error occurred'
     const code = (data as { code?: number })?.code || 0
 
-    const errorResponse: ErrorResponse = {
-      name: 'ErrorResponse',
-      success: false,
-      status,
-      code: code,
-      message: message,
-    }
+    const errorResponse = new ErrorResponse(status, code, message)
 
     if (status === 401) {
       const { clearTokens } = useAuthStore.getState()

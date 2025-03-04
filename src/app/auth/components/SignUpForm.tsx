@@ -35,11 +35,9 @@ export default function SignUpForm({
     handleResetToast()
 
     try {
-      const res = await getCheckNickname({ nickname: signUpForm.nickname })
-      if (res) {
-        handleShowIconToast('와우 멋지네요! 사용할 수 있는 닉네임이에요', true)
-        setIsNicknameChecked(true)
-      }
+      await getCheckNickname({ nickname: signUpForm.nickname })
+      handleShowIconToast('와우 멋지네요! 사용할 수 있는 닉네임이에요', true)
+      setIsNicknameChecked(true)
     } catch (error) {
       console.error(error)
       if (error instanceof ErrorResponse) {

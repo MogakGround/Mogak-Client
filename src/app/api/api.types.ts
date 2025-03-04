@@ -1,9 +1,3 @@
-export interface BaseResponse<T> {
-  code: number
-  messgae: string
-  data: T
-}
-
 export class ErrorResponse extends Error {
   success: boolean
   status: number
