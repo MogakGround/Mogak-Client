@@ -26,20 +26,21 @@ export const useUserStore = create<UserStore>((set) => ({
 
   fetchUser: async () => {
     const res = await getMyProfile()
+    console.log(res)
 
-    if (res.code === 200) {
+    if (res) {
       set({
-        nickname: res.data.nickName,
-        portfolioUrl: res.data.portfolioUrl,
-        rank: res.data.rank,
+        nickname: res.nickName,
+        portfolioUrl: res.portfolioUrl,
+        rank: res.rank,
         time: {
-          hour: res.data.hour,
-          min: res.data.min,
-          sec: res.data.sec,
+          hour: res.hour,
+          min: res.min,
+          sec: res.sec,
         },
       })
     } else {
-      console.error(res.message)
+      console.error(res)
     }
   },
   clearUser: () => {
