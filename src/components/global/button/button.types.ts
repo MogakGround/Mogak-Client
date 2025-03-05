@@ -53,6 +53,7 @@ export interface IRoundedSquareButtonProps {
 export interface IconTextButtonProps extends IBasicButtonProps {
   iconSrc: string
   iconArrow: IconArrow
+  iconWidth?: number
   link?: boolean
 }
 export interface IconButtonProps extends IButtonProps {
