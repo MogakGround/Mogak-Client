@@ -1,17 +1,27 @@
+'use client'
 import { useRouter } from 'next/navigation'
 import BasicButton from '@/components/global/button/BasicButton'
 import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
+import { useEffect, useState } from 'react'
 
 interface ISignUpButtonGroupProps {
   isNicknameChecked: boolean
-  handleSignUpComplete: () => void
+  handleSignUpComplete: (kakaoId: string) => void
 }
 
 export default function SignUpButtonGroup({ isNicknameChecked, handleSignUpComplete }: ISignUpButtonGroupProps) {
   const router = useRouter()
+  const [kakaoId, setKakaoId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      setKakaoId(params.get('kakaoId'))
+    }
+  }, [])
 
   const handleSignInClick = () => {
-    router.push('/auth/signup') // 페이지 이동
+    router.push('/auth/signin')
   }
 
   return (
@@ -31,7 +41,7 @@ export default function SignUpButtonGroup({ isNicknameChecked, handleSignUpCompl
           disabled={!isNicknameChecked}
           fullWidth={true}
           text="가입 완료하기"
-          handleClick={handleSignUpComplete}
+          handleClick={() => handleSignUpComplete(kakaoId ?? '')}
         />
       </div>
     </div>

@@ -15,6 +15,7 @@ interface IModalProps {
   hasOverlay?: boolean
   closeOnOutsideClick?: boolean
   backgroundColor?: ModalBackground
+  renderBottomFn?: () => React.ReactNode
 }
 
 export default function Modal({
@@ -24,6 +25,7 @@ export default function Modal({
   hasOverlay = true,
   closeOnOutsideClick = true,
   backgroundColor = ModalBackground.gray700,
+  renderBottomFn,
 }: IModalProps) {
   const modalRef = useRef<HTMLDivElement | null>(null)
 
@@ -43,7 +45,7 @@ export default function Modal({
   useEffect(() => {
     if (!isOpen) return
 
-    modalRef.current?.focus()
+    // modalRef.current?.focus()
   }, [isOpen])
 
   if (!isOpen) return null
@@ -51,9 +53,9 @@ export default function Modal({
   return (
     <Portal>
       <div
-        className={`fixed inset-0 flex items-center justify-center
-          ${hasOverlay ? 'bg-black bg-opacity-70' : 'bg-transparent'}
-          ${!hasOverlay ? 'z-[50]' : 'z-[61]'}`}
+        className={`fixed inset-0 flex flex-col items-center justify-center
+            ${hasOverlay ? 'bg-black bg-opacity-70' : 'bg-transparent'}
+            ${!hasOverlay ? 'z-[50]' : 'z-[61]'}`}
         {...(closeOnOutsideClick ? { onClick: handleCloseModal } : {})}
       >
         <div
@@ -64,6 +66,7 @@ export default function Modal({
         >
           {children}
         </div>
+        {renderBottomFn && renderBottomFn()}
       </div>
     </Portal>
   )

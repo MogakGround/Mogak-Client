@@ -1,16 +1,17 @@
 'use client'
 
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 import LogoIcon from '@/assets/svg/logo.svg'
 import ImageBackgroundLayout from '@/components/global/layout/ImageBackgroundLayout'
 import KakaoButton from '@/components/global/button/KakaoButton'
 
 export default function SignInPage() {
-  const router = useRouter()
+  const KAKAO_REST_API_KEY = process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY
+  const KAKAO_REDIRECT_URI = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI
+  const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code`
 
   const handleSignUpClick = () => {
-    router.push('/auth/signup') // 페이지 이동
+    window.location.href = kakaoAuthUrl
   }
 
   return (

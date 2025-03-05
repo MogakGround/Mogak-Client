@@ -8,12 +8,14 @@ const AutoDisappearIconToast = ({
   size,
   text,
   detailText,
+  success = false,
   handleClick,
 }: AutoDisappearIconToastProps) => {
-  const [isVisible, setIsVisible] = useState(true)
+  const [isVisible, setIsVisible] = useState(false)
 
   // N초 후에 자동으로 사라지게 설정
   useEffect(() => {
+    setIsVisible(true)
     const timer = setTimeout(() => {
       setIsVisible(false)
     }, duration)
@@ -26,9 +28,14 @@ const AutoDisappearIconToast = ({
   if (!isVisible) return null
 
   return (
-    <div>
-      <IconToast theme={theme} size={size} text={text} detailText={detailText} handleClick={handleClick} />
-    </div>
+    <IconToast
+      theme={theme}
+      size={size}
+      text={text}
+      detailText={detailText}
+      success={success}
+      handleClick={handleClick}
+    />
   )
 }
 

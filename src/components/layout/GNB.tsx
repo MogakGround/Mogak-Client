@@ -1,11 +1,23 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
-import LogoIcon from '@/assets/svg/logo.svg'
 import Link from 'next/link'
+import ProfileIcon from '@/assets/svg/user-profile.svg'
+import LogoIcon from '@/assets/svg/logo.svg'
+
+import { useAuthStore } from '@/store/authStore'
+import { useUserStore } from '@/store/userStore'
 
 const GNB = () => {
+  const { accessToken } = useAuthStore()
+  const { nickname, fetchUser } = useUserStore()
   const [pageNumber, setPageNumber] = useState<number>(1)
+
+  useEffect(() => {
+    if (accessToken) {
+      fetchUser()
+    }
+  }, [accessToken, fetchUser])
 
   const handleLogoClick = () => {}
   const handleHomeClick = () => {
@@ -49,11 +61,24 @@ const GNB = () => {
           모각그라운드란
         </div>
       </div>
-      <Link href="/auth/signin">
-        <div className="mr-[80px] rounded-[40px] bg-grayscale-50 text-grayscale-700 text-[14px] font-semibold px-[14px] py-[7px] cursor-pointer">
-          로그인
+      {accessToken ? (
+        <div
+          className="mr-[80px] flex items-center gap-[8px] px-[12px] py-[8px] rounded-[4px] bg-grayscale-700"
+          suppressHydrationWarning
+        >
+          <Image src={ProfileIcon} alt="프로필" width={16} height={16} />
+          <span className="semi-14 text-grayscale-50">{nickname} 님</span>
         </div>
-      </Link>
+      ) : (
+        <Link href="/auth/signin">
+          <div
+            className="mr-[80px] rounded-[40px] bg-grayscale-50 text-grayscale-700 semi-14 px-[14px] py-[7px] cursor-pointer"
+            suppressHydrationWarning
+          >
+            로그인
+          </div>
+        </Link>
+      )}
     </div>
   )
 }
