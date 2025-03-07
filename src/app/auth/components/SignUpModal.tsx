@@ -43,9 +43,9 @@ export default function SignUpModal({ isOpen, handleCloseModal, handleSignUpChan
         portfolioUrl: signUpForm.portfolioLink,
       })
 
-      if (res.data.accessToken && res.data.refreshToken) {
-        setAccessToken(res.data.accessToken)
-        setRefreshToken(res.data.refreshToken)
+      if (res.accessToken && res.refreshToken) {
+        setAccessToken(res.accessToken)
+        setRefreshToken(res.refreshToken)
       }
     } catch (error) {
       console.error(error)

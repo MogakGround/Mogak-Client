@@ -2,16 +2,11 @@ export interface PostAuthLoginRequest {
   kakaoCode: string
 }
 
-interface PostAuthLoginResponseData {
+export interface PostAuthLoginResponseData {
   kakaoId?: number
   status: 'success' | 'fail'
   accessToken: string
   refreshToken: string
-}
-export interface PostAuthLoginResponse {
-  code: number
-  message: string
-  data: PostAuthLoginResponseData
 }
 
 export interface PostAuthSignUpRequest {
@@ -21,10 +16,6 @@ export interface PostAuthSignUpRequest {
 }
 
 export interface PostAuthSignUpResponse {
-  code: number
-  message: string
-  data: {
-    accessToken: string
-    refreshToken: string
-  }
+  accessToken: string
+  refreshToken: string
 }

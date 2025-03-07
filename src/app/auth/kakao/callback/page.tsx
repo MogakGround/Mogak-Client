@@ -27,12 +27,12 @@ export default function KakaoCallbackPage() {
         try {
           const res = await postAuthLogin({ kakaoCode })
 
-          if (res.data.status === 'success') {
-            setAccessToken(res.data.accessToken)
-            setRefreshToken(res.data.refreshToken)
+          if (res.status === 'success') {
+            setAccessToken(res.accessToken)
+            setRefreshToken(res.refreshToken)
             router.push('/')
           } else {
-            router.push(`/auth/signup?kakaoId=${res.data.kakaoId}`)
+            router.push(`/auth/signup?kakaoId=${res.kakaoId}`)
           }
         } catch (error) {
           console.error(error)
