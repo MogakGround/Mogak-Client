@@ -8,8 +8,9 @@ type ToastStyles = {
   [key in ToastTheme]: string
 }
 
-export const toastBaseStyle = 'items-center justify-center text-start px-3 py-4 rounded-[12px] '
-export const iconToastBaseStyle = 'flex w-fit items-center justify-center text-start px-3 py-4 rounded-[12px] '
+export const toastBaseStyle = 'items-center justify-center text-start px-3 py-4 rounded-[12px]'
+export const iconToastBaseStyle =
+  'flex w-full items-center text-start pl-[16px] pr-[20px] py-[12px] rounded-[12px] z-[100]'
 
 export const toastBackgroundStyles: ToastStyles = {
   [ToastTheme.LIGHT]: 'bg-grayscale-700',
@@ -24,18 +25,18 @@ export const toastTextStyles: ToastStyles = {
 export const toastTextFont = (size: ToastSize, detailText?: string) => {
   switch (size) {
     case ToastSize.sm:
-      return !detailText ? 'font-medium text-[14pt] ' : 'font-medium text-[16pt]'
+      return !detailText ? 'med-14' : 'med-16'
     case ToastSize.md:
-      return !detailText ? 'font-medium text-[18pt] ' : 'font-semibold text-[18pt]'
+      return !detailText ? 'med-16' : 'med-18'
   }
 }
 
 export const toastDetailTextFont = (size: ToastSize) => {
   switch (size) {
     case ToastSize.sm:
-      return 'font-regular text-[12pt] '
+      return 'reg-12'
     case ToastSize.md:
-      return 'font-regular text-[14pt] '
+      return 'reg-14'
   }
 }
 
