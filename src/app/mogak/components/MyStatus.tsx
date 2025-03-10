@@ -2,27 +2,27 @@
 
 import TextToggle from '@/components/global/toggle/TextToggle'
 import { ToggleTheme } from '@/components/global/toggle/toggle.types'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Timer from './Timer'
 import TextChip from '@/components/global/chip/TextChip'
 import { ChipSize, ChipTheme, ChipVariant } from '@/components/global/chip/chip.types'
-import VideoFallback from '@/assets/svg/video-fallback.svg'
-import Image from 'next/image'
-import useScreenShare from '../hooks/useScreenShare'
+import Video from './Video'
+import { Publisher } from 'openvidu-browser'
 
-export default function MyStatus() {
-  const { videoRef, startScreenShare, stopScreenShare } = useScreenShare()
+interface MyStatusProps {
+  publisher: Publisher
+}
+export default function MyStatus({ publisher }: MyStatusProps) {
   const [videoOn, setVideoOn] = useState(false)
   const [allowVideoExpand, setAllowVideoExpand] = useState(true)
 
-  const handleShareToggle = () => {
+  useEffect(() => {
     if (videoOn) {
-      stopScreenShare()
+      publisher?.publishVideo(true)
     } else {
-      startScreenShare()
+      publisher?.publishVideo(false)
     }
-    setVideoOn(!videoOn)
-  }
+  }, [videoOn])
 
   return (
     <div className="flex flex-col bg-grayscale-900 min-w-260 max-w-320 flex-grow-0 px-[20px] py-[20px] rounded-[10px]">
@@ -31,14 +31,7 @@ export default function MyStatus() {
         <TextChip text="나" variant={ChipVariant.DEFAULT} theme={ChipTheme.ACCENT} size={ChipSize.sm} />
       </div>
       <div className="relative aspect-[476/248] bg-grayscale-800 rounded-10 mb-20">
-        <video ref={videoRef} autoPlay muted playsInline className="w-full h-full object-cover"></video>
-        {!videoOn && (
-          <Image
-            alt="Video Off"
-            src={VideoFallback}
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-          />
-        )}
+        <Video isVideoOn={videoOn} streamManager={publisher} />
       </div>
       <Timer />
       <div className="mt-auto space-y-12 pt-10">
@@ -47,7 +40,7 @@ export default function MyStatus() {
           <TextToggle
             theme={ToggleTheme.LIGHT}
             isOn={videoOn}
-            onToggle={handleShareToggle}
+            onToggle={() => setVideoOn(!videoOn)}
             textl="켜기"
             textr="끄기"
             className="w-70 px-0"

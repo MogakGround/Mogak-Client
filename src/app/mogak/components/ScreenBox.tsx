@@ -5,12 +5,15 @@ import IconTextButton from '@/components/global/button/IconTextButton'
 import IconPerson from '@/assets/svg/person.svg'
 import IconClock from '@/assets/svg/clock.svg'
 import convertTime from '@/utils/convertTime'
+import { Subscriber } from 'openvidu-browser'
+import Video from './Video'
 
 interface ScreenBoxProps {
   nickname: string
   time: number
+  subscriber: Subscriber
 }
-export default function ScreenBox({ nickname, time = 0 }: ScreenBoxProps) {
+export default function ScreenBox({ nickname, time = 0, subscriber }: ScreenBoxProps) {
   const { hours, minutes, seconds } = convertTime(time)
 
   return (
@@ -43,6 +46,7 @@ export default function ScreenBox({ nickname, time = 0 }: ScreenBoxProps) {
           </div>
         </IconTextButton>
       </div>
+      <Video isVideoOn streamManager={subscriber} />
     </div>
   )
 }
