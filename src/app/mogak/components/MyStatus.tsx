@@ -2,27 +2,31 @@
 
 import TextToggle from '@/components/global/toggle/TextToggle'
 import { ToggleTheme } from '@/components/global/toggle/toggle.types'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Timer from './Timer'
 import TextChip from '@/components/global/chip/TextChip'
 import { ChipSize, ChipTheme, ChipVariant } from '@/components/global/chip/chip.types'
 import Video from './Video'
 import { Publisher } from 'openvidu-browser'
+import { useRoomStore } from '@/store/roomStore'
 
 interface MyStatusProps {
   publisher: Publisher
+  startScreenShare: () => void
+  stopScreenShare: () => void
 }
-export default function MyStatus({ publisher }: MyStatusProps) {
-  const [videoOn, setVideoOn] = useState(false)
+export default function MyStatus({ publisher, startScreenShare, stopScreenShare }: MyStatusProps) {
   const [allowVideoExpand, setAllowVideoExpand] = useState(true)
+  const { screenShareOn, setScreenShareOn } = useRoomStore()
 
-  useEffect(() => {
-    if (videoOn) {
-      publisher?.publishVideo(true)
+  const handleToggleScreenOn = () => {
+    setScreenShareOn(!screenShareOn)
+    if (screenShareOn) {
+      stopScreenShare()
     } else {
-      publisher?.publishVideo(false)
+      startScreenShare()
     }
-  }, [videoOn])
+  }
 
   return (
     <div className="flex flex-col bg-grayscale-900 min-w-260 max-w-320 flex-grow-0 px-[20px] py-[20px] rounded-[10px]">
@@ -31,7 +35,7 @@ export default function MyStatus({ publisher }: MyStatusProps) {
         <TextChip text="나" variant={ChipVariant.DEFAULT} theme={ChipTheme.ACCENT} size={ChipSize.sm} />
       </div>
       <div className="relative aspect-[476/248] bg-grayscale-800 rounded-10 mb-20">
-        <Video isVideoOn={videoOn} streamManager={publisher} />
+        <Video isVideoOn={screenShareOn} streamManager={publisher} />
       </div>
       <Timer />
       <div className="mt-auto space-y-12 pt-10">
@@ -39,8 +43,8 @@ export default function MyStatus({ publisher }: MyStatusProps) {
           <p className="med-14 text-grayscale-400">화면 공유</p>
           <TextToggle
             theme={ToggleTheme.LIGHT}
-            isOn={videoOn}
-            onToggle={() => setVideoOn(!videoOn)}
+            isOn={screenShareOn}
+            onToggle={handleToggleScreenOn}
             textl="켜기"
             textr="끄기"
             className="w-70 px-0"
