@@ -12,7 +12,7 @@ import MogakRoom, { MogakRoomProps } from '@/components/app/home/MogakRoom'
 import BasicButton from '@/components/global/button/BasicButton'
 import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
 import NoMogakRoom from '@/components/app/home/NoMogakRoom'
-
+import { postRefreshToken } from '@/app/api/auth/api'
 ////////////////////////////////////////////////////
 // 임시
 const mogakRooms: MogakRoomProps[] = [
@@ -233,6 +233,14 @@ export default function Home() {
 
   return (
     <div className="flex justify-center items-center mt-[40px] w-full">
+      <button
+        onClick={async () => {
+          const res = await postRefreshToken()
+          console.log(res)
+        }}
+      >
+        테스트
+      </button>
       <div className="grid grid-cols-1">
         <Image src={AreaIcon} alt="area" />
 
