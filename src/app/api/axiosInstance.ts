@@ -50,11 +50,11 @@ axiosInstance.interceptors.response.use(
         try {
           setAccessToken(res.accessToken)
         } catch (error) {
-          console.error(error)
+          if (error instanceof Error) {
+            window.location.href = '/auth/signin'
+            console.error(error)
+          }
         }
-      } else {
-        window.location.href = '/auth/signin'
-        throw errorResponse
       }
     }
     if (status === 500) {
