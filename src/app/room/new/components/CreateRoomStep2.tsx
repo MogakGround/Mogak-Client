@@ -3,8 +3,10 @@ import Image from 'next/image'
 import cn from '@/utils/cn'
 
 import { THUMBNAIL_LIST } from '@/constants/Room'
+import CheckAccent from '@/assets/svg/check-accent.svg'
 import { IRoomNewForm, RoomNewStatus } from './hooks/useCreateRoom'
 import RoomNewButtonGroup from './CreateRoomBtnGroup'
+import { RoomImg } from '@/app/api/room/room.types'
 
 interface ICreateRoomStep2Props {
   roomNewForm: IRoomNewForm
@@ -17,7 +19,7 @@ export default function CreateRoomStep2({ roomNewForm, setRoomNewForm, roomStatu
 
   const handleSelectThumbnail = (id: string) => {
     setSelectedThumbnail(id)
-    setRoomNewForm({ ...roomNewForm, thumbnail: id })
+    setRoomNewForm({ ...roomNewForm, thumbnail: id as RoomImg })
   }
 
   return (
@@ -26,11 +28,21 @@ export default function CreateRoomStep2({ roomNewForm, setRoomNewForm, roomStatu
         <div
           key={thumbnail.id}
           className={cn(
-            `w-[178px] h-[94px] rounded-[8px] overflow-hidden`,
+            `w-[178px] h-[94px] rounded-[8px] overflow-hidden relative`,
             selectedThumbnail === thumbnail.id && 'border-[1.5px] border-accentT-50'
           )}
           onClick={() => handleSelectThumbnail(thumbnail.id)}
         >
+          <label
+            htmlFor={thumbnail.id}
+            className={cn(
+              `hidden`,
+              selectedThumbnail === thumbnail.id &&
+                'block rounded-full bg-accentT-20 absolute top-[10px] right-[10px] w-[24px] h-[24px]'
+            )}
+          >
+            <Image src={CheckAccent} alt="check" className="w-full h-full" />
+          </label>
           <Image src={thumbnail.image} alt="thumbnail" width={179} height={94} />
         </div>
       ))}

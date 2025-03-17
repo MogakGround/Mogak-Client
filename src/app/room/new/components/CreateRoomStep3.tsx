@@ -19,24 +19,16 @@ export default function CreateRoomStep3({
   handleChange,
   setRoomNewForm,
 }: IRoomNewStep3Props) {
-  const {
-    selectedTag,
-    passwordValidations,
-    isNextButtonDisabled,
-    isPrivate,
-    handleTagChange,
-    handleToggle,
-    handleClickComplete,
-  } = useCreateRoomStep3({ roomNewForm, setRoomNewForm })
+  const { passwordValidations, isNextButtonDisabled, handleTagChange, handleToggle, handleClickComplete } =
+    useCreateRoomStep3({ roomNewForm, setRoomNewForm })
 
   return (
     <>
-      <WorkTimeTag selectedTag={selectedTag} handleTagChange={handleTagChange} />
+      <WorkTimeTag roomNewForm={roomNewForm} handleTagChange={handleTagChange} />
       <RoomPrivacyToggle
         roomNewForm={roomNewForm}
         handleChange={handleChange}
         passwordValidations={passwordValidations}
-        isPrivate={isPrivate}
         handleToggle={handleToggle}
       />
       <RoomNewButtonGroup

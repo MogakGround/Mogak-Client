@@ -3,13 +3,15 @@ import { IRoomNewForm, RoomNewStatus } from './hooks/useCreateRoom'
 import RoomNameInput from './RoomName'
 import RoomDescription from './RoomDescription'
 import RoomNewButtonGroup from './CreateRoomBtnGroup'
+import { getCheckRoomName } from '@/app/api/room/api'
 
 interface ICreateRoomStep1Props {
-  showToastMessage: (message: string) => void
+  handleShowIconToast: (text: string, success: boolean) => void
   roomNewForm: IRoomNewForm
   roomStatusChange: (status: RoomNewStatus) => void
   handleChangeForm: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
   setRoomNewForm: (roomNewForm: IRoomNewForm) => void
+  handleResetToast: () => void
 }
 
 export default function CreateRoomStep1({
@@ -17,16 +19,25 @@ export default function CreateRoomStep1({
   roomStatusChange,
   handleChangeForm,
   setRoomNewForm,
-  showToastMessage,
+  handleShowIconToast,
+  handleResetToast,
 }: ICreateRoomStep1Props) {
   const [inputValidations, setInputValidations] = useState({ lengthValid: false, formatValid: false })
+  const [isRoomNameChecked, setIsRoomNameChecked] = useState(false)
 
   const checkRoomNameAvailability = async () => {
     if (!roomNewForm.name.trim()) return
-    const isAvailable = true // TODO: 실제 API 요청
+    handleResetToast()
 
-    if (isAvailable) {
-      showToastMessage('와우 멋지네요! 사용할 수 있는 모각방 이름이에요')
+    try {
+      await getCheckRoomName({ roomName: roomNewForm.name })
+      handleShowIconToast('와우 멋지네요! 사용할 수 있는 모각방 이름이에요', true)
+      setIsRoomNameChecked(true)
+    } catch (error) {
+      if (error instanceof Error) {
+        handleShowIconToast(error.message, false)
+        setIsRoomNameChecked(false)
+      }
     }
   }
 
@@ -35,7 +46,10 @@ export default function CreateRoomStep1({
       <RoomNameInput
         name="name"
         value={roomNewForm.name}
-        handleChange={handleChangeForm}
+        handleChange={(e) => {
+          handleChangeForm(e)
+          setIsRoomNameChecked(false)
+        }}
         checkRoomName={checkRoomNameAvailability}
         inputValidations={inputValidations}
         setInputValidations={setInputValidations}
@@ -51,7 +65,7 @@ export default function CreateRoomStep1({
         previousStatus="initial"
         nextStatus="step2"
         roomStatusChange={roomStatusChange}
-        nextButtonDisabled={!inputValidations.lengthValid || !inputValidations.formatValid}
+        nextButtonDisabled={!isRoomNameChecked}
       />
     </>
   )

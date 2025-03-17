@@ -1,12 +1,14 @@
-import { WORK_TIME_TAG_LIST } from '@/constants/Room'
 import cn from '@/utils/cn'
+import { WORK_TIME_TAG_LIST } from '@/constants/Room'
+import { IRoomNewForm } from './hooks/useCreateRoom'
+import { WorkHours } from '@/app/api/room/room.types'
 
 interface IWorkTimeTagProps {
-  selectedTag: string | null
-  handleTagChange: (tag: string) => void
+  roomNewForm: IRoomNewForm
+  handleTagChange: (tag: WorkHours) => void
 }
 
-export default function WorkTimeTag({ selectedTag, handleTagChange }: IWorkTimeTagProps) {
+export default function WorkTimeTag({ roomNewForm, handleTagChange }: IWorkTimeTagProps) {
   return (
     <>
       <div className="flex items-center gap-[8px] mb-[6px]">
@@ -20,16 +22,20 @@ export default function WorkTimeTag({ selectedTag, handleTagChange }: IWorkTimeT
         {WORK_TIME_TAG_LIST.map((tag) => (
           <button
             key={tag.id}
-            onClick={() => handleTagChange(tag.id)}
+            onClick={() => handleTagChange(tag.id as WorkHours)}
             className={cn(
               'flex items-center gap-[8px] px-[12px] py-[8px] rounded-[4px] border-[1.5px] border-grayscale-600',
-              selectedTag === tag.id && 'border-accentT-50 bg-accentT-10'
+              roomNewForm.time.includes(tag.id as WorkHours) && 'border-accentT-50 bg-accentT-10'
             )}
           >
-            <span className={`${selectedTag === tag.id ? 'text-accentT-100' : 'text-grayscale-50'} semi-14`}>
+            <span
+              className={`${roomNewForm.time.includes(tag.id as WorkHours) ? 'text-accentT-100' : 'text-grayscale-50'} semi-14`}
+            >
               {tag.name}
             </span>
-            <span className={`${selectedTag === tag.id ? 'text-grayscale-300' : 'text-grayscale-400'} reg-12`}>
+            <span
+              className={`${roomNewForm.time.includes(tag.id as WorkHours) ? 'text-grayscale-300' : 'text-grayscale-400'} reg-12`}
+            >
               {tag.description}
             </span>
           </button>
