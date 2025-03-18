@@ -24,6 +24,8 @@ const Pagenation = ({ currentPageNumber, lastPageNumber, handlePageChange }: Pag
   const unit = 10 // 페이지 단위  (보여줄 딘위)
   const buttonSize = 30 // 버튼 크기
 
+  console.log(currentPageNumber, lastPageNumber)
+
   // 첫 페이지 그룹에 속함
   const isFirstGroup = currentPageNumber <= unit
   // 막 페이지 그룹에 속함  // 자바스크립트에서 나눗셈은 부동소수점 숫자를 반환하기 때문에 Math.floor로 소수점 버리기

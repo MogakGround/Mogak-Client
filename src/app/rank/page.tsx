@@ -1,28 +1,36 @@
 'use client'
-import { useState } from 'react'
 
 import Pagenation from '@/components/global/pagenation/Pagenation'
-import RankList from '@/components/rank/rankList'
-import MyLank from '@/components/rank/MyLank'
-import RankBanner from '@/components/rank/RankBanner'
+import RankList from '@/app/rank/components/rankList'
+import MyLank from '@/app/rank/components/MyLank'
+import RankBanner from '@/app/rank/components/RankBanner'
+import useFetchRank from './hooks/useFetchRank'
 
 export default function RankPage() {
-  const [currentPage, setCurrentPage] = useState(1)
-  const [lastPage, setLastPage] = useState(10)
+  const { currentPage, lastPage, rankList, currentDate, myRanking, fetchMyRanking, handlePageChange } = useFetchRank()
 
   return (
     <div className="h-full mx-auto px-[80px] pt-[60px]">
       <div className="h-full max-w-[1280px] mx-auto flex flex-col gap-[40px]">
-        <RankBanner />
+        <RankBanner handleRefresh={fetchMyRanking} currentDate={currentDate} />
         <div className="h-full w-full flex gap-[40px]">
           <div className="flex flex-col items-center justify-between gap-[40px] flex-1">
-            {/* TODO: 10개씩 페이지네이션 처리 */}
-            <RankList currentPage={currentPage} lastPage={lastPage} />
-            <div className="pb-[64px]">
-              <Pagenation currentPageNumber={currentPage} lastPageNumber={lastPage} handlePageChange={() => {}} />
-            </div>
+            <RankList currentPage={currentPage} lastPage={lastPage} rankList={rankList} />
+            {rankList.length === 0 ? (
+              <div className="flex justify-center items-center h-full pb-[60px]">
+                <span className="text-grayscale-50">랭킹이 없습니다.</span>
+              </div>
+            ) : (
+              <div className="pb-[64px]">
+                <Pagenation
+                  currentPageNumber={currentPage}
+                  lastPageNumber={lastPage}
+                  handlePageChange={handlePageChange}
+                />
+              </div>
+            )}
           </div>
-          <MyLank />
+          <MyLank myRanking={myRanking} />
         </div>
       </div>
     </div>
