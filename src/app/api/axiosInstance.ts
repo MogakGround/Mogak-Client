@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import { useAuthStore } from '@/store/authStore'
 import { ErrorResponse } from './api.types'
+import { postRefreshToken } from './auth/api'
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -8,6 +9,7 @@ const axiosInstance: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 })
 
 axiosInstance.interceptors.request.use(
@@ -28,7 +30,7 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response.data,
-  (error: AxiosError) => {
+  async (error: AxiosError) => {
     if (!error.response) {
       alert('네트워크 오류가 발생했습니다. 다시 시도해 주세요.')
       throw new ErrorResponse(0, 0, 'Network Error')
@@ -41,10 +43,19 @@ axiosInstance.interceptors.response.use(
     const errorResponse = new ErrorResponse(status, code, message)
 
     if (status === 401) {
-      const { clearTokens } = useAuthStore.getState()
-      clearTokens()
-      window.location.href = '/auth/signin'
-      throw errorResponse
+      const { accessToken, setAccessToken } = useAuthStore.getState()
+
+      if (accessToken) {
+        const { accessToken: newAccessToken } = await postRefreshToken()
+        try {
+          setAccessToken(newAccessToken)
+        } catch (error) {
+          if (error instanceof Error) {
+            window.location.href = '/auth/signin'
+            console.error(error)
+          }
+        }
+      }
     }
     if (status === 500) {
       alert('서버에서 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')

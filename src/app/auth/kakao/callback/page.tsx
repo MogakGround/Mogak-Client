@@ -9,7 +9,7 @@ import LogoIcon from '@/assets/svg/logo.svg'
 import ImageBackgroundLayout from '@/components/global/layout/ImageBackgroundLayout'
 
 export default function KakaoCallbackPage() {
-  const { setAccessToken, setRefreshToken } = useAuthStore()
+  const { setAccessToken } = useAuthStore()
 
   const router = useRouter()
   const [kakaoCode, setKakaoCode] = useState<string | null>(null)
@@ -29,7 +29,6 @@ export default function KakaoCallbackPage() {
 
           if (res.status === 'success') {
             setAccessToken(res.accessToken)
-            setRefreshToken(res.refreshToken)
             router.push('/')
           } else {
             router.push(`/auth/signup?kakaoId=${res.kakaoId}`)
@@ -41,7 +40,7 @@ export default function KakaoCallbackPage() {
     }
 
     handleKakaoLogin()
-  }, [kakaoCode, router, setAccessToken, setRefreshToken])
+  }, [kakaoCode, router, setAccessToken])
 
   return (
     <ImageBackgroundLayout>
