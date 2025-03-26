@@ -1,23 +1,12 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import LogoIcon from '@/assets/svg/logo.svg'
 
-import { useAuthStore } from '@/store/authStore'
-import { useUserStore } from '@/store/userStore'
-
 const GNB = () => {
-  const { accessToken } = useAuthStore()
-  const { fetchUser } = useUserStore()
   const [pageNumber, setPageNumber] = useState<number>(1)
   const HeaderProfile = dynamic(() => import('./components/HeaderProfile'), { ssr: false })
-
-  useEffect(() => {
-    if (accessToken) {
-      fetchUser()
-    }
-  }, [accessToken, fetchUser])
 
   const handleLogoClick = () => {}
   const handleHomeClick = () => {
@@ -67,4 +56,3 @@ const GNB = () => {
 }
 
 export default GNB
-
