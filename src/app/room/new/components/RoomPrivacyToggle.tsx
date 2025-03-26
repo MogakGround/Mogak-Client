@@ -8,7 +8,6 @@ import ValidationCheck from '@/components/global/form/vaildationCheck'
 
 interface IRoomPrivacyToggleProps {
   roomNewForm: IRoomNewForm
-  isPrivate: boolean
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void
   passwordValidations: { lengthValid: boolean; formatValid: boolean }
   handleToggle: () => void
@@ -18,7 +17,6 @@ export default function RoomPrivacyToggle({
   roomNewForm,
   handleChange,
   passwordValidations,
-  isPrivate,
   handleToggle,
 }: IRoomPrivacyToggleProps) {
   return (
@@ -28,9 +26,15 @@ export default function RoomPrivacyToggle({
           <h3 className="semi-16 text-grayscale-50">모각방 공개 여부</h3>
           <span className="reg-12 text-accent-100">필수</span>
         </div>
-        <TextToggle theme={ToggleTheme.DARK} isOn={!isPrivate} onToggle={handleToggle} textl="공개" textr="비공개" />
+        <TextToggle
+          theme={ToggleTheme.DARK}
+          isOn={!roomNewForm.isLocked}
+          onToggle={handleToggle}
+          textl="공개"
+          textr="비공개"
+        />
       </div>
-      {isPrivate && (
+      {roomNewForm.isLocked && (
         <div className="flex flex-col gap-[8px]">
           <BasicInput
             placeHolder="입장에 필요한 비밀번호를 입력해주세요. "

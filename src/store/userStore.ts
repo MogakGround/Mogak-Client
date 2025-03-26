@@ -26,7 +26,6 @@ export const useUserStore = create<UserStore>((set) => ({
 
   fetchUser: async () => {
     const res = await getMyProfile()
-    console.log(res)
 
     if (res) {
       set({

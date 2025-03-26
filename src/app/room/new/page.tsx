@@ -3,7 +3,7 @@
 import ImageBackgroundLayout from '@/components/global/layout/ImageBackgroundLayout'
 import useModal from '@/components/global/modal/hooks/useModal'
 
-import RoomNewModal from '@/components/room/new/CreateRoomModal'
+import RoomNewModal from '@/app/room/new/components/CreateRoomModal'
 import { useEffect } from 'react'
 
 export default function RoomNewPage() {
