@@ -1,11 +1,11 @@
 import { MyRankingResponseData } from '@/app/api/user/user.types'
 import TimeDisplay, { TimeDisplayType } from './TimeDisplay'
 
-interface IMyLankProps {
+interface IMyRankProps {
   myRanking: MyRankingResponseData
 }
 
-export default function MyLank({ myRanking }: IMyLankProps) {
+export default function MyRank({ myRanking }: IMyRankProps) {
   return (
     <div className="flex flex-col w-[308px] h-[169px] rounded-[12px] overflow-hidden bg-grayscale-700 p-[24px]">
       <h4 className="med-18 mb-[16px] text-grayscale-50">내 랭킹</h4>

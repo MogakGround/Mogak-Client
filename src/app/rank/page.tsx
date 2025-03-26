@@ -2,7 +2,7 @@
 
 import Pagenation from '@/components/global/pagenation/Pagenation'
 import RankList from '@/app/rank/components/rankList'
-import MyLank from '@/app/rank/components/MyLank'
+import MyRank from '@/app/rank/components/MyRank'
 import RankBanner from '@/app/rank/components/RankBanner'
 import useFetchRank from './hooks/useFetchRank'
 
@@ -30,7 +30,7 @@ export default function RankPage() {
               </div>
             )}
           </div>
-          <MyLank myRanking={myRanking} />
+          <MyRank myRanking={myRanking} />
         </div>
       </div>
     </div>
