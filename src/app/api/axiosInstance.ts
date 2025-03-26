@@ -46,9 +46,9 @@ axiosInstance.interceptors.response.use(
       const { accessToken, setAccessToken } = useAuthStore.getState()
 
       if (accessToken) {
-        const res = await postRefreshToken()
+        const { accessToken: newAccessToken } = await postRefreshToken()
         try {
-          setAccessToken(res.accessToken)
+          setAccessToken(newAccessToken)
         } catch (error) {
           if (error instanceof Error) {
             window.location.href = '/auth/signin'
