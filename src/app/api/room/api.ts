@@ -1,6 +1,10 @@
 import axiosInstance from '../axiosInstance'
-import { PostRoomRequest } from './room.types'
+import { GetCheckRoomNameReqeust, PostCreateRoomRequest } from './room.types'
 
-export const postRoom = async (params: PostRoomRequest) => {
+export const postCreateRoom = async (params: PostCreateRoomRequest) => {
   return await axiosInstance.post('/room', params)
+}
+
+export const getCheckRoomName = async (params: GetCheckRoomNameReqeust) => {
+  return await axiosInstance.get('/room/check-room-name', { params })
 }

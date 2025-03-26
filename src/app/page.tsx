@@ -12,7 +12,6 @@ import MogakRoom, { MogakRoomProps } from '@/components/app/home/MogakRoom'
 import BasicButton from '@/components/global/button/BasicButton'
 import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
 import NoMogakRoom from '@/components/app/home/NoMogakRoom'
-
 ////////////////////////////////////////////////////
 // 임시
 const mogakRooms: MogakRoomProps[] = [

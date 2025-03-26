@@ -1,5 +1,6 @@
 import { ChangeEvent, useState } from 'react'
 import { THUMBNAIL_LIST } from '@/constants/Room'
+import { WorkHours, RoomImg } from '@/app/api/room/room.types'
 
 export interface IRoomNewFormProps {
   value: string
@@ -12,9 +13,9 @@ export type RoomNewStatus = 'step1' | 'step2' | 'step3' | 'complete'
 export interface IRoomNewForm {
   name: string
   description: string
-  thumbnail: string
-  time: string[]
-  isPrivate: boolean
+  thumbnail: RoomImg
+  time: WorkHours[]
+  isLocked: boolean
   password: string
 }
 
@@ -23,9 +24,9 @@ export function useCreateRoom() {
   const [roomNewForm, setRoomNewForm] = useState<IRoomNewForm>({
     name: '',
     description: '',
-    thumbnail: THUMBNAIL_LIST[0].id,
-    time: [],
-    isPrivate: false,
+    thumbnail: THUMBNAIL_LIST[0].id as RoomImg,
+    time: [] as WorkHours[],
+    isLocked: false,
     password: '',
   })
 
@@ -38,16 +39,11 @@ export function useCreateRoom() {
     setRoomNewStatus(status)
   }
 
-  const showToastMessage = (message: string) => {
-    alert(message)
-  }
-
   return {
     roomNewStatus,
     roomNewForm,
     setRoomNewForm,
     roomStatusChange,
     handleChangeForm,
-    showToastMessage,
   }
 }
