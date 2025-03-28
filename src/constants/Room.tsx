@@ -1,3 +1,4 @@
+import { WorkHours } from '@/app/api/room/room.types'
 import { RoomNewStatus } from '@/app/room/new/components/hooks/useCreateRoom'
 
 export const stepMessages: Record<RoomNewStatus, string> = {
@@ -48,3 +49,17 @@ export const WORK_TIME_TAG_LIST = [
     description: '아침 6시 ~ 정오',
   },
 ]
+
+// 시간대 name
+export const getNameByWorkTimeId = (id: WorkHours) => {
+  const workTime = WORK_TIME_TAG_LIST.find((item) => item.id === id)
+  return workTime ? workTime.name : '전체'
+}
+
+// 시간대 description
+export const getDescriptionByWorkTimeId = (id: WorkHours) => {
+  const workTime = WORK_TIME_TAG_LIST.find((item) => item.id === id)
+  return workTime ? workTime.description : ''
+}
+
+export const ROOM_CAPACITY = 5 // 최대 인원 수

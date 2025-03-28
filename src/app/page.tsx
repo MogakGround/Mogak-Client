@@ -9,13 +9,12 @@ import IconTextChip from '@/components/global/chip/IconTextChip'
 import { ChipSize, ChipTheme, ChipVariant, DetailTextArrow, IconArrow } from '@/components/global/chip/chip.types'
 import TextChip from '@/components/global/chip/TextChip'
 import MogakRoom from '@/components/app/home/MogakRoom'
-import BasicButton from '@/components/global/button/BasicButton'
-import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
 import NoMogakRoom from '@/components/app/home/NoMogakRoom'
 import { getAllRoomList, getRecentRoomList } from './api/home/api'
 import { WorkHours } from './api/room/room.types'
 import { Room } from './api/home/home.types'
 import Link from 'next/link'
+import { getDescriptionByWorkTimeId, getNameByWorkTimeId, ROOM_CAPACITY } from '@/constants/Room'
 
 export default function Home() {
   // 모각방 페이지
@@ -25,7 +24,7 @@ export default function Home() {
   const [roomsByWorkHours, setRoomsByWorkHours] = useState<Room[]>([]) // 시간대별 모각방 전체 리스트
   const [currentPageRoomsByWorkHours, setCurrentPageRoomsByWorkHours] = useState<Room[]>([]) // 시간대별 모각방 현재 페이지에 해당되는 리스트
   const [totalPage, setTotalPage] = useState(1) // 총 페이지 수
-  const roomCapacity = 20
+
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber)
   }
@@ -33,10 +32,10 @@ export default function Home() {
   // 모각방 시간대 버튼
   const [toggleTimes, setToggleTimes] = useState<Record<string, { active: boolean; text1: string; text2: string }>>({
     time1: { active: true, text1: '전체', text2: '' },
-    time2: { active: true, text1: '야간', text2: '오후 10시 ~ 오전 5시' },
-    time3: { active: true, text1: '오전 시간대', text2: '아침 6시 ~ 정오' },
-    time4: { active: true, text1: '오후 시간대', text2: '정오 ~ 오후 6시' },
-    time5: { active: true, text1: '저녁 시간대', text2: '오후 6시 ~ 오후 10시' },
+    time2: { active: true, text1: getNameByWorkTimeId('LATE_NIGHT'), text2: getDescriptionByWorkTimeId('LATE_NIGHT') },
+    time3: { active: true, text1: getNameByWorkTimeId('MORNING'), text2: getDescriptionByWorkTimeId('MORNING') },
+    time4: { active: true, text1: getNameByWorkTimeId('AFTERNOON'), text2: getDescriptionByWorkTimeId('AFTERNOON') },
+    time5: { active: true, text1: getNameByWorkTimeId('NIGHT'), text2: getDescriptionByWorkTimeId('NIGHT') },
   })
 
   // 시간대 버튼 토글 이벤트
@@ -240,7 +239,7 @@ export default function Home() {
                       title={room.roomName}
                       description={room.roomExplain}
                       thumbnailImageSrc={room.roomImg}
-                      capacity={roomCapacity}
+                      capacity={ROOM_CAPACITY}
                       headcount={room.userCnt}
                       sunup={room.workHours.includes('MORNING')}
                       sun={room.workHours.includes('AFTERNOON')}
@@ -316,7 +315,7 @@ export default function Home() {
                           title={room.roomName}
                           description={room.roomExplain}
                           thumbnailImageSrc={room.roomImg}
-                          capacity={roomCapacity}
+                          capacity={ROOM_CAPACITY}
                           headcount={room.userCnt}
                           sunup={room.workHours.includes('MORNING')}
                           sun={room.workHours.includes('AFTERNOON')}
