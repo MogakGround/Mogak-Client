@@ -15,7 +15,7 @@ interface Room {
 export interface GetRoomsRequest {
   page: number
   size: number
-  workHours: WorkHours[]
+  workHours?: WorkHours[]
 }
 
 export interface GetRoomsResponseData {
