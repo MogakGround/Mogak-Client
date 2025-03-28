@@ -8,135 +8,23 @@ import { useEffect, useState } from 'react'
 import IconTextChip from '@/components/global/chip/IconTextChip'
 import { ChipSize, ChipTheme, ChipVariant, DetailTextArrow, IconArrow } from '@/components/global/chip/chip.types'
 import TextChip from '@/components/global/chip/TextChip'
-import MogakRoom, { MogakRoomProps } from '@/components/app/home/MogakRoom'
+import MogakRoom from '@/components/app/home/MogakRoom'
 import BasicButton from '@/components/global/button/BasicButton'
 import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
 import NoMogakRoom from '@/components/app/home/NoMogakRoom'
-
-////////////////////////////////////////////////////
-// 임시
-const mogakRooms: MogakRoomProps[] = [
-  {
-    index: 1,
-    title: '백엔드개발자 드루와요',
-    description: '설명 텍스트',
-    thumbnailImageSrc: AreaIcon,
-    capacity: 20,
-    headcount: 16,
-    sunup: true,
-    sun: true,
-    sundown: true,
-    moon: true,
-    secret: false,
-    onClick: () => null,
-  },
-  {
-    index: 2,
-    title: '프론트엔드 개발자 모집',
-    description: '프론트엔드 개발자 채용 설명',
-    thumbnailImageSrc: AreaIcon,
-    capacity: 15,
-    headcount: 10,
-    sunup: false,
-    sun: true,
-    sundown: false,
-    moon: true,
-    secret: true,
-    onClick: () => null,
-  },
-  {
-    index: 3,
-    title: '백엔드개발자 드루와요',
-    description: '설명 텍스트',
-    thumbnailImageSrc: AreaIcon,
-    capacity: 20,
-    headcount: 16,
-    sunup: true,
-    sun: true,
-    sundown: true,
-    moon: true,
-    secret: false,
-    onClick: () => null,
-  },
-  {
-    index: 4,
-    title: '프론트엔드 개발자 모집',
-    description: '프론트엔드 개발자 채용 설명',
-    thumbnailImageSrc: AreaIcon,
-    capacity: 15,
-    headcount: 10,
-    sunup: false,
-    sun: true,
-    sundown: false,
-    moon: true,
-    secret: false,
-    onClick: () => null,
-  },
-  {
-    index: 5,
-    title: '백엔드개발자 드루와요',
-    description: '설명 텍스트',
-    thumbnailImageSrc: AreaIcon,
-    capacity: 20,
-    headcount: 16,
-    sunup: true,
-    sun: true,
-    sundown: true,
-    moon: true,
-    secret: true,
-    onClick: () => null,
-  },
-  {
-    index: 6,
-    title: '프론트엔드 개발자 모집',
-    description: '프론트엔드 개발자 채용 설명',
-    thumbnailImageSrc: AreaIcon,
-    capacity: 15,
-    headcount: 10,
-    sunup: false,
-    sun: false,
-    sundown: true,
-    moon: false,
-    secret: false,
-    onClick: () => null,
-  },
-  {
-    index: 7,
-    title: '백엔드개발자 드루와요',
-    description: '설명 텍스트',
-    thumbnailImageSrc: AreaIcon,
-    capacity: 20,
-    headcount: 16,
-    sunup: false,
-    sun: false,
-    sundown: false,
-    moon: true,
-    secret: false,
-    onClick: () => null,
-  },
-  {
-    index: 8,
-    title: '프론트엔드 개발자 모집',
-    description: '프론트엔드 개발자 채용 설명',
-    thumbnailImageSrc: AreaIcon,
-    capacity: 15,
-    headcount: 10,
-    sunup: false,
-    sun: true,
-    sundown: false,
-    moon: false,
-    secret: false,
-    onClick: () => null,
-  },
-]
-////////////////////////////////////////////////////
+import { getAllRoomList, getRecentRoomList } from './api/home/api'
+import { WorkHours } from './api/room/room.types'
+import { Room } from './api/home/home.types'
 
 export default function Home() {
   // 모각방 페이지
   const itemsPerPage = 12 // 한 페이지에 보여줄 항목 수
   const [currentPage, setCurrentPage] = useState(1)
-  const [currentRooms, setCurrentRooms] = useState<MogakRoomProps[]>([]) // 현재 페이지에 해당되는 모각방
+  const [roomsByLatest, setRoomsByLatest] = useState<Room[]>([]) // 최신 모각방 TOP 4
+  const [roomsByWorkHours, setRoomsByWorkHours] = useState<Room[]>([]) // 시간대별 모각방 전체 리스트
+  const [currentPageRoomsByWorkHours, setCurrentPageRoomsByWorkHours] = useState<Room[]>([]) // 시간대별 모각방 현재 페이지에 해당되는 리스트
   const [totalPage, setTotalPage] = useState(1) // 총 페이지 수
+  const roomCapacity = 20
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber)
   }
@@ -150,6 +38,7 @@ export default function Home() {
     time5: { active: false, text1: '저녁 시간대', text2: '오후 6시 ~ 오후 10시' },
   })
 
+  // 버튼 토글
   const handleToggleTime = (id: number) => {
     setToggleTimes((prevToggleTimes) => ({
       ...prevToggleTimes,
@@ -160,9 +49,85 @@ export default function Home() {
     }))
   }
 
+  const getSelectedWorkHours = (): WorkHours[] | null => {
+    const selectedWorkHours: WorkHours[] = []
+
+    // time1이 active면 모든 WorkHours를 반환
+    if (toggleTimes.time1.active) {
+      return null
+    }
+
+    // time2가 active이면 LATE_NIGHT 추가
+    if (toggleTimes.time2.active) {
+      selectedWorkHours.push('LATE_NIGHT')
+    }
+
+    // time3가 active이면 MORNING 추가
+    if (toggleTimes.time3.active) {
+      selectedWorkHours.push('MORNING')
+    }
+
+    // time4가 active이면 AFTERNOON 추가
+    if (toggleTimes.time4.active) {
+      selectedWorkHours.push('AFTERNOON')
+    }
+
+    // time5가 active이면 NIGHT 추가
+    if (toggleTimes.time5.active) {
+      selectedWorkHours.push('NIGHT')
+    }
+
+    return selectedWorkHours
+  }
+
+  const searchAllRoomList = async () => {
+    try {
+      const workHours = getSelectedWorkHours()
+
+      // workHours를 인자로 전달하여 API 호출
+      let data
+      if (workHours) data = await getAllRoomList({ page: currentPage, size: itemsPerPage, workHours: workHours })
+      else data = await getAllRoomList({ page: currentPage, size: itemsPerPage })
+      console.log(data.data.rooms)
+
+      const rooms = data.data.rooms
+      setRoomsByWorkHours(rooms)
+      resetCurrentPage(rooms)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const searchRecentRoomList = async () => {
+    try {
+      const data = await getRecentRoomList()
+      console.log(data.data.rooms)
+
+      const rooms = data.data.rooms
+      setRoomsByLatest(rooms)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  /*
+  const filterRooms = (rooms: Room[]) => {
+    return rooms.filter((room) => {
+      if (toggleTimes.time1.active) return room.sunup && room.sun && room.sundown && room.moon
+      return (
+        (toggleTimes.time2.active && room.sunup) ||
+        (toggleTimes.time3.active && room.sun) ||
+        (toggleTimes.time4.active && room.sundown) ||
+        (toggleTimes.time5.active && room.moon)
+      )
+    })
+  }
+
   // 조건에 맞는 모각방 구하기
   const countRooms = () => {
     let filtered: MogakRoomProps[] = []
+
+    const mogakRooms: MogakRoomProps[] = currentRooms
 
     // time1에 해당하는 필터
     if (toggleTimes.time1.active) {
@@ -206,30 +171,62 @@ export default function Home() {
 
     return uniqueFiltered
   }
+  */
 
-  const isRoom = (room: MogakRoomProps) => {
-    if (room.sunup && room.sun && room.sundown && room.moon && toggleTimes['time1'].active) return true
+  const isRoom = (room: Room) => {
+    if (
+      room.workHours.includes('MORNING') &&
+      room.workHours.includes('AFTERNOON') &&
+      room.workHours.includes('NIGHT') &&
+      room.workHours.includes('LATE_NIGHT')
+    ) {
+      if (toggleTimes['time1'].active) return true
+    }
 
-    if (room.sunup && toggleTimes['time2'].active) return true
+    if (room.workHours.includes('MORNING')) {
+      if (toggleTimes['time2'].active) return true
+    }
 
-    if (room.sun && toggleTimes['time3'].active) return true
+    if (room.workHours.includes('AFTERNOON')) {
+      if (toggleTimes['time3'].active) return true
+    }
 
-    if (room.sundown && toggleTimes['time4'].active) return true
+    if (room.workHours.includes('NIGHT')) {
+      if (toggleTimes['time4'].active) return true
+    }
 
-    if (room.moon && toggleTimes['time5'].active) return true
+    if (room.workHours.includes('LATE_NIGHT')) {
+      if (toggleTimes['time5'].active) return true
+    }
 
     return false
   }
 
+  // 페이지 계산
+  const resetCurrentPage = (rooms: Room[]) => {
+    if (rooms) {
+      // 총 페이지 수 계산
+      setTotalPage(Math.ceil(rooms.length / itemsPerPage))
+      // 현재 페이지에 해당하는 방들 설정
+      setCurrentPageRoomsByWorkHours(rooms.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage))
+    }
+  }
+
+  useEffect(() => {
+    // API
+    searchAllRoomList() // 전체 조회
+    searchRecentRoomList() // 최근 TOP4 조회
+  }, [])
+
+  useEffect(() => {
+    // API
+    searchAllRoomList() // 전체 조회
+  }, [toggleTimes])
+
   // 페이지네이션 및 필터링을 고려한 현재 페이지의 방들을 설정
   useEffect(() => {
-    const filtered = countRooms()
-
-    if (filtered) {
-      setTotalPage(Math.ceil(filtered.length / itemsPerPage)) // 총 페이지 수 계산
-      setCurrentRooms(filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)) // 현재 페이지에 해당하는 방들 설정
-    }
-  }, [currentPage, toggleTimes])
+    resetCurrentPage(currentPageRoomsByWorkHours)
+  }, [currentPage])
 
   return (
     <div className="flex justify-center items-center mt-[40px] w-full">
@@ -240,30 +237,30 @@ export default function Home() {
           <p className="reg-14 text-grayscale-400">최근에 만들어진 모각방</p>
           <p className="semi-20 text-white">갓 나온 따끈따끈한 모각방</p>
         </div>
-        {mogakRooms.length === 0 ? (
+        {!roomsByLatest || roomsByLatest.length === 0 ? (
           <div className="mt-[30px]">
             <NoMogakRoom />
           </div>
         ) : (
           <div className="grid grid-cols-4 mt-[12px]">
             {/** 최대 4개 방만 출력 */}
-            {mogakRooms.map(
+            {roomsByLatest.map(
               (room, index) =>
                 index < 4 && (
                   <MogakRoom
-                    index={room.index}
-                    key={index}
-                    title={room.title}
-                    description={room.description}
-                    thumbnailImageSrc={room.thumbnailImageSrc}
-                    capacity={room.capacity}
-                    headcount={room.headcount}
-                    sunup={room.sunup}
-                    sun={room.sun}
-                    sundown={room.sundown}
-                    moon={room.moon}
-                    secret={room.secret}
-                    onClick={room.onClick}
+                    index={room.roomId}
+                    key={'recent room' + index + room.roomName + room.roomId}
+                    title={room.roomName}
+                    description={room.roomExplain}
+                    thumbnailImageSrc={room.roomImg}
+                    capacity={roomCapacity}
+                    headcount={room.userCnt}
+                    sunup={room.workHours.includes('MORNING')}
+                    sun={room.workHours.includes('AFTERNOON')}
+                    sundown={room.workHours.includes('NIGHT')}
+                    moon={room.workHours.includes('LATE_NIGHT')}
+                    secret={room.isLocked}
+                    onClick={() => null}
                   />
                 )
             )}
@@ -276,7 +273,7 @@ export default function Home() {
           <div className="flex justify-between mt-[8px]">
             <div>
               {Object.keys(toggleTimes).map((key, index) => (
-                <span className="mr-[12px]">
+                <span className="mr-[12px]" key={'time chip' + index}>
                   {toggleTimes[key].active ? (
                     <IconTextChip
                       size={ChipSize.lg}
@@ -307,7 +304,7 @@ export default function Home() {
               size={ChipSize.lg}
               theme={ChipTheme.DARK}
               variant={ChipVariant.DEFAULT}
-              text={`${!countRooms() ? -1 : countRooms()?.length}개`}
+              text={`${roomsByWorkHours.length}개`}
               detailText={'조건에 맞는 모각방'}
               detailTextArrow={DetailTextArrow.LEFT}
               handleClick={() => null}
@@ -315,30 +312,30 @@ export default function Home() {
           </div>
 
           {/* 페이지네이션 */}
-          {currentRooms.length === 0 ? (
+          {!currentPageRoomsByWorkHours || currentPageRoomsByWorkHours.length === 0 ? (
             <div className="mt-[106px]">
               <NoMogakRoom />
             </div>
           ) : (
             <>
               <div className="grid grid-cols-4 mt-[12px]">
-                {currentRooms.map(
+                {currentPageRoomsByWorkHours.map(
                   (room, index) =>
                     isRoom(room) && (
                       <MogakRoom
-                        index={room.index}
-                        key={index}
-                        title={room.title}
-                        description={room.description}
-                        thumbnailImageSrc={room.thumbnailImageSrc}
-                        capacity={room.capacity}
-                        headcount={room.headcount}
-                        sunup={room.sunup}
-                        sun={room.sun}
-                        sundown={room.sundown}
-                        moon={room.moon}
-                        secret={room.secret}
-                        onClick={room.onClick}
+                        index={room.roomId}
+                        key={'workhours room' + index + room.roomName + room.roomId}
+                        title={room.roomName}
+                        description={room.roomExplain}
+                        thumbnailImageSrc={room.roomImg}
+                        capacity={roomCapacity}
+                        headcount={room.userCnt}
+                        sunup={room.workHours.includes('MORNING')}
+                        sun={room.workHours.includes('AFTERNOON')}
+                        sundown={room.workHours.includes('NIGHT')}
+                        moon={room.workHours.includes('LATE_NIGHT')}
+                        secret={room.isLocked}
+                        onClick={() => null}
                       />
                     )
                 )}

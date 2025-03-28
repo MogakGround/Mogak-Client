@@ -1,6 +1,6 @@
 import { RoomImg, WorkHours } from '../room/room.types'
 
-interface Room {
+export interface Room {
   roomId: number
   roomName: string
   roomExplain?: string

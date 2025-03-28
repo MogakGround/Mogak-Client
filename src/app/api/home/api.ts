@@ -3,7 +3,7 @@ import { WorkHours } from '../room/room.types'
 import { GetRoomsRequest } from './home.types'
 
 // 모각작 방 전체 조회 (시간대별)
-export const getAllRoomListRoom = async (params: GetRoomsRequest) => {
+export const getAllRoomList = async (params: GetRoomsRequest) => {
   //return await axiosInstance.get('/room', { params })
 
   return await axiosInstance.get('/room', {
@@ -31,6 +31,6 @@ export const getAllRoomListRoom = async (params: GetRoomsRequest) => {
 }
 
 // 최근 만들어진 모각방 (TOP 4) 조회
-export const getRecentRoomListName = async () => {
+export const getRecentRoomList = async () => {
   return await axiosInstance.get('/room/recent')
 }
