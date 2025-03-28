@@ -5,7 +5,7 @@ import NoMogakIcon from '@/assets/svg/home/no-mogakrooms.svg'
 import BasicButton from '@/components/global/button/BasicButton'
 import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
 
-export default function NoMogakRoom() {
+export default function NoMogakRoom({ recent }: { recent: boolean }) {
   // 모각방 만들기 버튼
   const handleCreateMogakRoom = () => {}
 
@@ -16,10 +16,19 @@ export default function NoMogakRoom() {
       </div>
       <div className="mt-[20px]">
         <div className="flex justify-center items-center">
-          <p className="semi-20 text-white ">모각방이 아직 없어요</p>
+          {/* 최근 모각방 or 시간대별 모각방 */}
+          {recent ? (
+            <p className="semi-20 text-white ">모각방이 아직 없어요</p>
+          ) : (
+            <p className="semi-20 text-white ">조건에 맞는 모각방이 아직 없어요</p>
+          )}
         </div>
         <div className="flex justify-center items-center">
-          <p className="reg-14 text-grayscale-400">역사적인 최초의 모각방을 만들어볼까요?</p>
+          {recent ? (
+            <p className="reg-14 text-grayscale-400">역사적인 최초의 모각방을 만들어볼까요?</p>
+          ) : (
+            <p className="reg-14 text-grayscale-400">이 시간대 최초의 모각방을 만들어볼까요?</p>
+          )}
         </div>
       </div>
       <div className="flex justify-center items-center mt-[31px]">

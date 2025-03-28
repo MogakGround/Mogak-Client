@@ -226,7 +226,7 @@ export default function Home() {
         </div>
         {!roomsByLatest || roomsByLatest.length === 0 ? (
           <div className="mt-[30px]">
-            <NoMogakRoom />
+            <NoMogakRoom recent={true} />
           </div>
         ) : (
           <div className="grid grid-cols-4 mt-[12px]">
@@ -303,7 +303,7 @@ export default function Home() {
           {/* 페이지네이션 */}
           {!currentPageRoomsByWorkHours || currentPageRoomsByWorkHours.length === 0 ? (
             <div className="mt-[106px]">
-              <NoMogakRoom />
+              <NoMogakRoom recent={false} />
             </div>
           ) : (
             <>
