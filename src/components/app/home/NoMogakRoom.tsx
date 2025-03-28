@@ -4,6 +4,7 @@ import Image from 'next/image'
 import NoMogakIcon from '@/assets/svg/home/no-mogakrooms.svg'
 import BasicButton from '@/components/global/button/BasicButton'
 import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
+import Link from 'next/link'
 
 export default function NoMogakRoom({ recent }: { recent: boolean }) {
   // 모각방 만들기 버튼
@@ -31,15 +32,17 @@ export default function NoMogakRoom({ recent }: { recent: boolean }) {
           )}
         </div>
       </div>
-      <div className="flex justify-center items-center mt-[31px]">
-        <BasicButton
-          size={ButtonSize.md}
-          theme={ButtonTheme.primary}
-          variant={ButtonVariant.filled}
-          text="모각방 만들기"
-          handleClick={handleCreateMogakRoom}
-        />
-      </div>
+      <Link href="/room/new">
+        <div className="flex justify-center items-center mt-[31px]">
+          <BasicButton
+            size={ButtonSize.md}
+            theme={ButtonTheme.primary}
+            variant={ButtonVariant.filled}
+            text="모각방 만들기"
+            handleClick={handleCreateMogakRoom}
+          />
+        </div>
+      </Link>
     </div>
   )
 }
