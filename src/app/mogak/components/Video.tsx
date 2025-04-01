@@ -8,7 +8,7 @@ interface Props {
   isVideoOn: boolean
 }
 
-function Video({ streamManager, isVideoOn }: Props) {
+export default function Video({ streamManager, isVideoOn }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const autoplay = true
 
@@ -20,10 +20,10 @@ function Video({ streamManager, isVideoOn }: Props) {
 
   return (
     <>
-      <video autoPlay={autoplay} ref={videoRef} style={{ width: '100%' }}>
+      <video autoPlay={autoplay} ref={videoRef} className="w-full h-full object-cover rounded-10">
         <track kind="captions" />
       </video>
-      {!isVideoOn && (
+      {(!isVideoOn || !streamManager) && (
         <Image
           alt="Video Off"
           src={VideoFallback}
@@ -33,5 +33,3 @@ function Video({ streamManager, isVideoOn }: Props) {
     </>
   )
 }
-
-export default Video

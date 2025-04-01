@@ -3,7 +3,7 @@ import { OpenVidu, Session as OVSession, Publisher, StreamManager, Subscriber } 
 import axios from 'axios'
 import { useRoomStore } from '@/store/roomStore'
 
-export default function useOpenViduSession(sessionId: string, nickname: string) {
+export default function useOpenViduSession(sessionId: string, userId: string) {
   const [session, setSession] = useState<OVSession | undefined>()
   const [subscribers, setSubscribers] = useState<Subscriber[]>([])
   const [publisher, setPublisher] = useState<Publisher | undefined>()
@@ -80,7 +80,7 @@ export default function useOpenViduSession(sessionId: string, nickname: string) 
 
     mySession.on('streamCreated', (event) => {
       const subscriber = mySession.subscribe(event.stream, undefined)
-      console.log('subscriber :::: ', subscriber)
+      console.log('참여 subscriber :::: ', subscriber)
       setSubscribers((subscribers) => [...subscribers, subscriber])
     })
 
@@ -118,7 +118,7 @@ export default function useOpenViduSession(sessionId: string, nickname: string) 
   const createToken = async (sessionId: string): Promise<string> => {
     const response = await axios.post(
       `${OPENVIDU_SERVER_URL}/api/sessions/${sessionId}/connection`,
-      { data: JSON.stringify({ clientData: nickname }) },
+      {},
       {
         headers: {
           Authorization: `Basic ${btoa(`OPENVIDUAPP:${OPENVIDU_SERVER_SECRET}`)}`,
@@ -139,8 +139,7 @@ export default function useOpenViduSession(sessionId: string, nickname: string) 
     getToken()
       .then(async (token) => {
         try {
-          await session.connect(token, { clientData: nickname })
-
+          await session.connect(token, userId)
           console.log('🔗 OpenVidu 세션에 연결됨')
         } catch (error) {
           console.log(error, '🚨 OpenVidu 연결 실패')
@@ -149,7 +148,7 @@ export default function useOpenViduSession(sessionId: string, nickname: string) 
       .catch((error) => {
         console.error('Error getting token:', error)
       })
-  }, [session, nickname])
+  }, [session])
 
   /* 브라우저 종료 시 세션 정리 */
   useEffect(() => {

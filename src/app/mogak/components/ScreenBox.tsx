@@ -13,7 +13,7 @@ interface ScreenBoxProps {
   time: number
   subscriber: Subscriber
 }
-export default function ScreenBox({ nickname, time = 0, subscriber }: ScreenBoxProps) {
+export default function ScreenBox({ nickname, time, subscriber }: ScreenBoxProps) {
   const { hours, minutes, seconds } = convertTime(time)
 
   return (
@@ -27,7 +27,7 @@ export default function ScreenBox({ nickname, time = 0, subscriber }: ScreenBoxP
           handleClick={() => {}}
           iconArrow={IconArrow.left}
           iconSrc={IconPerson}
-          className="h-36 pointer-events-none"
+          className="h-36 pointer-events-none bg-grayscale-700"
         />
         <IconTextButton
           variant={ButtonVariant.default}
@@ -36,7 +36,7 @@ export default function ScreenBox({ nickname, time = 0, subscriber }: ScreenBoxP
           handleClick={() => {}}
           iconArrow={IconArrow.left}
           iconSrc={IconClock}
-          className="h-36 pointer-events-none"
+          className="h-36 pointer-events-none bg-grayscale-700"
         >
           <div className="med-14 flex items-center text-center h-36 whitespace-nowrap">
             <span className="w-17">{hours}</span>

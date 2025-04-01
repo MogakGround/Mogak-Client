@@ -3,6 +3,7 @@ import { create } from 'zustand'
 
 interface UserStore {
   nickname: string | null
+  userID: string | null
   portfolioUrl: string | null
   rank: number | null
   time: {
@@ -16,6 +17,7 @@ interface UserStore {
 
 export const useUserStore = create<UserStore>((set) => ({
   nickname: null,
+  userID: '18',
   portfolioUrl: null,
   rank: null,
   time: {
