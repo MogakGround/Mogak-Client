@@ -32,14 +32,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <QueryProvider>
-      <html lang="ko" className={`${pretendard.variable} ${riaSans.variable}`}>
-        <body className={`${pretendard.className} flex flex-col min-h-screen bg-bg`}>
+    <html lang="ko" className={`${pretendard.variable} ${riaSans.variable}`}>
+      <body className={`${pretendard.className} flex flex-col min-h-screen bg-bg`}>
+        <QueryProvider>
           <div id="portalModal" />
           <GNB />
           <main className="w-full h-[calc(100%-60px)] overflow-y-auto">{children}</main>
-        </body>
-      </html>
-    </QueryProvider>
+        </QueryProvider>
+      </body>
+    </html>
   )
 }
