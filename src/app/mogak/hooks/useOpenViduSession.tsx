@@ -7,6 +7,7 @@ export default function useOpenViduSession(sessionId: string, userId: string) {
   const [session, setSession] = useState<OVSession | undefined>()
   const [subscribers, setSubscribers] = useState<Subscriber[]>([])
   const [publisher, setPublisher] = useState<Publisher | undefined>()
+  const [connectionError, setConnectionError] = useState<Error | null>(null)
 
   const { setScreenShareOn } = useRoomStore()
 
@@ -24,6 +25,8 @@ export default function useOpenViduSession(sessionId: string, userId: string) {
       const newPublisher = OV.current.initPublisher(undefined, {
         videoSource: 'screen',
         publishAudio: false,
+        resolution: '1280x720',
+        frameRate: 30,
       })
 
       newPublisher.on('accessAllowed', () => {
@@ -35,6 +38,11 @@ export default function useOpenViduSession(sessionId: string, userId: string) {
 
       newPublisher.on('accessDenied', () => {
         console.warn('🚨 화면 공유 권한이 거부되었습니다.')
+      })
+
+      // 스트림 종료 이벤트 처리
+      newPublisher.on('streamDestroyed', () => {
+        stopScreenShare()
       })
     } catch (error) {
       console.error('화면 공유 오류:', error)
@@ -60,6 +68,7 @@ export default function useOpenViduSession(sessionId: string, userId: string) {
     setSession(undefined)
     setSubscribers([])
     setPublisher(undefined)
+    setConnectionError(null)
   }, [session])
 
   const deleteSubscriber = useCallback((streamManager: StreamManager) => {
@@ -69,9 +78,8 @@ export default function useOpenViduSession(sessionId: string, userId: string) {
         const newSubscribers = [...prevSubscribers]
         newSubscribers.splice(index, 1)
         return newSubscribers
-      } else {
-        return prevSubscribers
       }
+      return prevSubscribers
     })
   }, [])
 
@@ -80,8 +88,16 @@ export default function useOpenViduSession(sessionId: string, userId: string) {
 
     mySession.on('streamCreated', (event) => {
       const subscriber = mySession.subscribe(event.stream, undefined)
-      console.log('참여 subscriber :::: ', subscriber)
-      setSubscribers((subscribers) => [...subscribers, subscriber])
+      subscriber.on('streamPlaying', () => {
+        console.log('✅ Subscriber stream playing')
+      })
+      setSubscribers((prevSubscribers) => {
+        // 중복 구독 방지
+        if (prevSubscribers.some((sub) => sub.stream.streamId === subscriber.stream.streamId)) {
+          return prevSubscribers
+        }
+        return [...prevSubscribers, subscriber]
+      })
     })
 
     mySession.on('streamDestroyed', (event) => {
@@ -89,11 +105,12 @@ export default function useOpenViduSession(sessionId: string, userId: string) {
     })
 
     mySession.on('exception', (exception) => {
-      console.warn(exception)
+      console.warn('OpenVidu Exception:', exception)
+      setConnectionError(new Error(exception.message))
     })
 
     setSession(mySession)
-  }, [])
+  }, [deleteSubscriber])
 
   const createSession = async (sessionId: string): Promise<string> => {
     try {
@@ -136,19 +153,33 @@ export default function useOpenViduSession(sessionId: string, userId: string) {
   useEffect(() => {
     if (!session) return
 
-    getToken()
-      .then(async (token) => {
-        try {
-          await session.connect(token, userId)
-          console.log('🔗 OpenVidu 세션에 연결됨')
-        } catch (error) {
-          console.log(error, '🚨 OpenVidu 연결 실패')
+    let isConnecting = true
+
+    const connectSession = async () => {
+      try {
+        const token = await getToken()
+        if (!isConnecting) return
+
+        await session.connect(token, userId)
+        console.log('🔗 OpenVidu 세션에 연결됨')
+        setConnectionError(null)
+      } catch (error) {
+        console.error('🚨 OpenVidu 연결 실패:', error)
+        setConnectionError(error as Error)
+
+        // 연결 실패 시 재시도
+        if (isConnecting) {
+          setTimeout(connectSession, 2000)
         }
-      })
-      .catch((error) => {
-        console.error('Error getting token:', error)
-      })
-  }, [session])
+      }
+    }
+
+    connectSession()
+
+    return () => {
+      isConnecting = false
+    }
+  }, [session, userId, getToken])
 
   /* 브라우저 종료 시 세션 정리 */
   useEffect(() => {
@@ -160,6 +191,7 @@ export default function useOpenViduSession(sessionId: string, userId: string) {
     session,
     subscribers,
     publisher,
+    connectionError,
     joinSession,
     leaveSession,
     startScreenShare,
