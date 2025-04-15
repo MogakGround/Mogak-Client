@@ -34,6 +34,7 @@ export interface MyRoom {
   roomExplain?: string
   workHours: WorkHours[]
   isLocked: boolean
+  userCnt: number
   roomPassword?: string
   hour: number
   min: number

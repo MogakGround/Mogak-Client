@@ -10,159 +10,13 @@ import { useEffect, useState } from 'react'
 import IconButton from '@/components/global/button/IconButton'
 import { ButtonSize, ButtonTheme, ButtonVariant, IconArrow } from '@/components/global/button/button.types'
 import IconTextButton from '@/components/global/button/IconTextButton'
-import MogakRoom, { MogakRoomProps } from '@/components/app/home/MogakRoom'
+import MogakRoom from '@/components/app/home/MogakRoom'
 import Pagenation from '@/components/global/pagenation/Pagenation'
 import TodayBlock from '@/components/app/mypage/TodayBlock'
 import ProfileSettingButton from '@/components/app/mypage/ProfileSettingButton'
-
-////////////////////////////////////////////////////
-// 임시
-const mogakRooms1: MogakRoomProps[] = [
-  {
-    index: 1,
-    title: '백엔드개발자 드루와요',
-    description: '설명 텍스트',
-    thumbnailImageSrc: LogoIcon,
-    capacity: 20,
-    headcount: 16,
-    sunup: true,
-    sun: true,
-    sundown: true,
-    moon: true,
-    secret: false,
-    onClick: () => null,
-  },
-  {
-    index: 2,
-    title: '프론트엔드 개발자 모집',
-    description: '프론트엔드 개발자 채용 설명',
-    thumbnailImageSrc: LogoIcon,
-    capacity: 15,
-    headcount: 10,
-    sunup: false,
-    sun: true,
-    sundown: false,
-    moon: true,
-    secret: true,
-    onClick: () => null,
-  },
-  {
-    index: 3,
-    title: '백엔드개발자 드루와요',
-    description: '설명 텍스트',
-    thumbnailImageSrc: LogoIcon,
-    capacity: 20,
-    headcount: 16,
-    sunup: true,
-    sun: true,
-    sundown: true,
-    moon: true,
-    secret: false,
-    onClick: () => null,
-  },
-  {
-    index: 4,
-    title: '프론트엔드 개발자 모집',
-    description: '프론트엔드 개발자 채용 설명',
-    thumbnailImageSrc: LogoIcon,
-    capacity: 15,
-    headcount: 10,
-    sunup: false,
-    sun: true,
-    sundown: false,
-    moon: true,
-    secret: false,
-    onClick: () => null,
-  },
-  {
-    index: 5,
-    title: '백엔드개발자 드루와요',
-    description: '설명 텍스트',
-    thumbnailImageSrc: LogoIcon,
-    capacity: 20,
-    headcount: 16,
-    sunup: true,
-    sun: true,
-    sundown: true,
-    moon: true,
-    secret: true,
-    onClick: () => null,
-  },
-  {
-    index: 6,
-    title: '프론트엔드 개발자 모집',
-    description: '프론트엔드 개발자 채용 설명',
-    thumbnailImageSrc: LogoIcon,
-    capacity: 15,
-    headcount: 10,
-    sunup: false,
-    sun: false,
-    sundown: true,
-    moon: false,
-    secret: false,
-    onClick: () => null,
-  },
-  {
-    index: 7,
-    title: '백엔드개발자 드루와요',
-    description: '설명 텍스트',
-    thumbnailImageSrc: LogoIcon,
-    capacity: 20,
-    headcount: 16,
-    sunup: false,
-    sun: false,
-    sundown: false,
-    moon: true,
-    secret: false,
-    onClick: () => null,
-  },
-  {
-    index: 8,
-    title: '프론트엔드 개발자 모집',
-    description: '프론트엔드 개발자 채용 설명',
-    thumbnailImageSrc: LogoIcon,
-    capacity: 15,
-    headcount: 10,
-    sunup: false,
-    sun: true,
-    sundown: false,
-    moon: false,
-    secret: false,
-    onClick: () => null,
-  },
-]
-
-const mogakRooms2: MogakRoomProps[] = [
-  {
-    index: 1,
-    title: '백엔드개발자 드루와요',
-    description: '설명 텍스트',
-    thumbnailImageSrc: LogoIcon,
-    capacity: 20,
-    headcount: 16,
-    sunup: true,
-    sun: true,
-    sundown: true,
-    moon: true,
-    secret: false,
-    onClick: () => null,
-  },
-  {
-    index: 2,
-    title: '프론트엔드 개발자 모집',
-    description: '프론트엔드 개발자 채용 설명',
-    thumbnailImageSrc: LogoIcon,
-    capacity: 15,
-    headcount: 10,
-    sunup: false,
-    sun: true,
-    sundown: false,
-    moon: true,
-    secret: true,
-    onClick: () => null,
-  },
-]
-////////////////////////////////////////////////////
+import { MyRoom } from '../api/mypage/mypage.types'
+import { ROOM_CAPACITY } from '@/constants/Room'
+import { getMyRooms, getSevenDaysRooms } from '../api/mypage/api'
 
 export default function MyPage() {
   // 사용자 정보
@@ -174,6 +28,8 @@ export default function MyPage() {
   const [workSeconds, setWorkSeconds] = useState<string>('41')
   const [rank, setRank] = useState<string>('1')
   const [isSetting, setSettting] = useState<boolean>(false)
+  const [sevenDaysRooms, setSevenDaysRooms] = useState<MyRoom[]>([])
+  const [myRooms, setMyRooms] = useState<MyRoom[]>([])
 
   // 모각방 탭 핸들링
   const [toggleTab, setToggleTab] = useState<boolean>(false)
@@ -186,22 +42,56 @@ export default function MyPage() {
     setToggleTab(false)
   }
 
+  // 내가 만든 모각방 조회
+  const searchMyRoomList = async () => {
+    try {
+      const data = await getMyRooms({ page: currentPage, size: itemsPerPage })
+      console.log('내가 만든 모각방 조회를 성공했습니다.')
+      console.log(data)
+
+      const rooms = data.data.rooms
+      setMyRooms(rooms) // 내가 만든 모각방
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  // 7일간 방문한 모각방 조회
+  const searchSevenDaysRoomList = async () => {
+    try {
+      const data = await getSevenDaysRooms({ page: currentPage, size: itemsPerPage })
+      console.log('7일간 방문한 모각방 조회를 성공했습니다.')
+      console.log(data)
+
+      const rooms = data.data.rooms
+      setSevenDaysRooms(rooms) // 7일내 방문한 모각방
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  // 탭 클릭시 API 연동
+  useEffect(() => {
+    searchMyRoomList()
+    searchSevenDaysRoomList()
+  }, [toggleTab])
+
   // 페이지네이션
   const itemsPerPage = 12 // 한 페이지에 보여줄 항목 수
   const [currentPage, setCurrentPage] = useState(1) // 현재 페이지
-  const [currentRooms, setCurrentRooms] = useState<MogakRoomProps[]>([]) // 현재 페이지에 해당되는 모각방
+  const [currentRooms, setCurrentRooms] = useState<MyRoom[]>([]) // 현재 페이지에 해당되는 모각방
   const [totalPage, setTotalPage] = useState(1) // 총 페이지 수
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber)
   }
-  // 현재 페이지에 보여줄 모각방
+  // 페이지네이션, 현재 페이지에 보여줄 모각방
   useEffect(() => {
-    const mogakRooms = toggleTab ? mogakRooms1 : mogakRooms2
+    const mogakRooms = toggleTab ? sevenDaysRooms : myRooms
     if (mogakRooms) {
       setTotalPage(Math.ceil(mogakRooms.length / itemsPerPage)) // 총 페이지 수 계산
       setCurrentRooms(mogakRooms.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)) // 현재 페이지에 해당하는 방들 설정
     }
-  }, [currentPage, toggleTab, mogakRooms1, mogakRooms2])
+  }, [currentPage, toggleTab, sevenDaysRooms, myRooms])
 
   return (
     <div className="">
@@ -292,19 +182,19 @@ export default function MyPage() {
           {currentRooms.map((room, index) => (
             <div className="mb-[40px]">
               <MogakRoom
-                index={room.index}
+                index={room.roomId}
                 key={index}
-                title={room.title}
-                description={room.description}
-                thumbnailImageSrc={room.thumbnailImageSrc}
-                capacity={room.capacity}
-                headcount={room.headcount}
-                sunup={room.sunup}
-                sun={room.sun}
-                sundown={room.sundown}
-                moon={room.moon}
-                secret={room.secret}
-                onClick={room.onClick}
+                title={room.roomName}
+                description={room.roomExplain}
+                thumbnailImageSrc={room.roomImgUrl}
+                capacity={ROOM_CAPACITY}
+                headcount={room.userCnt}
+                sunup={room.workHours.includes('MORNING')}
+                sun={room.workHours.includes('AFTERNOON')}
+                sundown={room.workHours.includes('NIGHT')}
+                moon={room.workHours.includes('LATE_NIGHT')}
+                secret={room.isLocked}
+                onClick={() => null}
               />
             </div>
           ))}

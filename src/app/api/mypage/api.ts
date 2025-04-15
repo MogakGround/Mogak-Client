@@ -23,10 +23,10 @@ export const postMyProfile = async (params: PostProfileRequest) => {
 
 // 내가 만든 모각방 리스트 조회
 export const getMyRooms = async (params: GetRoomsRequest) => {
-  return await axiosInstance.post('/room/mypage/rooms/imade', params)
+  return await axiosInstance.get('/room/mypage/rooms/imade', { params })
 }
 
 // 7일간 방문한 모각방 리스트 조회
 export const getSevenDaysRooms = async (params: GetRoomsRequest) => {
-  return await axiosInstance.post('/room/mypage/rooms/sevendays', params)
+  return await axiosInstance.get('/room/mypage/rooms/sevendays', { params })
 }
