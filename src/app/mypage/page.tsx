@@ -16,11 +16,11 @@ import TodayBlock from '@/components/app/mypage/TodayBlock'
 import ProfileSettingButton from '@/components/app/mypage/ProfileSettingButton'
 import { MyRoom } from '../api/mypage/mypage.types'
 import { ROOM_CAPACITY } from '@/constants/Room'
-import { getMyRooms, getSevenDaysRooms } from '../api/mypage/api'
+import { getMyProfile, getMyRooms, getSevenDaysRooms } from '../api/mypage/api'
 
 export default function MyPage() {
   // 사용자 정보
-  const [profileIcon, setProfileIcon] = useState<string>('')
+  const [profileIcon, setProfileIcon] = useState<string>('') // 일단 프론트에서 기본 이미지로 사용하기로 함
   const [nickname, setNickname] = useState<string>('임시닉네임 인애')
   const [profileLink, setProfileLink] = useState<string>('https://github.com/inaemon')
   const [workHours, setWorkHours] = useState<string>('16')
@@ -31,7 +31,7 @@ export default function MyPage() {
   const [sevenDaysRooms, setSevenDaysRooms] = useState<MyRoom[]>([])
   const [myRooms, setMyRooms] = useState<MyRoom[]>([])
 
-  // 모각방 탭 핸들링
+  /* 모각방 탭 핸들링 */
   const [toggleTab, setToggleTab] = useState<boolean>(false)
   const onTab = 'semi-18 text-gray-50 border-b-[2px] border-white cursor-pointer'
   const offTab = 'med-18 text-gray-400 cursor-pointer'
@@ -42,6 +42,7 @@ export default function MyPage() {
     setToggleTab(false)
   }
 
+  /* API */
   // 내가 만든 모각방 조회
   const searchMyRoomList = async () => {
     try {
@@ -70,13 +71,36 @@ export default function MyPage() {
     }
   }
 
+  // 프로필 조회
+  const checkProfile = async () => {
+    try {
+      const data = await getMyProfile()
+      console.log('프로필 조회를 성공했습니다.')
+      console.log(data)
+
+      // 프로필 정보
+      const p = data.data
+      setNickname(p.nickName)
+      setProfileLink(p.portfolioUrl)
+      setRank(p.rank)
+      setWorkHours(p.hour)
+      setWorkMinutes(p.min)
+      setWorkSeconds(p.sec)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  useEffect(() => {
+    checkProfile()
+  })
+
   // 탭 클릭시 API 연동
   useEffect(() => {
     searchMyRoomList()
     searchSevenDaysRoomList()
   }, [toggleTab])
 
-  // 페이지네이션
+  /* 페이지네이션 */
   const itemsPerPage = 12 // 한 페이지에 보여줄 항목 수
   const [currentPage, setCurrentPage] = useState(1) // 현재 페이지
   const [currentRooms, setCurrentRooms] = useState<MyRoom[]>([]) // 현재 페이지에 해당되는 모각방
