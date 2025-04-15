@@ -15,3 +15,13 @@ export const postAuthSignUp = async (params: PostAuthSignUpRequest) => {
   const { data } = await axiosInstance.post<PostAuthSignUpResponse>('/auth/signup', params)
   return data
 }
+
+export const postAuthDelete = async () => {
+  const { data } = await axiosInstance.post('/auth/delete')
+  return data
+}
+
+export const postAuthLogout = async () => {
+  const { data } = await axiosInstance.post('/auth/logout')
+  return data
+}
