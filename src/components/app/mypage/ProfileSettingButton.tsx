@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import ProfileSettingModal from './ProfileSettingModal'
+import { postAuthDelete, postAuthLogout } from '@/app/api/auth/api'
 
 interface ProfileSettingButtonProps {
   nickname: string
@@ -16,9 +17,25 @@ export default function ProfileSettingButton({ nickname, setNickname, link, setL
     setModal(true)
   }
 
-  const logout = () => {}
+  const logout = async () => {
+    try {
+      const data = await postAuthLogout()
+      console.log('로그아웃을 성공했습니다.')
+      console.log(data)
+    } catch (error: any) {
+      console.error(error)
+    }
+  }
 
-  const leave = () => {}
+  const leave = async () => {
+    try {
+      const data = await postAuthDelete()
+      console.log('회원탈퇴에 성공했습니다.')
+      console.log(data)
+    } catch (error: any) {
+      console.error(error)
+    }
+  }
 
   return (
     <div className="flex-row bg-gray-700 rounded-[12px] p-[8px] w-[106px]">
