@@ -17,7 +17,7 @@ import cn from '@/utils/cn'
 export interface MogakRoomProps {
   index: number
   title: string
-  description: string
+  description?: string
   thumbnailImageSrc: string
   capacity: number
   headcount: number
@@ -79,7 +79,7 @@ export default function MogakRoom({
             />
           </div>
         </div>
-        <Image src={thumbnailImageSrc} alt="thumbnail" className="w-[305px] h-[160px]" />
+        <Image src={thumbnailImageSrc} alt="thumbnail" width={305} height={160} />
       </div>
       <div className="mx-[8px] mt-[16px]">
         <p className={cn('semi-16', hover ? 'text-accent-100' : 'text-white')}>{title}</p>
