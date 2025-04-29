@@ -1,12 +1,17 @@
 'use client'
 
 import { useAuthStore } from '@/store/authStore'
+import { useRoomStore } from '@/store/roomStore'
+import { useUserStore } from '@/store/userStore'
 import { useEffect, useRef } from 'react'
 
 export default function useSocket(roomId: string) {
   const wsRef = useRef<WebSocket | null>(null)
 
   const { accessToken } = useAuthStore.getState()
+  const { userID } = useUserStore.getState()
+  const addMember = useRoomStore((s) => s.addMember)
+  const removeMember = useRoomStore((s) => s.removeMember)
 
   useEffect(() => {
     const ws = new WebSocket(`${process.env.NEXT_PUBLIC_SOCKET_URL}?token=${accessToken}&roomId=${roomId}`)
@@ -23,6 +28,16 @@ export default function useSocket(roomId: string) {
 
       if (data.type === 'screen-share-start') {
         console.log('🖥️ 화면 공유 시작됨!')
+      }
+      if (data.type === 'participant-joined') {
+        if (data.data != undefined && data.data.userId != userID) {
+          addMember(data.data)
+          console.log('유저 참가', data)
+        }
+      }
+      if (data.type === 'participant-left') {
+        removeMember(data.userId)
+        console.log('유저 연결 종료')
       }
     }
 

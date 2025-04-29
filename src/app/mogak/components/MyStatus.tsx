@@ -14,7 +14,7 @@ import { useParams } from 'next/navigation'
 import useSocket from '../hooks/useSocket'
 
 interface MyStatusProps {
-  publisher: Publisher
+  publisher?: Publisher
   startScreenShare: () => void
   stopScreenShare: () => void
 }

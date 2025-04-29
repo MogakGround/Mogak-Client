@@ -1,14 +1,15 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useParams } from 'next/navigation'
 import ScreenBox from '../components/ScreenBox'
 import MyStatus from '../components/MyStatus'
 import MogakHeader from '../components/MogakHeader'
-import { Publisher, StreamManager } from 'openvidu-browser'
+import { Publisher } from 'openvidu-browser'
 import useOpenViduSession from '../hooks/useOpenViduSession'
 import { useGetRoomMembers, useGetTimerList } from '../api/queries'
 import { useUserStore } from '@/store/userStore'
+import { useRoomStore } from '@/store/roomStore'
 
 export default function MogakPage() {
   const roomId = useParams().id as string
@@ -19,35 +20,46 @@ export default function MogakPage() {
     userID!
   )
 
-  const {} = useGetTimerList(roomId)
+  const { data: TimerList } = useGetTimerList(roomId)
+  const timers = TimerList?.timers ?? []
 
   const { data } = useGetRoomMembers(roomId)
-  const users = data?.users ?? []
+  const { members, setMembers } = useRoomStore()
 
   useEffect(() => {
     joinSession()
     return () => leaveSession()
   }, [])
 
-  const extractUserId = (subscriber: StreamManager): number | null => {
-    try {
-      const data = subscriber.stream.connection.data
-      return Number(data)
-    } catch {
-      return null
+  useEffect(() => {
+    if (data?.users) {
+      console.log('data의 우저들', data.users)
+      setMembers(data.users)
     }
-  }
+  }, [data])
 
-  const mappedSubscribers = subscribers.map((subscriber) => {
-    const userId = extractUserId(subscriber)
-    const user = users?.find((u) => u.userId === userId)
+  const mappedMembers = useMemo(() => {
+    if (!timers.length || !members.length) return []
 
-    return {
-      subscriber,
-      userId,
-      nickName: user?.nickName ?? '알 수 없음',
-    }
-  })
+    return members.map((member) => {
+      const subscriber = subscribers.find((sub) => {
+        const data = sub.stream.connection.data
+        return Number(data) === member.userId
+      })
+
+      const timer = timers.find((t) => t.userId === member.userId)
+
+      return {
+        userId: member.userId,
+        nickName: member.nickName,
+        subscriber,
+        timer: {
+          time: timer ? timer.hour * 3600 + timer.min * 60 + timer.sec : 0,
+          isRunning: timer?.isRunning ?? false,
+        },
+      }
+    })
+  }, [members, timers, subscribers])
 
   return (
     <div className="min-w-[1280px] overflow-hidden">
@@ -59,8 +71,14 @@ export default function MogakPage() {
           publisher={publisher as Publisher}
         />
         <div className="grid grid-cols-2 grid-rows-2 gap-4">
-          {mappedSubscribers.map(({ nickName, subscriber }) => (
-            <ScreenBox key={subscriber.stream.streamId} nickname={nickName} time={0} subscriber={subscriber} />
+          {mappedMembers.map(({ userId, nickName, subscriber, timer }) => (
+            <ScreenBox
+              key={subscriber?.stream.streamId || userId}
+              nickname={nickName}
+              time={timer.time}
+              isRunning={timer.isRunning}
+              subscriber={subscriber}
+            />
           ))}
         </div>
       </div>

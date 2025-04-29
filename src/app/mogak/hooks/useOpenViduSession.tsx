@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { OpenVidu, Session as OVSession, Publisher, StreamManager, Subscriber } from 'openvidu-browser'
-import axios from 'axios'
+
 import { useRoomStore } from '@/store/roomStore'
 
 export default function useOpenViduSession(sessionId: string, userId: string) {
@@ -12,9 +12,6 @@ export default function useOpenViduSession(sessionId: string, userId: string) {
   const { setScreenShareOn } = useRoomStore()
 
   const OV = useRef(new OpenVidu())
-
-  const OPENVIDU_SERVER_URL = process.env.NEXT_PUBLIC_OPENVIDU_SERVER_URL
-  const OPENVIDU_SERVER_SECRET = process.env.NEXT_PUBLIC_OPENVIDU_SERVER_SECRET
 
   const startScreenShare = async () => {
     if (!OV.current || !session) return
@@ -112,38 +109,24 @@ export default function useOpenViduSession(sessionId: string, userId: string) {
     setSession(mySession)
   }, [deleteSubscriber])
 
-  const createSession = async (sessionId: string): Promise<string> => {
-    try {
-      const response = await axios.post(
-        `${OPENVIDU_SERVER_URL}/api/sessions`,
-        { customSessionId: sessionId },
-        {
-          headers: {
-            Authorization: `Basic ${btoa(`OPENVIDUAPP:${OPENVIDU_SERVER_SECRET}`)}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      return response.data.id
-    } catch (error) {
-      const err = error as { response?: { status?: number } }
-      console.log('createSession Error', error)
-      return err.response?.status === 409 ? sessionId : ''
-    }
+  const createSession = async (sessionId: string) => {
+    const res = await fetch('/api/openvidu/session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId }),
+    })
+    const data = await res.json()
+    return data.id
   }
 
-  const createToken = async (sessionId: string): Promise<string> => {
-    const response = await axios.post(
-      `${OPENVIDU_SERVER_URL}/api/sessions/${sessionId}/connection`,
-      {},
-      {
-        headers: {
-          Authorization: `Basic ${btoa(`OPENVIDUAPP:${OPENVIDU_SERVER_SECRET}`)}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-    return response.data.token
+  const createToken = async (sessionId: string) => {
+    const res = await fetch('/api/openvidu/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId }),
+    })
+    const data = await res.json()
+    return data.token
   }
 
   const getToken = useCallback(async () => {

@@ -7,13 +7,38 @@ import IconClock from '@/assets/svg/clock.svg'
 import convertTime from '@/utils/convertTime'
 import { Subscriber } from 'openvidu-browser'
 import Video from './Video'
+import { useEffect, useState } from 'react'
 
 interface ScreenBoxProps {
   nickname: string
   time: number
-  subscriber: Subscriber
+  isRunning: boolean
+  subscriber: Subscriber | undefined
 }
-export default function ScreenBox({ nickname, time, subscriber }: ScreenBoxProps) {
+
+export default function ScreenBox({ nickname, time: initialTime, isRunning, subscriber }: ScreenBoxProps) {
+  const [time, setTime] = useState(initialTime)
+
+  useEffect(() => {
+    setTime(initialTime)
+  }, [initialTime])
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout
+
+    if (isRunning) {
+      intervalId = setInterval(() => {
+        setTime((prevTime) => prevTime + 1)
+      }, 1000)
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId)
+      }
+    }
+  }, [isRunning])
+
   const { hours, minutes, seconds } = convertTime(time)
 
   return (

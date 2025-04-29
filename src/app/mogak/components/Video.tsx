@@ -4,7 +4,7 @@ import Image from 'next/image'
 import VideoFallback from '@/assets/svg/video-fallback.svg'
 
 interface Props {
-  streamManager: StreamManager
+  streamManager?: StreamManager
   isVideoOn: boolean
 }
 

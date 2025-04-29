@@ -1,11 +1,6 @@
+import { useUserStore } from '@/store/userStore'
 import { useQuery } from '@tanstack/react-query'
-import {
-  MyStatusResponse,
-  RoomMemberResponse,
-  RoomResponse,
-  ScreenShareMembersResponse,
-  TimerListResponse,
-} from './type'
+import { MyStatusResponse, RoomMembers, RoomResponse, ScreenShareMembersResponse, TimerListResponse } from './type'
 import { getMyStatus, getRoomInfo, getRoomMembers, getScreenShareMembers, getTimerList } from './api'
 
 export const useGetRoomInfo = (id: string) => {
@@ -23,9 +18,21 @@ export const useGetMyStatus = (id: string) => {
   })
 }
 export const useGetRoomMembers = (id: string) => {
-  return useQuery<RoomMemberResponse>({
+  const { userID } = useUserStore()
+
+  return useQuery<RoomMembers>({
     queryKey: ['roomMembers', id],
-    queryFn: () => getRoomMembers(id),
+    queryFn: async () => {
+      const res = await getRoomMembers(id)
+      const myUser = res.users.find((u) => u.userId === Number(userID))
+      const otherUsers = res.users.filter((u) => u.userId !== Number(userID))
+
+      return {
+        users: otherUsers,
+        myUser,
+        userCnt: res.userCnt,
+      }
+    },
   })
 }
 

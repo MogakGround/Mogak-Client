@@ -30,18 +30,21 @@ export interface RoomMemberResponse {
   userCnt: number
 }
 
+export interface RoomMembers {
+  users: User[]
+  myUser: User | undefined
+  userCnt: number
+}
+
 export interface TimerListResponse {
-  code: number
-  message: string
-  data: {
-    timers: Timer[]
-    totalPage: number
-    currentPage: number
-  }
+  timers: Timer[]
+  totalPage: number
+  currentPage: number
 }
 export interface User {
   userId: number
   nickName: string
+  isTimerRunning?: boolean
 }
 
 export interface Timer {
