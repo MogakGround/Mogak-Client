@@ -5,6 +5,7 @@ import BasicButton from '@/components/global/button/BasicButton'
 import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
 import { useEffect, useState } from 'react'
 import cn from '@/utils/cn'
+import { getCheckNickName, postMyProfile } from '@/app/api/mypage/api'
 
 interface ProfileSettingModalProps {
   nickname: string
@@ -51,22 +52,73 @@ export default function ProfileSettingModal({
       return
     }
 
-    // 에러가 없음
-    setError('') // 에러 메시지 초기화
-    setChecked(true) // 중복 확인 완료
+    // 백엔드에서 검사
+    checkNickname()
   }
+
+  // 닉네임 중복 확인
+  const checkNickname = async () => {
+    if (!newNickname) return
+    try {
+      const data = await getCheckNickName({ nickName: newNickname })
+      console.log('닉네임 중복 확인을 성공했습니다.')
+      console.log(data)
+
+      setError('') // 에러가 없음
+      setChecked(true) // 중복 확인 완료
+    } catch (error: any) {
+      console.error(error)
+      if (error.response) {
+        const status = error.response.status
+        switch (status) {
+          case 404:
+            //setError('요청한 리소스를 찾을 수 없습니다. (404)')
+            break
+          case 405:
+            //setError('허용되지 않은 요청입니다. (405)')
+            break
+          case 409:
+            setError('이미 사용 중인 닉네임입니다.')
+            break
+          case 500:
+            //setError('서버 내부 오류가 발생했습니다.')
+            break
+          default:
+            break
+        }
+      }
+    }
+  }
+
   useEffect(() => {
-    setChecked(false)
+    setChecked(false) // 중복 확인 초기화
   }, [newNickname])
+
+  // 프로필 수정
+  const updateProfile = async () => {
+    try {
+      const data = await postMyProfile({
+        nickName: newNickname ? newNickname : nickname,
+        portfolioUrl: newLink ? newLink : link,
+      })
+      console.log('프로필 수정을 성공했습니다.')
+      console.log(data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   // 제출 이벤트
   const handleSubmit = () => {
     if (!isChecked) return
 
     if (newNickname) setNickname(newNickname)
-
     if (newLink) setLink(newLink)
-    //handleCloseModal();   // 모달창 닫기
+
+    // API
+    updateProfile()
+
+    //handleCloseModal()   // 모달창 닫기
   }
 
   return (

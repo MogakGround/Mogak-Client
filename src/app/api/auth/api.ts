@@ -17,6 +17,16 @@ export const postAuthSignUp = async (params: PostAuthSignUpRequest) => {
   return data
 }
 
+export const postAuthDelete = async () => {
+  const { data } = await axiosInstance.post('/auth/delete')
+  return data
+}
+
+export const postAuthLogout = async () => {
+  const { data } = await axiosInstance.post('/auth/logout')
+  return data
+}
+
 export const postRefreshToken = async () => {
   const { data } = await axiosInstance.post<PostAuthRefreshTokenResponse>('/auth/refresh')
   return data
