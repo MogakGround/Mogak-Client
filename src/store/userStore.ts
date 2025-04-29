@@ -3,6 +3,7 @@ import { create } from 'zustand'
 
 interface UserStore {
   nickname: string | null
+  userID: string | null
   portfolioUrl: string | null
   rank: number | null
   time: {
@@ -16,6 +17,7 @@ interface UserStore {
 
 export const useUserStore = create<UserStore>((set) => ({
   nickname: null,
+  userID: '18',
   portfolioUrl: null,
   rank: null,
   time: {
@@ -26,7 +28,6 @@ export const useUserStore = create<UserStore>((set) => ({
 
   fetchUser: async () => {
     const res = await getMyProfile()
-    console.log(res)
 
     if (res) {
       set({

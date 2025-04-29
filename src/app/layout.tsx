@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'
-
 import GNB from '@/components/layout/GNB'
+import QueryProvider from '@/lib/QueryProvider'
 
 const pretendard = localFont({
   src: [
@@ -34,9 +34,11 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${pretendard.variable} ${riaSans.variable}`}>
       <body className={`${pretendard.className} flex flex-col min-h-screen bg-bg`}>
-        <div id="portalModal" />
-        <GNB />
-        <main className="w-full h-[calc(100%-60px)] overflow-y-auto">{children}</main>
+        <QueryProvider>
+          <div id="portalModal" />
+          <GNB />
+          <main className="w-full h-[calc(100%-60px)] overflow-y-auto">{children}</main>
+        </QueryProvider>
       </body>
     </html>
   )

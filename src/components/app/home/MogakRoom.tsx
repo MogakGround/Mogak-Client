@@ -14,7 +14,7 @@ import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/butt
 import IconButton from '@/components/global/button/IconButton'
 import cn from '@/utils/cn'
 
-interface MogakRoomProps {
+export interface MogakRoomProps {
   index: number
   title: string
   description?: string

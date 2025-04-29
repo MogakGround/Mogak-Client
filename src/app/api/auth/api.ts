@@ -2,6 +2,7 @@ import axiosInstance from '../axiosInstance'
 import {
   PostAuthLoginRequest,
   PostAuthLoginResponseData,
+  PostAuthRefreshTokenResponse,
   PostAuthSignUpRequest,
   PostAuthSignUpResponse,
 } from './auth.types'
@@ -23,5 +24,10 @@ export const postAuthDelete = async () => {
 
 export const postAuthLogout = async () => {
   const { data } = await axiosInstance.post('/auth/logout')
+  return data
+}
+
+export const postRefreshToken = async () => {
+  const { data } = await axiosInstance.post<PostAuthRefreshTokenResponse>('/auth/refresh')
   return data
 }

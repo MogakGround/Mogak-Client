@@ -4,30 +4,76 @@ import { ButtonSize, ButtonTheme, ButtonVariant, IconArrow } from '@/components/
 import IconTextButton from '@/components/global/button/IconTextButton'
 import IconPlay from '@/assets/svg/play.svg'
 import IconPause from '@/assets/svg/pause.svg'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import convertTime from '@/utils/convertTime'
 
-export default function Timer() {
+interface TimerProps {
+  startTimer: () => void
+  stopTimer: () => void
+  isRunning: boolean
+  initialHour: number
+  initialMin: number
+  initialSec: number
+}
+
+export default function Timer({
+  startTimer,
+  stopTimer,
+  isRunning: isRunningProp,
+  initialHour,
+  initialMin,
+  initialSec,
+}: TimerProps) {
   type TimerText = '작업 시작하기' | '작업 멈추기'
 
-  const [totalSeconds, setTotalSeconds] = useState(0)
-  const [isRunning, setIsRunning] = useState(false)
-  const [timerText, setTimerText] = useState<TimerText>('작업 시작하기')
+  const initialTotalSeconds = initialHour * 3600 + initialMin * 60 + initialSec
+  const [totalSeconds, setTotalSeconds] = useState(initialTotalSeconds)
+  const [isRunning, setIsRunning] = useState(isRunningProp)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const { hours, minutes, seconds } = convertTime(totalSeconds)
 
   useEffect(() => {
-    if (!isRunning) {
-      setTimerText('작업 시작하기')
-      return
-    }
-    setTimerText('작업 멈추기')
-    const interval = setInterval(() => {
-      setTotalSeconds((prev) => prev + 1)
-    }, 1000)
+    const initialTotal = initialHour * 3600 + initialMin * 60 + initialSec
+    setTotalSeconds(initialTotal)
+  }, [initialHour, initialMin, initialSec])
 
-    return () => clearInterval(interval)
+  const handleToggleTimer = () => {
+    const next = !isRunning
+    setIsRunning(next)
+
+    if (next) {
+      startTimer()
+    } else {
+      stopTimer()
+    }
+  }
+
+  useEffect(() => {
+    setIsRunning(isRunningProp)
+  }, [isRunningProp])
+
+  useEffect(() => {
+    if (isRunning) {
+      intervalRef.current = setInterval(() => {
+        setTotalSeconds((prev) => prev + 1)
+      }, 1000)
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
   }, [isRunning])
+
+  const timerText: TimerText = isRunning ? '작업 멈추기' : '작업 시작하기'
 
   return (
     <div className="flex flex-col items-center gap-8">
@@ -44,7 +90,7 @@ export default function Timer() {
         size={ButtonSize.xl}
         text={timerText}
         iconArrow={IconArrow.right}
-        handleClick={() => setIsRunning(!isRunning)}
+        handleClick={handleToggleTimer}
         iconSrc={isRunning ? IconPause : IconPlay}
       />
     </div>
