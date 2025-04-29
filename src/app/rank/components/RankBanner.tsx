@@ -7,7 +7,12 @@ import RankSecondIcon from '@/assets/svg/rank-second.svg'
 import RankThirdIcon from '@/assets/svg/rank-third.svg'
 import RefreshIcon from '@/assets/svg/refresh-gray.svg'
 
-export default function RankBanner() {
+interface IRankBannerProps {
+  handleRefresh: () => void
+  currentDate: string
+}
+
+export default function RankBanner({ handleRefresh, currentDate }: IRankBannerProps) {
   return (
     <div className="relative bg-grayscale-800 rounded-[12px] w-full min-h-[224px] overflow-hidden pt-[34px] px-[40px]">
       <div className="flex flex-col gap-[39px]">
@@ -15,9 +20,16 @@ export default function RankBanner() {
           <span className="med-20 mb-[2px]">작업 열정이 불타오르는</span>
           <span className="font-riasans text-[44px]">작업자 랭킹</span>
         </div>
-        <div className="flex items-center">
-          <Image src={RefreshIcon} alt="refresh" width={20} height={20} />
-          <span className="ml-[4px] med-16 text-grayscale-300">오늘 15:30 기준</span>
+        <div className="flex items-center z-10">
+          <Image
+            src={RefreshIcon}
+            alt="refresh"
+            width={20}
+            height={20}
+            onClick={handleRefresh}
+            className="cursor-pointer"
+          />
+          <span className="ml-[4px] med-16 text-grayscale-300">오늘 {currentDate.toLocaleString()} 기준</span>
           <span className="ml-[13px] reg-14 text-grayscale-400">
             하루 작업 시간과 랭킹은 매일 오전 5시에 초기화됩니다.
           </span>

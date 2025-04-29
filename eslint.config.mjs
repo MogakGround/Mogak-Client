@@ -1,21 +1,21 @@
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { FlatCompat } from '@eslint/eslintrc';
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
+import { FlatCompat } from '@eslint/eslintrc'
 
 // 플러그인과 파서 가져오기
-import eslintPluginPrettier from 'eslint-plugin-prettier';
-import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
-import tsEslintParser from '@typescript-eslint/parser';
-import globals from 'globals';
+import eslintPluginPrettier from 'eslint-plugin-prettier'
+import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin'
+import tsEslintParser from '@typescript-eslint/parser'
+import globals from 'globals'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
-});
+})
 
-export default [
+const eslintConfig = [
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     ignores: ['node_modules/', '.next/', 'build/', 'dist/'],
@@ -44,6 +44,12 @@ export default [
       'react/react-in-jsx-scope': 'off',
       'react/jsx-filename-extension': ['warn', { extensions: ['.ts', '.tsx'] }],
       'no-useless-catch': 'off',
+      '@typescript-eslint/no-empty-object-type': [
+        'error',
+        {
+          allowInterfaces: 'with-single-extends',
+        },
+      ],
     },
   },
   ...compat.extends(
@@ -52,4 +58,6 @@ export default [
     'plugin:prettier/recommended',
     'prettier'
   ),
-];
+]
+
+export default eslintConfig

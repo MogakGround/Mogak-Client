@@ -6,25 +6,32 @@ import IconTextButton from '@/components/global/button/IconTextButton'
 import IconPerson from '@/assets/svg/person.svg'
 import IconLink from '@/assets/svg/link.svg'
 import IconMenu from '@/assets/svg/menu.svg'
-import IconClose from '@/assets/svg/close.svg'
 import { ButtonSize, ButtonTheme, ButtonVariant, IconArrow } from '@/components/global/button/button.types'
 import IconButton from '@/components/global/button/IconButton'
 import Modal from '@/components/global/modal/Modal'
 import { useState } from 'react'
 import BasicButton from '@/components/global/button/BasicButton'
+import { useGetRoomInfo, useGetRoomMembers } from '../api/queries'
+import MemberModal from './MemberModal'
 
-export default function MogakHeader() {
+interface MogakHeaderProps {
+  id: string
+}
+
+export default function MogakHeader({ id }: MogakHeaderProps) {
+  const { data, isLoading } = useGetRoomInfo(id)
+  const { data: memberData, isLoading: isLoading2 } = useGetRoomMembers(id)
+
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isStopModalOpen, setIsStopModalOpen] = useState(false)
 
-  const dummyUsers = [
-    { id: 1, name: '대기업 가고싶어요' },
-    { id: 2, name: '대기업 가고싶어요' },
-    { id: 3, name: '대기업 가고싶어요' },
-    { id: 4, name: '대기업 가고싶어요' },
-    { id: 5, name: '대기업 가고싶어요' },
-  ]
+  if (isLoading || isLoading2) {
+    return <div></div>
+  }
+
+  const { roomName, roomExplain } = data!
+  const { users } = memberData!
 
   return (
     <div className="relative w-full min-h-142">
@@ -32,8 +39,8 @@ export default function MogakHeader() {
       <div className="absolute inset-0 bg-[#0F1220] opacity-90"></div>
       <div className="relative z-10 flex justify-between h-full px-80 py-40">
         <div className="flex flex-col">
-          <h1 className="text-24 font-ria">방 제목</h1>
-          <p className="text-14 text-grayscale-200 reg-14">어쩌고저쩌고 설명</p>
+          <h1 className="text-24 font-ria">{roomName}</h1>
+          <p className="text-14 text-grayscale-200 reg-14">{roomExplain} 설명</p>
         </div>
         <div className="flex items-center gap-8">
           <IconTextButton
@@ -86,27 +93,7 @@ export default function MogakHeader() {
           </div>
         </div>
       </div>
-      <Modal isOpen={isModalOpen} handleCloseModal={() => setIsModalOpen(false)}>
-        <div>
-          <header className="flex justify-between text-grayscale-50 mb-12">
-            <div className="flex gap-11 items-center">
-              <span className="semi-20">모각방 인원</span>
-              <span className="reg-16 text-grayscale-400">5명</span>
-            </div>
-            <button type="button" onClick={() => setIsModalOpen(false)} className="flex gap-6 items-center semi-16">
-              <span>닫기</span>
-              <Image src={IconClose} alt="닫기" className="pb-1" />
-            </button>
-          </header>
-          <div className="med-16 grid grid-col-1 divide-y divide-grayscale-600 text-grayscale-100">
-            {dummyUsers.map((user) => (
-              <div key={user.id} className="py-14">
-                {user.name}
-              </div>
-            ))}
-          </div>
-        </div>
-      </Modal>
+      <MemberModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} users={users} />
       <Modal isOpen={isStopModalOpen} handleCloseModal={() => setIsStopModalOpen(false)}>
         <p className="semi-20 mb-8">작업을 그만하고 나갈까요?</p>
         <p className="reg-14 mb-40 text-grayscale-200">모각방은 언제든 다시 들어올 수 있어요</p>

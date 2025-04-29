@@ -23,7 +23,7 @@ export interface IFormInputProps {
 
 export default function SignUpModal({ isOpen, handleCloseModal, handleSignUpChange }: SignUpModalProps) {
   const { isToastShow, toastMessage, handleShowIconToast, handleCloseToast, handleResetToast } = useToast()
-  const { setAccessToken, setRefreshToken } = useAuthStore()
+  const { setAccessToken } = useAuthStore()
   const [signUpForm, setSignUpForm] = useState({ nickname: '', portfolioLink: '' })
   const [isSignUpComplete, setIsSignUpComplete] = useState(false)
   const [kakaoId, setKakaoId] = useState<string | null>(null)
@@ -43,9 +43,8 @@ export default function SignUpModal({ isOpen, handleCloseModal, handleSignUpChan
         portfolioUrl: signUpForm.portfolioLink,
       })
 
-      if (res.accessToken && res.refreshToken) {
+      if (res.accessToken) {
         setAccessToken(res.accessToken)
-        setRefreshToken(res.refreshToken)
       }
     } catch (error) {
       console.error(error)

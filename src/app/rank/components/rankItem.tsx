@@ -6,12 +6,14 @@ import RankSecondIcon from '@/assets/svg/rank-second.svg'
 import RankThirdIcon from '@/assets/svg/rank-third.svg'
 
 interface IRankItemProps {
-  rank: number
   nickname: string
-  time: number
+  rank: number
+  hour: number
+  min: number
+  sec: number
 }
 
-export default function RankItem({ rank, nickname, time }: IRankItemProps) {
+export default function RankItem({ rank, nickname, hour, min, sec }: IRankItemProps) {
   return (
     <div className="h-[56px] flex justify-between cursor-default text-grayscale-50 hover:bg-grayscale-800 rounded-[11px] px-[4px] pr-[20px]">
       <div className="flex items-center gap-[16px]">
@@ -27,12 +29,7 @@ export default function RankItem({ rank, nickname, time }: IRankItemProps) {
         </div>
         <span className="semi-18">{nickname}</span>
       </div>
-      <TimeDisplay
-        hours={Math.floor(time / 3600)}
-        minutes={Math.floor((time % 3600) / 60)}
-        seconds={time % 60}
-        type={TimeDisplayType.large}
-      />
+      <TimeDisplay hours={hour} minutes={min} seconds={sec} type={TimeDisplayType.large} />
     </div>
   )
 }

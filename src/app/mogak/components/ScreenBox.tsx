@@ -5,12 +5,40 @@ import IconTextButton from '@/components/global/button/IconTextButton'
 import IconPerson from '@/assets/svg/person.svg'
 import IconClock from '@/assets/svg/clock.svg'
 import convertTime from '@/utils/convertTime'
+import { Subscriber } from 'openvidu-browser'
+import Video from './Video'
+import { useEffect, useState } from 'react'
 
 interface ScreenBoxProps {
   nickname: string
   time: number
+  isRunning: boolean
+  subscriber: Subscriber | undefined
 }
-export default function ScreenBox({ nickname, time = 0 }: ScreenBoxProps) {
+
+export default function ScreenBox({ nickname, time: initialTime, isRunning, subscriber }: ScreenBoxProps) {
+  const [time, setTime] = useState(initialTime)
+
+  useEffect(() => {
+    setTime(initialTime)
+  }, [initialTime])
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout
+
+    if (isRunning) {
+      intervalId = setInterval(() => {
+        setTime((prevTime) => prevTime + 1)
+      }, 1000)
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId)
+      }
+    }
+  }, [isRunning])
+
   const { hours, minutes, seconds } = convertTime(time)
 
   return (
@@ -24,7 +52,7 @@ export default function ScreenBox({ nickname, time = 0 }: ScreenBoxProps) {
           handleClick={() => {}}
           iconArrow={IconArrow.left}
           iconSrc={IconPerson}
-          className="h-36 pointer-events-none"
+          className="h-36 pointer-events-none bg-grayscale-700"
         />
         <IconTextButton
           variant={ButtonVariant.default}
@@ -33,7 +61,7 @@ export default function ScreenBox({ nickname, time = 0 }: ScreenBoxProps) {
           handleClick={() => {}}
           iconArrow={IconArrow.left}
           iconSrc={IconClock}
-          className="h-36 pointer-events-none"
+          className="h-36 pointer-events-none bg-grayscale-700"
         >
           <div className="med-14 flex items-center text-center h-36 whitespace-nowrap">
             <span className="w-17">{hours}</span>
@@ -43,6 +71,7 @@ export default function ScreenBox({ nickname, time = 0 }: ScreenBoxProps) {
           </div>
         </IconTextButton>
       </div>
+      <Video isVideoOn streamManager={subscriber} />
     </div>
   )
 }
