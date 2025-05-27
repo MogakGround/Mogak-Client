@@ -233,7 +233,7 @@ export default function Home() {
             {roomsByLatest.map(
               (room, index) =>
                 index < 4 && (
-                  <Link href={`/room/${room.roomId}`} key={'recent room' + index + room.roomName + room.roomId}>
+                  <Link href={`/mogak/${room.roomId}`} key={'recent room' + index + room.roomName + room.roomId}>
                     <MogakRoom
                       index={room.roomId}
                       title={room.roomName}
@@ -309,7 +309,7 @@ export default function Home() {
                 {currentPageRoomsByWorkHours.map(
                   (room, index) =>
                     isRoom(room) && (
-                      <Link href={`/room/${room.roomId}`} key={'workhours room' + index + room.roomName + room.roomId}>
+                      <Link href={`/mogak/${room.roomId}`} key={'workhours room' + index + room.roomName + room.roomId}>
                         <MogakRoom
                           index={room.roomId}
                           title={room.roomName}
