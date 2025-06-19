@@ -203,11 +203,10 @@ export default function MyPage() {
       {/* 모각방 리스트 */}
       <div className="px-[80px] mt-[24px]">
         <div className="grid grid-cols-4 mt-[12px]">
-          {currentRooms.map((room, index) => (
-            <div className="mb-[40px]">
+          {currentRooms.map((room) => (
+            <div className="mb-[40px]" key={room.roomId}>
               <MogakRoom
                 index={room.roomId}
-                key={index}
                 title={room.roomName}
                 description={room.roomExplain}
                 thumbnailImageSrc={room.roomImgUrl}
@@ -218,7 +217,6 @@ export default function MyPage() {
                 sundown={room.workHours.includes('NIGHT')}
                 moon={room.workHours.includes('LATE_NIGHT')}
                 secret={room.isLocked}
-                onClick={() => null}
               />
             </div>
           ))}
