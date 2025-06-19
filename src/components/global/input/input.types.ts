@@ -30,4 +30,6 @@ export interface InputStatusHookProps {
 
 export interface IconInputProps extends IBasicInputProps {
   iconArrow: IconInputArrow
+  iconSrc?: string
+  isSecret?: boolean
 }

@@ -4,7 +4,10 @@ import { IconInputProps } from './input.types'
 import { getStatusStyles, inputSizes } from './inputStyles'
 import Search from '@/assets/svg/search.svg'
 import SearchDisabled from '@/assets/svg/search-disabled.svg'
+import Eye from '@/assets/svg/eye.svg'
+import IcEyes from '@/assets/svg/ic_eyes.svg'
 import cn from '@/utils/cn'
+import { useState } from 'react'
 
 export default function IconInput({
   name,
@@ -14,12 +17,24 @@ export default function IconInput({
   handleChange,
   disabled = false,
   iconArrow,
+  iconSrc,
+  isSecret,
   ...props
 }: IconInputProps) {
   const { isFocused, status, inputRef, handleInput, handleBlur } = useInputStatus({
     handleChange,
     disabled,
   })
+  const [showPassword, setShowPassword] = useState(false)
+
+  const icon =
+    iconSrc || (isSecret && showPassword)
+      ? IcEyes
+      : isSecret && !showPassword
+        ? Eye
+        : !disabled
+          ? Search
+          : SearchDisabled
 
   return (
     <div
@@ -31,8 +46,8 @@ export default function IconInput({
         inputSizes[size]
       )}
     >
-      <span>
-        {iconArrow === 'left' && <Image src={!disabled ? Search : SearchDisabled} alt="icon" width={24} height={24} />}
+      <span className="flex items-center justify-center">
+        {iconArrow === 'left' && <Image src={icon} alt="icon" width={24} height={24} />}
       </span>
       <input
         ref={inputRef}
@@ -43,10 +58,19 @@ export default function IconInput({
         onChange={handleInput}
         onBlur={handleBlur}
         disabled={disabled}
+        type={isSecret ? (showPassword ? 'text' : 'password') : props.type || 'text'}
         {...props}
       />
-      <span>
-        {iconArrow === 'right' && <Image src={!disabled ? Search : SearchDisabled} alt="icon" width={24} height={24} />}
+
+      <span className="flex items-center justify-center">
+        {iconArrow === 'right' &&
+          (isSecret ? (
+            <button type="button" onClick={() => setShowPassword((prev) => !prev)}>
+              <Image src={icon} alt={showPassword ? '숨기기' : '보기'} width={24} height={24} />
+            </button>
+          ) : (
+            <Image src={iconSrc ? iconSrc : !disabled ? Search : SearchDisabled} alt="icon" width={24} height={24} />
+          ))}
       </span>
     </div>
   )
