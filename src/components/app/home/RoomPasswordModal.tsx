@@ -39,7 +39,7 @@ export default function RoomPasswordModal({ roomId, isOpen, handleCloseModal }: 
         setIsMsgOpen(true)
       }
     } finally {
-      setIsLoading(true)
+      setIsLoading(false)
     }
   }
 
