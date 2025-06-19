@@ -24,3 +24,9 @@ export interface GetRoomsResponseData {
   currentPage: number
   totalRooms: number
 }
+
+export interface PostEnterRoomRequest {
+  password: string
+  isScreenShared: boolean
+  isVideoLargeAllowed: boolean
+}

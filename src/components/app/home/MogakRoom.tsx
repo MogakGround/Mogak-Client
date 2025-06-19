@@ -13,6 +13,8 @@ import HeadcountIconTextButton from '@/components/global/button/HeadcountIconTex
 import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
 import IconButton from '@/components/global/button/IconButton'
 import cn from '@/utils/cn'
+import { useRouter } from 'next/navigation'
+import RoomPasswordModal from './RoomPasswordModal'
 
 export interface MogakRoomProps {
   index: number
@@ -26,7 +28,6 @@ export interface MogakRoomProps {
   sundown: boolean
   moon: boolean
   secret: boolean
-  onClick: () => void
 }
 
 export default function MogakRoom({
@@ -41,9 +42,19 @@ export default function MogakRoom({
   sundown,
   moon,
   secret,
-  onClick,
 }: MogakRoomProps) {
   const [hover, setHover] = useState(false)
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
+
+  const { push } = useRouter()
+
+  const handleClick = () => {
+    if (secret) {
+      setIsPasswordModalOpen(true)
+    } else {
+      push(`/mogak/${index}`)
+    }
+  }
 
   return (
     <div>
@@ -54,7 +65,7 @@ export default function MogakRoom({
         )}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
-        onClick={onClick}
+        onClick={handleClick}
       >
         <div className="absolute top-0 right-0 mt-[16px] mr-[16px]">
           <div className="flex items-center">
@@ -122,6 +133,12 @@ export default function MogakRoom({
           )}
         </div>
       </div>
+
+      <RoomPasswordModal
+        roomId={index}
+        isOpen={isPasswordModalOpen}
+        handleCloseModal={() => setIsPasswordModalOpen(false)}
+      />
     </div>
   )
 }

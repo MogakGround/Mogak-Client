@@ -11,6 +11,7 @@ export default function BasicButton({
   handleClick,
   fullWidth = false,
   type = 'button',
+  className,
 }: IBasicButtonProps) {
   return (
     <button
@@ -19,7 +20,7 @@ export default function BasicButton({
         ${textButtonSizes[size]}
         ${buttonStyles[theme][variant]}
         ${fullWidth ? 'w-full' : ''}
-        ${disabled ? (theme === ButtonTheme.text ? '!text-grayscale-400 cursor-not-allowed' : '!bg-grayscale-600 !text-grayscale-400 cursor-not-allowed') : ''}
+        ${disabled ? (theme === ButtonTheme.text ? '!text-grayscale-400 cursor-not-allowed' : '!bg-grayscale-600 !text-grayscale-400 cursor-not-allowed') : ''} ${className}
       `}
       onClick={handleClick}
       type={type}

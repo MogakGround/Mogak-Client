@@ -13,7 +13,6 @@ import NoMogakRoom from '@/components/app/home/NoMogakRoom'
 import { getAllRoomList, getRecentRoomList } from './api/home/api'
 import { WorkHours } from './api/room/room.types'
 import { Room } from './api/home/home.types'
-import Link from 'next/link'
 import { getDescriptionByWorkTimeId, getNameByWorkTimeId, ROOM_CAPACITY } from '@/constants/Room'
 
 export default function Home() {
@@ -41,7 +40,7 @@ export default function Home() {
   // 시간대 버튼 토글 이벤트
   const handleToggleTime = (id: number) => {
     setToggleTimes((prevToggleTimes) => {
-      let updatedToggleTimes = {
+      const updatedToggleTimes = {
         ...prevToggleTimes,
         [`time${id}`]: {
           ...prevToggleTimes[`time${id}`],
@@ -233,7 +232,7 @@ export default function Home() {
             {roomsByLatest.map(
               (room, index) =>
                 index < 4 && (
-                  <Link href={`/mogak/${room.roomId}`} key={'recent room' + index + room.roomName + room.roomId}>
+                  <div key={'recent room' + index + room.roomName + room.roomId}>
                     <MogakRoom
                       index={room.roomId}
                       title={room.roomName}
@@ -246,9 +245,8 @@ export default function Home() {
                       sundown={room.workHours.includes('NIGHT')}
                       moon={room.workHours.includes('LATE_NIGHT')}
                       secret={room.isLocked}
-                      onClick={() => null}
                     />
-                  </Link>
+                  </div>
                 )
             )}
           </div>
@@ -309,7 +307,7 @@ export default function Home() {
                 {currentPageRoomsByWorkHours.map(
                   (room, index) =>
                     isRoom(room) && (
-                      <Link href={`/mogak/${room.roomId}`} key={'workhours room' + index + room.roomName + room.roomId}>
+                      <div key={'workhours room' + index + room.roomName + room.roomId}>
                         <MogakRoom
                           index={room.roomId}
                           title={room.roomName}
@@ -322,9 +320,8 @@ export default function Home() {
                           sundown={room.workHours.includes('NIGHT')}
                           moon={room.workHours.includes('LATE_NIGHT')}
                           secret={room.isLocked}
-                          onClick={() => null}
                         />
-                      </Link>
+                      </div>
                     )
                 )}
               </div>

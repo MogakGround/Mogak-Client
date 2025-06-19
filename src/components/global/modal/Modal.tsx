@@ -15,6 +15,8 @@ interface IModalProps {
   hasOverlay?: boolean
   closeOnOutsideClick?: boolean
   backgroundColor?: ModalBackground
+  WrapperClassName?: string
+  className?: string
   renderBottomFn?: () => React.ReactNode
 }
 
@@ -26,6 +28,8 @@ export default function Modal({
   closeOnOutsideClick = true,
   backgroundColor = ModalBackground.gray700,
   renderBottomFn,
+  WrapperClassName,
+  className,
 }: IModalProps) {
   const modalRef = useRef<HTMLDivElement | null>(null)
 
@@ -55,13 +59,15 @@ export default function Modal({
       <div
         className={`fixed inset-0 flex flex-col items-center justify-center
             ${hasOverlay ? 'bg-black bg-opacity-70' : 'bg-transparent'}
-            ${!hasOverlay ? 'z-[50]' : 'z-[61]'}`}
+            ${!hasOverlay ? 'z-[50]' : 'z-[61]'}
+            ${WrapperClassName}
+            `}
         {...(closeOnOutsideClick ? { onClick: handleCloseModal } : {})}
       >
         <div
           ref={modalRef}
           tabIndex={-1}
-          className={`relative p-[24px] z-50 shadow-lg rounded-[20px] w-[416px] ${backgroundColor}`}
+          className={`relative p-[24px] z-50 shadow-lg rounded-[20px] w-[416px] ${backgroundColor} ${className}`}
           onClick={(e) => e.stopPropagation()}
         >
           {children}

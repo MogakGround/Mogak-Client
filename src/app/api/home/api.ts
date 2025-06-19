@@ -1,6 +1,6 @@
 import axiosInstance from '../axiosInstance'
 import { WorkHours } from '../room/room.types'
-import { GetRoomsRequest } from './home.types'
+import { GetRoomsRequest, PostEnterRoomRequest } from './home.types'
 
 // 모각작 방 전체 조회 (시간대별)
 export const getAllRoomList = async (params: GetRoomsRequest) => {
@@ -33,4 +33,8 @@ export const getAllRoomList = async (params: GetRoomsRequest) => {
 // 최근 만들어진 모각방 (TOP 4) 조회
 export const getRecentRoomList = async () => {
   return await axiosInstance.get('/room/recent')
+}
+
+export const postEnterRoom = async (roomId: number, data: PostEnterRoomRequest) => {
+  return await axiosInstance.post(`/room/${roomId}/enter`, data)
 }
