@@ -14,7 +14,7 @@ interface MemberModalProps {
 export default function MemberModal({ isOpen, onClose, users }: MemberModalProps) {
   return (
     <Modal isOpen={isOpen} handleCloseModal={onClose}>
-      <div className="w-416">
+      <div className="">
         <header className="flex justify-between text-grayscale-50 mb-12">
           <div className="flex gap-11 items-center">
             <span className="semi-20">모각방 인원</span>
