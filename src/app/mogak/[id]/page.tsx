@@ -15,10 +15,8 @@ export default function MogakPage() {
   const roomId = useParams().id as string
   const { userID } = useUserStore()
 
-  const { publisher, subscribers, joinSession, leaveSession, startScreenShare, stopScreenShare } = useOpenViduSession(
-    roomId,
-    userID!
-  )
+  const { publisher, subscribers, joinSession, leaveSession, startScreenShare, stopScreenShare, isScreenSharing } =
+    useOpenViduSession(roomId, userID ?? '')
 
   const { data: TimerList } = useGetTimerList(roomId)
   const timers = TimerList?.timers ?? []
@@ -29,37 +27,38 @@ export default function MogakPage() {
   useEffect(() => {
     joinSession()
     return () => leaveSession()
-  }, [])
+  }, [roomId, userID])
 
   useEffect(() => {
     if (data?.users) {
-      console.log('data의 우저들', data.users)
       setMembers(data.users)
     }
-  }, [data])
+  }, [data, setMembers])
 
   const mappedMembers = useMemo(() => {
     if (!timers.length || !members.length) return []
 
-    return members.map((member) => {
-      const subscriber = subscribers.find((sub) => {
-        const data = sub.stream.connection.data
-        return Number(data) === member.userId
+    return members
+      .filter((member) => member.userId !== Number(userID))
+      .map((member) => {
+        const subscriber = subscribers.find((sub) => {
+          const data = sub.stream.connection.data
+          return Number(data) === member.userId
+        })
+
+        const timer = timers.find((t) => t.userId === member.userId)
+
+        return {
+          userId: member.userId,
+          nickName: member.nickName,
+          subscriber,
+          timer: {
+            time: timer ? timer.hour * 3600 + timer.min * 60 + timer.sec : 0,
+            isRunning: timer?.isRunning ?? false,
+          },
+        }
       })
-
-      const timer = timers.find((t) => t.userId === member.userId)
-
-      return {
-        userId: member.userId,
-        nickName: member.nickName,
-        subscriber,
-        timer: {
-          time: timer ? timer.hour * 3600 + timer.min * 60 + timer.sec : 0,
-          isRunning: timer?.isRunning ?? false,
-        },
-      }
-    })
-  }, [members, timers, subscribers])
+  }, [members, timers, subscribers, userID])
 
   return (
     <div className="min-w-[1280px] overflow-hidden">
@@ -69,6 +68,7 @@ export default function MogakPage() {
           startScreenShare={startScreenShare}
           stopScreenShare={stopScreenShare}
           publisher={publisher as Publisher}
+          isScreenSharing={isScreenSharing}
         />
         <div className="grid grid-cols-2 grid-rows-2 gap-4">
           {mappedMembers.map(({ userId, nickName, subscriber, timer }) => (
