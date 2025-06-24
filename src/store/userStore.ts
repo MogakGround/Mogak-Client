@@ -17,7 +17,7 @@ interface UserStore {
 
 export const useUserStore = create<UserStore>((set) => ({
   nickname: null,
-  userID: '18',
+  userID: null,
   portfolioUrl: null,
   rank: null,
   time: {

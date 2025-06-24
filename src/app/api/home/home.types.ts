@@ -26,7 +26,7 @@ export interface GetRoomsResponseData {
 }
 
 export interface PostEnterRoomRequest {
-  password: string
+  password?: string
   isScreenShared: boolean
   isVideoLargeAllowed: boolean
 }

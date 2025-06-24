@@ -15,6 +15,7 @@ import IconButton from '@/components/global/button/IconButton'
 import cn from '@/utils/cn'
 import { useRouter } from 'next/navigation'
 import RoomPasswordModal from './RoomPasswordModal'
+import { postEnterRoom } from '@/app/api/home/api'
 
 export interface MogakRoomProps {
   index: number
@@ -48,11 +49,19 @@ export default function MogakRoom({
 
   const { push } = useRouter()
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (secret) {
       setIsPasswordModalOpen(true)
-    } else {
+      return
+    }
+    try {
+      await postEnterRoom(index, {
+        isScreenShared: false,
+        isVideoLargeAllowed: false,
+      })
       push(`/mogak/${index}`)
+    } catch (error) {
+      console.error(error)
     }
   }
 

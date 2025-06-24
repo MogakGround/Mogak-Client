@@ -17,8 +17,14 @@ interface MyStatusProps {
   publisher?: Publisher
   startScreenShare: () => void
   stopScreenShare: () => void
+  isScreenSharing?: boolean
 }
-export default function MyStatus({ publisher, startScreenShare, stopScreenShare }: MyStatusProps) {
+export default function MyStatus({
+  publisher,
+  startScreenShare,
+  stopScreenShare,
+  isScreenSharing: propIsScreenSharing,
+}: MyStatusProps) {
   const roomId = useParams().id as string
   const { screenShareOn, setScreenShareOn } = useRoomStore()
   const { sendStartScreenShare, sendStopScreenShare, startTimer, stopTimer } = useSocket(roomId)
@@ -44,6 +50,7 @@ export default function MyStatus({ publisher, startScreenShare, stopScreenShare 
 
   useEffect(() => {
     if (screenShareOn) {
+      console.log('publisher', publisher)
       startScreenShare()
       sendStartScreenShare()
       return
