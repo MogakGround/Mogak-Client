@@ -3,7 +3,7 @@ import { OpenVidu, Publisher, Session as OVSession } from 'openvidu-browser'
 
 export default function useVideoController(OV: React.MutableRefObject<OpenVidu>, session?: OVSession) {
   const [isVideoEnabled, setIsVideoEnabled] = useState(true)
-  const videoPublisherRef = useRef<Publisher | undefined>()
+  const videoPublisherRef = useRef<Publisher | undefined>(undefined)
 
   const toggleVideo = useCallback(() => {
     if (videoPublisherRef.current) {
@@ -36,8 +36,8 @@ export default function useVideoController(OV: React.MutableRefObject<OpenVidu>,
         console.warn('🚨 비디오 권한이 거부되었습니다.')
       })
 
-      videoPublisher.on('exception', (exception) => {
-        console.error('비디오 스트림 중 오류 발생:', exception)
+      videoPublisher.on('streamPlaying', () => {
+        console.log('비디오 스트림 재생 시작')
       })
     } catch (error) {
       console.error('비디오 시작 중 오류:', error)
