@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import ProfileSettingModal from './ProfileSettingModal'
 import { postAuthDelete, postAuthLogout } from '@/app/api/auth/api'
+import { useAuthStore } from '@/store/authStore'
 import LeaveModal from './LeaveModal'
 
 interface ProfileSettingButtonProps {
@@ -23,13 +24,16 @@ export default function ProfileSettingButton({ nickname, setNickname, link, setL
     setLeaveModal(true)
   }
 
+  const { clearTokens } = useAuthStore()
+
   const logout = async () => {
     try {
-      const data = await postAuthLogout()
+      await postAuthLogout()
       console.log('로그아웃을 성공했습니다.')
-      console.log(data)
+      clearTokens()
     } catch (error: any) {
       console.error(error)
+      clearTokens()
     }
   }
 

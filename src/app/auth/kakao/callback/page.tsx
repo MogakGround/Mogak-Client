@@ -5,11 +5,13 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { postAuthLogin } from '@/app/api/auth/api'
 import { useAuthStore } from '@/store/authStore'
+import { useUserStore } from '@/store/userStore'
 import LogoIcon from '@/assets/svg/logo.svg'
 import ImageBackgroundLayout from '@/components/global/layout/ImageBackgroundLayout'
 
 export default function KakaoCallbackPage() {
   const { setAccessToken } = useAuthStore()
+  const { fetchUser } = useUserStore()
 
   const router = useRouter()
   const [kakaoCode, setKakaoCode] = useState<string | null>(null)
@@ -29,6 +31,7 @@ export default function KakaoCallbackPage() {
 
           if (res.status === 'success') {
             setAccessToken(res.accessToken)
+            await fetchUser()
             router.push('/')
           } else {
             router.push(`/auth/signup?kakaoId=${res.kakaoId}`)
@@ -40,7 +43,7 @@ export default function KakaoCallbackPage() {
     }
 
     handleKakaoLogin()
-  }, [kakaoCode, router, setAccessToken])
+  }, [kakaoCode, router, setAccessToken, fetchUser])
 
   return (
     <ImageBackgroundLayout>

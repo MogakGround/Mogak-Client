@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { deleteCookie, getCookie, setCookie } from 'cookies-next'
+import { useUserStore } from './userStore'
 
 interface AuthStore {
   accessToken: string | null
@@ -17,5 +18,6 @@ export const useAuthStore = create<AuthStore>()((set) => ({
   clearTokens: () => {
     deleteCookie('accessToken')
     set({ accessToken: null })
+    useUserStore.getState().clearUser()
   },
 }))

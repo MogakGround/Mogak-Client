@@ -1,27 +1,27 @@
 'use client'
 
-import { useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import ProfileIcon from '@/assets/svg/user-profile.svg'
-import { useAuthStore } from '@/store/authStore'
 import { useUserStore } from '@/store/userStore'
+import { useAuthStore } from '@/store/authStore'
+import { useEffect } from 'react'
 
 export default function HeaderProfile() {
   const { accessToken } = useAuthStore()
-  const { fetchUser, nickname } = useUserStore()
+  const { nickname, fetchUser } = useUserStore()
 
   useEffect(() => {
-    if (accessToken) {
+    if (accessToken && !nickname) {
       fetchUser()
     }
-  }, [accessToken, fetchUser])
+  }, [accessToken, fetchUser, nickname])
 
   return (
     <>
-      {accessToken ? (
+      {nickname ? (
         <div
-          className="mr-[80px] flex items-center gap-[8px] px-[12px] py-[8px] rounded-[4px] bg-grayscale-700"
+          className="flex items-center gap-[8px] px-[12px] py-[8px] rounded-[4px] bg-grayscale-700 w-fit"
           suppressHydrationWarning
         >
           <Image src={ProfileIcon} alt="프로필" width={16} height={16} />
