@@ -20,13 +20,15 @@ export default function HeaderProfile() {
   return (
     <>
       {nickname ? (
-        <div
-          className="flex items-center gap-[8px] px-[12px] py-[8px] rounded-[4px] bg-grayscale-700 w-fit"
-          suppressHydrationWarning
-        >
-          <Image src={ProfileIcon} alt="프로필" width={16} height={16} />
-          <span className="semi-14 text-grayscale-50">{nickname} 님</span>
-        </div>
+        <Link href="/mypage">
+          <div
+            className="flex items-center gap-[8px] px-[12px] py-[8px] rounded-[4px] bg-grayscale-700 w-fit"
+            suppressHydrationWarning
+          >
+            <Image src={ProfileIcon} alt="프로필" width={16} height={16} />
+            <span className="semi-14 text-grayscale-50">{nickname} 님</span>
+          </div>
+        </Link>
       ) : (
         <Link href="/auth/signin">
           <div
