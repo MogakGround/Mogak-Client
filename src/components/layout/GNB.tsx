@@ -28,7 +28,7 @@ const GNB = () => {
     push('/rank')
   }
   const handleMogakClick = () => {
-    push('/')
+    window.open('https://mogakjak.framer.website/?editSite', '_blank')
   }
 
   return (
