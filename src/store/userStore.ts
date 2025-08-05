@@ -14,6 +14,13 @@ interface UserStore {
   }
   fetchUser: () => Promise<void>
   clearUser: () => void
+  setUser: (userData: {
+    nickname: string
+    userID?: string
+    portfolioUrl?: string
+    rank?: number
+    time?: { hour: number; min: number; sec: number }
+  }) => void
 }
 
 export const useUserStore = create<UserStore>()(
@@ -34,7 +41,7 @@ export const useUserStore = create<UserStore>()(
           const res = await getMyProfile()
 
           if (res) {
-            set({
+            const userData = {
               nickname: res.nickName,
               portfolioUrl: res.portfolioUrl,
               rank: res.rank,
@@ -43,7 +50,9 @@ export const useUserStore = create<UserStore>()(
                 min: res.min,
                 sec: res.sec,
               },
-            })
+            }
+
+            set(userData)
           } else {
             console.error('Failed to fetch user profile')
           }
@@ -51,6 +60,21 @@ export const useUserStore = create<UserStore>()(
           console.error('Error fetching user profile:', error)
         }
       },
+
+      setUser: (userData) => {
+        set({
+          nickname: userData.nickname,
+          userID: userData.userID || null,
+          portfolioUrl: userData.portfolioUrl || null,
+          rank: userData.rank || null,
+          time: userData.time || {
+            hour: null,
+            min: null,
+            sec: null,
+          },
+        })
+      },
+
       clearUser: () => {
         set({
           nickname: null,
