@@ -51,8 +51,6 @@ function handleQueryError(error: unknown) {
 let lock = false
 
 function alertOnce(msg: string) {
-  const now = Date.now()
-
   if (lock) return
 
   lock = true
