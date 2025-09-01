@@ -3,6 +3,7 @@ import { validateCommonText } from '@/utils/validate'
 import { IRoomNewForm } from './useCreateRoom'
 import { WorkHours, PostCreateRoomRequest } from '@/app/api/room/room.types'
 import { postCreateRoom } from '@/app/api/room/api'
+import { useRouter } from 'next/navigation'
 
 interface IUseCreateRoomStep3Props {
   roomNewForm: IRoomNewForm
@@ -12,6 +13,7 @@ interface IUseCreateRoomStep3Props {
 export function useCreateRoomStep3({ roomNewForm, setRoomNewForm }: IUseCreateRoomStep3Props) {
   const [passwordValidations, setPasswordValidations] = useState({ lengthValid: false, formatValid: false })
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(false)
+  const { push } = useRouter()
 
   const handleClickComplete = async () => {
     try {
@@ -23,7 +25,8 @@ export function useCreateRoomStep3({ roomNewForm, setRoomNewForm }: IUseCreateRo
         ...(roomNewForm.isLocked && { roomPassword: roomNewForm.password }),
         ...(roomNewForm.description && { roomExplain: roomNewForm.description }),
       }
-      await postCreateRoom(body)
+      const { roomId } = await postCreateRoom(body)
+      push(`/mogak/${roomId}`)
     } catch (error) {
       console.error('Failed to create room:', error)
     }
