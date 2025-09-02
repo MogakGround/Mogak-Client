@@ -43,7 +43,7 @@ export default function RankBanner({ handleRefresh, currentDate }: IRankBannerPr
         className="absolute top-[0px] right-[22%] rotate-[2deg]"
       />
       <Image src={BannerBlockIcon} alt="rank" width={558} height={276} className="absolute bottom-[0px] right-[0%]" />
-      <Image src={RankFirstIcon} alt="rank" width={210} height={130} className="absolute top-[-50px] right-[176px]" />
+      <Image src={RankFirstIcon} alt="rank" width={164} height={103} className="absolute top-[-30px] right-[200px]" />
       <Image
         src={RankSecondIcon}
         alt="rank"
@@ -56,7 +56,7 @@ export default function RankBanner({ handleRefresh, currentDate }: IRankBannerPr
         alt="rank"
         width={135}
         height={104}
-        className="absolute top-[90px] right-[78px] rotate-[11deg]"
+        className="absolute top-[100px] right-[70px] rotate-[11deg]"
       />
     </div>
   )
