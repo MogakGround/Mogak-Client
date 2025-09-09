@@ -18,7 +18,7 @@ export default function RankPage() {
             <RankList currentPage={currentPage} lastPage={lastPage} rankList={rankList} />
             {rankList.length === 0 ? (
               <div className="flex justify-center items-center h-full pb-[60px]">
-                <span className="text-grayscale-50">랭킹이 없습니다.</span>
+                <span className="text-grayscale-50">아직 등록된 랭킹이 없어요.</span>
               </div>
             ) : (
               <div className="pb-[64px]">

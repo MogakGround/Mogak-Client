@@ -19,14 +19,16 @@ import { ROOM_CAPACITY } from '@/constants/Room'
 import { getMyProfile, getMyRooms, getSevenDaysRooms } from '../api/mypage/api'
 
 export default function MyPage() {
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  
   // 사용자 정보
   const [profileIcon, setProfileIcon] = useState<string>('') // 일단 프론트에서 기본 이미지로 사용하기로 함
-  const [nickname, setNickname] = useState<string>('임시닉네임 인애')
-  const [profileLink, setProfileLink] = useState<string>('https://github.com/inaemon')
-  const [workHours, setWorkHours] = useState<string>('16')
-  const [workMinutes, setWorkMinutes] = useState<string>('25')
-  const [workSeconds, setWorkSeconds] = useState<string>('41')
-  const [rank, setRank] = useState<string>('1')
+  const [nickname, setNickname] = useState<string>('')
+  const [profileLink, setProfileLink] = useState<string>('')
+  const [workHours, setWorkHours] = useState<string>('')
+  const [workMinutes, setWorkMinutes] = useState<string>('')
+  const [workSeconds, setWorkSeconds] = useState<string>('')
+  const [rank, setRank] = useState<string>('')
   const [isSetting, setSettting] = useState<boolean>(false)
   const [sevenDaysRooms, setSevenDaysRooms] = useState<MyRoom[]>([])
   const [myRooms, setMyRooms] = useState<MyRoom[]>([])
@@ -74,31 +76,42 @@ export default function MyPage() {
   // 프로필 조회
   const checkProfile = async () => {
     try {
-      const data = await getMyProfile()
-      console.log('프로필 조회를 성공했습니다.')
-      console.log(data)
+      const { min, hour, nickName, portfolioUrl, rank, sec } = await getMyProfile()
 
-      // 프로필 정보
-      const p = data.data
-      setNickname(p.nickName)
-      setProfileLink(p.portfolioUrl)
-      setRank(p.rank)
-      setWorkHours(p.hour)
-      setWorkMinutes(p.min)
-      setWorkSeconds(p.sec)
+      setNickname(nickName)
+      setProfileLink(portfolioUrl)
+      setRank(rank.toString())
+      setWorkHours(hour.toString())
+      setWorkMinutes(min.toString())
+      setWorkSeconds(sec.toString())
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsLoading(false)
     }
   }
+
+  // 초기 데이터 로딩
   useEffect(() => {
-    checkProfile()
-  })
+    const initializeData = async () => {
+      setIsLoading(true)
+      await Promise.all([
+        checkProfile(),
+        searchMyRoomList(),
+        searchSevenDaysRoomList()
+      ])
+    }
+    
+    initializeData()
+  }, [])
 
   // 탭 클릭시 API 연동
   useEffect(() => {
-    searchMyRoomList()
-    searchSevenDaysRoomList()
-  }, [toggleTab])
+    if (!isLoading) {
+      searchMyRoomList()
+      searchSevenDaysRoomList()
+    }
+  }, [toggleTab, isLoading])
 
   /* 페이지네이션 */
   const itemsPerPage = 12 // 한 페이지에 보여줄 항목 수
@@ -116,6 +129,15 @@ export default function MyPage() {
       setCurrentRooms(mogakRooms.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)) // 현재 페이지에 해당하는 방들 설정
     }
   }, [currentPage, toggleTab, sevenDaysRooms, myRooms])
+
+  // 로딩 중일 때 스켈레톤 UI 또는 로딩 스피너 표시
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Image src={'/images/spinner.gif'} alt="로딩" width={52} height={52} />
+      </div>
+    )
+  }
 
   return (
     <div className="">
@@ -146,18 +168,20 @@ export default function MyPage() {
             </div>
 
             {/* 프로필 링크 */}
-            <a href={profileLink} target="_blank" rel="noopener noreferrer">
-              <IconTextButton
-                theme={ButtonTheme.accent}
-                variant={ButtonVariant.default}
-                size={ButtonSize.lg}
-                iconSrc={LinkAccentLgIcon}
-                iconArrow={IconArrow.left}
-                text={profileLink}
-                link={true}
-                handleClick={() => null}
-              />
-            </a>
+            {profileLink && (
+              <a href={profileLink} target="_blank" rel="noopener noreferrer">
+                <IconTextButton
+                  theme={ButtonTheme.accent}
+                  variant={ButtonVariant.default}
+                  size={ButtonSize.lg}
+                  iconSrc={LinkAccentLgIcon}
+                  iconArrow={IconArrow.left}
+                  text={profileLink}
+                  link={true}
+                  handleClick={() => null}
+                />
+              </a>
+            )}
           </div>
 
           {isSetting && (
@@ -178,54 +202,62 @@ export default function MyPage() {
             title="오늘의 누적 작업시간"
             isRank={false}
             icon={TimeIcon}
-            data1={workHours}
-            data2={workMinutes}
-            data3={workSeconds}
+            data1={workHours || '00'}
+            data2={workMinutes || '00'}
+            data3={workSeconds || '00'}
           />
 
           {/* 랭킹 블록 */}
           <div className="ml-[16px]">
-            <TodayBlock title="오늘의 작업자 랭킹" isRank={true} icon={RankBarIcon} data3={rank} />
+            <TodayBlock title="오늘의 작업자 랭킹" isRank={true} icon={RankBarIcon} data3={rank || '0'} />
           </div>
         </div>
       </div>
 
       {/* 모각방 토글 버튼 */}
-      <div className="flex border-b-[2px] border-gray-800 px-[80px]">
-        <p className={`${toggleTab ? onTab : offTab} px-[11px] pb-[14px]`} onClick={handleTab1}>
+      <ul className="flex border-b-[2px] border-gray-800 px-[80px]">
+        <li className={`${toggleTab ? onTab : offTab} px-[11px] pb-[14px]`} onClick={handleTab1}>
           7일 간 들어갔던 모각방
-        </p>
-        <p className={`${!toggleTab ? onTab : offTab} ml-[23px] px-[11px] pb-[14px]`} onClick={handleTab2}>
+        </li>
+        <li className={`${!toggleTab ? onTab : offTab} ml-[23px] px-[11px] pb-[14px]`} onClick={handleTab2}>
           내가 만든 모각방
-        </p>
-      </div>
+        </li>
+      </ul>
 
       {/* 모각방 리스트 */}
       <div className="px-[80px] mt-[24px]">
-        <div className="grid grid-cols-4 mt-[12px]">
-          {currentRooms.map((room) => (
-            <div className="mb-[40px]" key={room.roomId}>
-              <MogakRoom
-                index={room.roomId}
-                title={room.roomName}
-                description={room.roomExplain}
-                thumbnailImageSrc={room.roomImgUrl}
-                capacity={ROOM_CAPACITY}
-                headcount={room.userCnt}
-                sunup={room.workHours.includes('MORNING')}
-                sun={room.workHours.includes('AFTERNOON')}
-                sundown={room.workHours.includes('NIGHT')}
-                moon={room.workHours.includes('LATE_NIGHT')}
-                secret={room.isLocked}
-              />
-            </div>
-          ))}
-        </div>
+        {currentRooms.length > 0 ? (
+          <div className="grid grid-cols-4 mt-[12px]">
+            {currentRooms.map((room) => (
+              <div className="mb-[40px]" key={room.roomId}>
+                <MogakRoom
+                  index={room.roomId}
+                  title={room.roomName}
+                  description={room.roomExplain}
+                  thumbnailImageSrc={room.roomImgUrl}
+                  capacity={ROOM_CAPACITY}
+                  headcount={room.userCnt}
+                  sunup={room.workHours?.includes('MORNING') ?? false}
+                  sun={room.workHours?.includes('AFTERNOON') ?? false}
+                  sundown={room.workHours?.includes('NIGHT') ?? false}
+                  moon={room.workHours?.includes('LATE_NIGHT') ?? false}
+                  secret={room.isLocked}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="min-h-[400px] flex justify-center items-center">
+            <span className="text-grayscale-50">모각방이 아직 없어요.</span>
+          </div>
+        )}
 
         {/* 페이지네이션 */}
-        <div className="flex justify-center items-center mt-[20px]">
-          <Pagenation currentPageNumber={currentPage} handlePageChange={handlePageChange} lastPageNumber={totalPage} />
-        </div>
+        {totalPage > 1 && (
+          <div className="flex justify-center items-center mt-[20px]">
+            <Pagenation currentPageNumber={currentPage} handlePageChange={handlePageChange} lastPageNumber={totalPage} />
+          </div>
+        )}
       </div>
     </div>
   )

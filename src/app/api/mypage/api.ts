@@ -13,7 +13,8 @@ export const getMyRanking = async () => {
 
 // 내 프로필 조회
 export const getMyProfile = async () => {
-  return await axiosInstance.get('/mypage')
+  const { data } = await axiosInstance.get('/mypage')
+  return data
 }
 
 // 내 프로필 수정
