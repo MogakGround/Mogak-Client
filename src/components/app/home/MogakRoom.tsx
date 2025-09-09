@@ -66,10 +66,10 @@ export default function MogakRoom({
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-[16px]">
       <div
         className={cn(
-          'relative w-[305px] h-[160px] rounded-[10px] ',
+          'relative w-[305px] rounded-[10px] ',
           hover && 'border-[1.5px] border-accentT-40 shadow-accentT60-25'
         )}
         onMouseEnter={() => setHover(true)}
@@ -101,7 +101,7 @@ export default function MogakRoom({
         </div>
         <Image src={thumbnailImageSrc} alt="thumbnail" width={305} height={160} />
       </div>
-      <div className="mx-[8px] mt-[16px]">
+      <div className="mx-[8px] h-[96px] flex flex-col justify-between">
         <p className={cn('semi-16', hover ? 'text-accent-100' : 'text-white')}>{title}</p>
         <p className="reg-14 text-grayscale-400">{description}</p>
         <div className="flex mt-[16px] gap-[4px] ">

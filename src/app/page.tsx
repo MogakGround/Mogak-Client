@@ -138,35 +138,35 @@ export default function Home() {
   const isRoom = (room: Room) => {
     if (toggleTimes['time1'].active) {
       if (
-        room.workHours.includes('MORNING') &&
-        room.workHours.includes('AFTERNOON') &&
-        room.workHours.includes('NIGHT') &&
-        room.workHours.includes('LATE_NIGHT')
+        room.workHours?.includes('MORNING') &&
+        room.workHours?.includes('AFTERNOON') &&
+        room.workHours?.includes('NIGHT') &&
+        room.workHours?.includes('LATE_NIGHT')
       ) {
         return true
       }
     }
 
     if (toggleTimes['time2'].active) {
-      if (room.workHours.includes('LATE_NIGHT')) {
+      if (room.workHours?.includes('LATE_NIGHT')) {
         return true
       }
     }
 
     if (toggleTimes['time3'].active) {
-      if (room.workHours.includes('MORNING')) {
+      if (room.workHours?.includes('MORNING')) {
         return true
       }
     }
 
     if (toggleTimes['time4'].active) {
-      if (room.workHours.includes('AFTERNOON')) {
+      if (room.workHours?.includes('AFTERNOON')) {
         return true
       }
     }
 
     if (toggleTimes['time5'].active) {
-      if (room.workHours.includes('NIGHT')) {
+      if (room.workHours?.includes('NIGHT')) {
         return true
       }
     }
@@ -240,10 +240,10 @@ export default function Home() {
                       thumbnailImageSrc={room.roomImg}
                       capacity={ROOM_CAPACITY}
                       headcount={room.userCnt}
-                      sunup={room.workHours.includes('MORNING')}
-                      sun={room.workHours.includes('AFTERNOON')}
-                      sundown={room.workHours.includes('NIGHT')}
-                      moon={room.workHours.includes('LATE_NIGHT')}
+                      sunup={room.workHours?.includes('MORNING')}
+                      sun={room.workHours?.includes('AFTERNOON')}
+                      sundown={room.workHours?.includes('NIGHT')}
+                      moon={room.workHours?.includes('LATE_NIGHT')}
                       secret={room.isLocked}
                     />
                   </div>
@@ -315,10 +315,10 @@ export default function Home() {
                           thumbnailImageSrc={room.roomImg}
                           capacity={ROOM_CAPACITY}
                           headcount={room.userCnt}
-                          sunup={room.workHours.includes('MORNING')}
-                          sun={room.workHours.includes('AFTERNOON')}
-                          sundown={room.workHours.includes('NIGHT')}
-                          moon={room.workHours.includes('LATE_NIGHT')}
+                          sunup={room.workHours?.includes('MORNING')}
+                          sun={room.workHours?.includes('AFTERNOON')}
+                          sundown={room.workHours?.includes('NIGHT')}
+                          moon={room.workHours?.includes('LATE_NIGHT')}
                           secret={room.isLocked}
                         />
                       </div>

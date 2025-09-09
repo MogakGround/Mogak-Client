@@ -29,24 +29,13 @@ export default function MyStatus({
   const { screenShareOn, setScreenShareOn } = useRoomStore()
   const { sendStartScreenShare, sendStopScreenShare, startTimer, stopTimer } = useSocket(roomId)
 
-  const [allowVideoExpand, setAllowVideoExpand] = useState(true)
-
   const { data } = useGetMyStatus(roomId)
 
-  const {
-    nickName = '',
-    isScreenSharing = false,
-    isScreenAllowedLarge = false,
-    isTimerRunning = false,
-    hour = 0,
-    min = 0,
-    sec = 0,
-  } = data ?? {}
+  const { nickName = '', isScreenSharing = false, isTimerRunning = false, hour = 0, min = 0, sec = 0 } = data ?? {}
 
   useEffect(() => {
     setScreenShareOn(isScreenSharing)
-    setAllowVideoExpand(isScreenAllowedLarge)
-  }, [isScreenSharing, isScreenAllowedLarge])
+  }, [isScreenSharing])
 
   useEffect(() => {
     if (screenShareOn) {
@@ -64,7 +53,7 @@ export default function MyStatus({
   }
 
   return (
-    <div className="flex flex-col bg-grayscale-900 min-w-260 max-w-320 flex-grow-0 px-[20px] py-[20px] rounded-[10px]">
+    <div className="flex flex-col bg-grayscale-900 min-w-260 max-w-320 px-[20px] py-[20px] rounded-[10px]">
       <div className="flex justify-center pb-12 gap-10 semi-20">
         <p>{nickName}</p>
         <TextChip text="나" variant={ChipVariant.DEFAULT} theme={ChipTheme.ACCENT} size={ChipSize.sm} />
@@ -80,29 +69,17 @@ export default function MyStatus({
         initialSec={sec}
         isRunning={isTimerRunning}
       />
-      <div className="mt-auto space-y-12 pt-10">
-        <div className="flex justify-between">
-          <p className="med-14 text-grayscale-400">화면 공유</p>
-          <TextToggle
-            theme={ToggleTheme.LIGHT}
-            isOn={screenShareOn}
-            onToggle={handleToggleScreenOn}
-            textl="켜기"
-            textr="끄기"
-            className="w-70 px-0"
-          />
-        </div>
-        <div className="flex justify-between">
-          <p className="med-14 text-grayscale-400">화면 확대</p>
-          <TextToggle
-            theme={ToggleTheme.LIGHT}
-            isOn={allowVideoExpand}
-            onToggle={() => setAllowVideoExpand((prev) => !prev)}
-            textl="허용"
-            textr="비허용"
-            className="w-70 px-0"
-          />
-        </div>
+
+      <div className="flex justify-between mt-[40px]">
+        <p className="med-14 text-grayscale-400">화면 공유</p>
+        <TextToggle
+          theme={ToggleTheme.LIGHT}
+          isOn={screenShareOn}
+          onToggle={handleToggleScreenOn}
+          textl="켜기"
+          textr="끄기"
+          className="w-70 px-0"
+        />
       </div>
     </div>
   )

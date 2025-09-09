@@ -212,10 +212,10 @@ export default function MyPage() {
                 thumbnailImageSrc={room.roomImgUrl}
                 capacity={ROOM_CAPACITY}
                 headcount={room.userCnt}
-                sunup={room.workHours.includes('MORNING')}
-                sun={room.workHours.includes('AFTERNOON')}
-                sundown={room.workHours.includes('NIGHT')}
-                moon={room.workHours.includes('LATE_NIGHT')}
+                sunup={room.workHours?.includes('MORNING')}
+                sun={room.workHours?.includes('AFTERNOON')}
+                sundown={room.workHours?.includes('NIGHT')}
+                moon={room.workHours?.includes('LATE_NIGHT')}
                 secret={room.isLocked}
               />
             </div>

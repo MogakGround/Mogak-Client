@@ -56,6 +56,7 @@ axiosInstance.interceptors.response.use(
 
           return axiosInstance(originalRequest)
         } catch (refreshError) {
+          useAuthStore.getState().clearTokens()
           window.location.href = '/auth/signin'
           console.error(refreshError)
           throw errorResponse

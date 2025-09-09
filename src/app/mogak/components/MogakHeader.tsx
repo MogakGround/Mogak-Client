@@ -13,24 +13,30 @@ import { useState } from 'react'
 import BasicButton from '@/components/global/button/BasicButton'
 import { useGetRoomInfo, useGetRoomMembers } from '../api/queries'
 import MemberModal from './MemberModal'
+import { useRouter } from 'next/navigation'
+import cn from '@/utils/cn'
+import RoomEditModal from './RoomEditModal'
 
 interface MogakHeaderProps {
   id: string
 }
 
 export default function MogakHeader({ id }: MogakHeaderProps) {
+  const router = useRouter()
+
   const { data, isLoading } = useGetRoomInfo(id)
   const { data: memberData, isLoading: isLoading2 } = useGetRoomMembers(id)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isStopModalOpen, setIsStopModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
   if (isLoading || isLoading2) {
     return <div></div>
   }
 
-  const { roomName, roomExplain } = data!
+  const { roomName, roomExplain, isHost, isLocked } = data!
   const { users } = memberData!
 
   return (
@@ -64,7 +70,7 @@ export default function MogakHeader({ id }: MogakHeaderProps) {
             iconWidth={24}
           >
             <div className="ml-5">
-              <span className="med-14">1 </span>
+              <span className="med-14">{users.length} </span>
               <span className="reg-14 text-gray-400">/ 5</span>
             </div>
           </IconTextButton>
@@ -82,11 +88,13 @@ export default function MogakHeader({ id }: MogakHeaderProps) {
             {isMenuOpen && (
               <div className="absolute right-0 top-48 bg-grayscale-700 rounded-12 p-16 z-10">
                 <div className="flex flex-col text-grayscale-70 gap-16 whitespace-nowrap med-14">
-                  <button className="text-left">방 정보 수정하기</button>
+                  <button className={cn('text-left', !isHost && 'hidden')} onClick={() => setIsEditModalOpen(true)}>
+                    방 정보 수정하기
+                  </button>
                   <button className="text-left" onClick={() => setIsStopModalOpen(true)}>
                     작업 그만하기
                   </button>
-                  <button className="text-grayscale-300 text-left">모각방 삭제하기</button>
+                  <button className={cn('text-grayscale-300 text-left', !isHost && 'hidden')}>모각방 삭제하기</button>
                 </div>
               </div>
             )}
@@ -94,6 +102,13 @@ export default function MogakHeader({ id }: MogakHeaderProps) {
         </div>
       </div>
       <MemberModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} users={users} />
+      <RoomEditModal
+        roomId={id}
+        isOpen={isEditModalOpen}
+        handleCloseModal={() => setIsEditModalOpen(false)}
+        currentRoomName={roomName}
+        currentIsPublic={!isLocked}
+      />
       <Modal isOpen={isStopModalOpen} handleCloseModal={() => setIsStopModalOpen(false)}>
         <p className="semi-20 mb-8">작업을 그만하고 나갈까요?</p>
         <p className="reg-14 mb-40 text-grayscale-200">모각방은 언제든 다시 들어올 수 있어요</p>
@@ -103,7 +118,7 @@ export default function MogakHeader({ id }: MogakHeaderProps) {
             theme={ButtonTheme.text}
             size={ButtonSize.xxl}
             fullWidth
-            text="작업계속하기"
+            text="작업 계속하기"
             handleClick={() => {
               setIsStopModalOpen(false)
             }}
@@ -114,7 +129,9 @@ export default function MogakHeader({ id }: MogakHeaderProps) {
             size={ButtonSize.xxl}
             fullWidth
             text="모각방 나가기"
-            handleClick={() => {}}
+            handleClick={() => {
+              router.push('/')
+            }}
           />
         </div>
       </Modal>
