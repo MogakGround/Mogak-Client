@@ -50,7 +50,7 @@ export default function CreateRoomStep1({
         setRoomNewForm={setRoomNewForm}
       />
       <RoomDescription
-        name="roomDescription"
+        name="description"
         value={roomNewForm.description}
         handleChange={handleChangeForm}
         setRoomNewForm={setRoomNewForm}
