@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, In
 import { useAuthStore } from '@/store/authStore'
 import { ErrorResponse } from './api.types'
 import { postRefreshToken } from './auth/api'
+import { useUserStore } from '@/store/userStore'
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -48,6 +49,8 @@ axiosInstance.interceptors.response.use(
 
       const { accessToken, setAccessToken } = useAuthStore.getState()
 
+      const { clearUser } = useUserStore.getState()
+
       if (accessToken) {
         try {
           const { accessToken: newAccessToken } = await postRefreshToken()
@@ -57,6 +60,7 @@ axiosInstance.interceptors.response.use(
           return axiosInstance(originalRequest)
         } catch (refreshError) {
           useAuthStore.getState().clearTokens()
+          clearUser();
           window.location.href = '/auth/signin'
           console.error(refreshError)
           throw errorResponse
