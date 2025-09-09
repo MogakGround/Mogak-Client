@@ -3,7 +3,7 @@ import { IRoomNewForm, RoomNewStatus } from './hooks/useCreateRoom'
 import RoomNameInput from './RoomName'
 import RoomDescription from './RoomDescription'
 import RoomNewButtonGroup from './CreateRoomBtnGroup'
-import { getCheckRoomName } from '@/app/api/room/api'
+import { useRoomNameCheck } from '@/hooks/useRoomNameCheck'
 
 interface ICreateRoomStep1Props {
   handleShowIconToast: (text: string, success: boolean) => void
@@ -23,23 +23,8 @@ export default function CreateRoomStep1({
   handleResetToast,
 }: ICreateRoomStep1Props) {
   const [inputValidations, setInputValidations] = useState({ lengthValid: false, formatValid: false })
-  const [isRoomNameChecked, setIsRoomNameChecked] = useState(false)
 
-  const checkRoomNameAvailability = async () => {
-    if (!roomNewForm.name.trim()) return
-    handleResetToast()
-
-    try {
-      await getCheckRoomName({ roomName: roomNewForm.name })
-      handleShowIconToast('와우 멋지네요! 사용할 수 있는 모각방 이름이에요', true)
-      setIsRoomNameChecked(true)
-    } catch (error) {
-      if (error instanceof Error) {
-        handleShowIconToast(error.message, false)
-        setIsRoomNameChecked(false)
-      }
-    }
-  }
+  const { isRoomNameChecked, checkRoomNameAvailability, resetRoomNameCheck } = useRoomNameCheck()
 
   return (
     <>
@@ -48,9 +33,18 @@ export default function CreateRoomStep1({
         value={roomNewForm.name}
         handleChange={(e) => {
           handleChangeForm(e)
-          setIsRoomNameChecked(false)
+          resetRoomNameCheck()
         }}
-        checkRoomName={checkRoomNameAvailability}
+        checkRoomName={async () => {
+          try {
+            await checkRoomNameAvailability(roomNewForm.name)
+            handleShowIconToast('와우 멋지네요! 사용할 수 있는 모각방 이름이에요', true)
+          } catch (error) {
+            if (error instanceof Error) {
+              handleShowIconToast(error.message, false)
+            }
+          }
+        }}
         inputValidations={inputValidations}
         setInputValidations={setInputValidations}
         setRoomNewForm={setRoomNewForm}

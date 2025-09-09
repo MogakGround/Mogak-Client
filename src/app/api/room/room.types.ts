@@ -13,3 +13,9 @@ export interface PostCreateRoomRequest {
 export interface GetCheckRoomNameReqeust {
   roomName: string
 }
+
+export interface PatchRoomInfoRequest {
+  roomName: string
+  isLocked: boolean
+  roomPassword?: string
+}

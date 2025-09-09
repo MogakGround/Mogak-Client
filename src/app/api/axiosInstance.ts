@@ -31,8 +31,9 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response.data,
   async (error: AxiosError) => {
+    const originalRequest = error.config as any
+
     if (!error.response) {
-      alert('네트워크 오류가 발생했습니다. 다시 시도해 주세요.')
       throw new ErrorResponse(0, 0, 'Network Error')
     }
 
@@ -42,24 +43,25 @@ axiosInstance.interceptors.response.use(
 
     const errorResponse = new ErrorResponse(status, code, message)
 
-    if (status === 401) {
+    if (status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true
+
       const { accessToken, setAccessToken } = useAuthStore.getState()
 
       if (accessToken) {
-        const { accessToken: newAccessToken } = await postRefreshToken()
         try {
+          const { accessToken: newAccessToken } = await postRefreshToken()
           setAccessToken(newAccessToken)
-        } catch (error) {
-          if (error instanceof Error) {
-            window.location.href = '/auth/signin'
-            console.error(error)
-          }
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
+
+          return axiosInstance(originalRequest)
+        } catch (refreshError) {
+          useAuthStore.getState().clearTokens()
+          window.location.href = '/auth/signin'
+          console.error(refreshError)
+          throw errorResponse
         }
       }
-    }
-    if (status === 500) {
-      alert('서버에서 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')
-      throw errorResponse
     }
 
     throw errorResponse
