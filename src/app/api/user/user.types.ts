@@ -1,8 +1,8 @@
-export interface getCheckNicknameRequest {
+export interface GetCheckNicknameRequest {
   nickname: string
 }
 
-export interface getMyProfileResponseData {
+export interface GetMyProfileResponseData {
   nickName: string
   portfolioUrl: string
   rank: number
@@ -20,11 +20,11 @@ export interface MyRankingResponseData {
   sec: number
 }
 
-export interface getRankingListRequest {
+export interface GetRankingListRequest {
   page: number
   size: number
 }
-export interface getRankingListResponse {
+export interface GetRankingListResponse {
   rankings: MyRankingResponseData[]
   totalPage: number
   currentPage: number

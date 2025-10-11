@@ -1,10 +1,6 @@
 import { RoomImg, WorkHours } from '../room/room.types'
 
-export interface GetChechNickNameRequest {
-  nickName: string
-}
-
-export interface PostProfileRequest {
+export interface PatchProfileRequest {
   nickName: string
   portfolioUrl: string
 }
