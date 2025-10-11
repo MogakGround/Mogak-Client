@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware'
 
 interface UserStore {
   nickname: string | null
-  userID: string | null
+  userID: number | null
   portfolioUrl: string | null
   rank: number | null
   time: {
@@ -15,6 +15,7 @@ interface UserStore {
   fetchUser: () => Promise<void>
   clearUser: () => void
   setUser: (userData: {
+    userId?: number
     nickname: string
     userID?: string
     portfolioUrl?: string
@@ -42,7 +43,9 @@ export const useUserStore = create<UserStore>()(
 
           if (res) {
             const userData = {
+              userId: res.userId,
               nickname: res.nickName,
+              userID: res.userId,
               portfolioUrl: res.portfolioUrl,
               rank: res.rank,
               time: {
@@ -64,7 +67,7 @@ export const useUserStore = create<UserStore>()(
       setUser: (userData) => {
         set({
           nickname: userData.nickname,
-          userID: userData.userID || null,
+          userID: userData.userId || null,
           portfolioUrl: userData.portfolioUrl || null,
           rank: userData.rank || null,
           time: userData.time || {

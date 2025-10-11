@@ -20,7 +20,7 @@ export default function MogakPage() {
  const { isModalOpen, confirmLeave, cancelLeave } = useLeavePrevention()
 
   const { publisher, subscribers, joinSession, leaveSession, startScreenShare, stopScreenShare, isScreenSharing } =
-    useOpenViduSession(roomId, userID ?? '')
+    useOpenViduSession(roomId, String(userID) ?? '')
 
   const { data: TimerList } = useGetTimerList(roomId)
   const timers = TimerList?.timers ?? []
@@ -41,6 +41,8 @@ export default function MogakPage() {
 
   const mappedMembers = useMemo(() => {
     if (!timers.length || !members.length) return []
+
+    console.log(userID)
 
     return members
       .filter((member) => member.userId !== Number(userID))

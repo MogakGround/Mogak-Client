@@ -3,6 +3,7 @@ export interface GetCheckNicknameRequest {
 }
 
 export interface GetMyProfileResponseData {
+  userId: number
   nickName: string
   portfolioUrl: string
   rank: number
