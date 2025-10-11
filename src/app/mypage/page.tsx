@@ -18,6 +18,7 @@ import { MyRoom } from '../api/mypage/mypage.types'
 import { ROOM_CAPACITY } from '@/constants/Room'
 import { getMyProfile, getMyRooms, getSevenDaysRooms } from '../api/mypage/api'
 
+const profileLinkRegex = /^(http|https):\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/;
 export default function MyPage() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   
@@ -169,6 +170,7 @@ export default function MyPage() {
 
             {/* 프로필 링크 */}
             {profileLink && (
+              profileLinkRegex.test(profileLink) ? (
               <a href={profileLink} target="_blank" rel="noopener noreferrer">
                 <IconTextButton
                   theme={ButtonTheme.accent}
@@ -181,9 +183,19 @@ export default function MyPage() {
                   handleClick={() => null}
                 />
               </a>
-            )}
+            ) : (
+              <IconTextButton
+                theme={ButtonTheme.accent}
+                variant={ButtonVariant.default}
+                size={ButtonSize.lg}
+                iconSrc={LinkAccentLgIcon}
+                iconArrow={IconArrow.left}
+                text={profileLink}
+                link={true}
+                handleClick={() => {}}
+              />
+            ))}
           </div>
-
           {isSetting && (
             <div className="ml-[9px]">
               <ProfileSettingButton

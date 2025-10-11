@@ -1,20 +1,20 @@
 import axiosInstance from '../axiosInstance'
 import {
-  getCheckNicknameRequest,
-  getMyProfileResponseData,
+  GetCheckNicknameRequest,
+  GetMyProfileResponseData,
   MyRankingResponseData,
-  getRankingListRequest,
-  getRankingListResponse,
+  GetRankingListRequest,
+  GetRankingListResponse,
 } from './user.types'
 
-export const getCheckNickname = async (body: getCheckNicknameRequest) => {
+export const getCheckNickname = async (body: GetCheckNicknameRequest) => {
   return await axiosInstance.get('check-nickname', {
     params: body,
   })
 }
 
 export const getMyProfile = async () => {
-  const { data } = await axiosInstance.get<getMyProfileResponseData>('/mypage')
+  const { data } = await axiosInstance.get<GetMyProfileResponseData>('/mypage')
 
   return data
 }
@@ -25,8 +25,8 @@ export const getMyRanking = async () => {
   return data
 }
 
-export const getRankingList = async (body: getRankingListRequest) => {
-  const { data } = await axiosInstance.get<getRankingListResponse>('/rankings', {
+export const getRankingList = async (body: GetRankingListRequest) => {
+  const { data } = await axiosInstance.get<GetRankingListResponse>('/rankings', {
     params: body,
   })
 

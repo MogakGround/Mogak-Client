@@ -1,10 +1,5 @@
 import axiosInstance from '../axiosInstance'
-import { GetChechNickNameRequest, PostProfileRequest, GetRoomsRequest } from './mypage.types'
-
-// 닉네임중복검사
-export const getCheckNickName = async (params: GetChechNickNameRequest) => {
-  return await axiosInstance.get('/check-nickname', { params })
-}
+import {PatchProfileRequest, GetRoomsRequest } from './mypage.types'
 
 // 내 랭킹 조회
 export const getMyRanking = async () => {
@@ -18,8 +13,8 @@ export const getMyProfile = async () => {
 }
 
 // 내 프로필 수정
-export const postMyProfile = async (params: PostProfileRequest) => {
-  return await axiosInstance.post('/mypage', params)
+export const patchMyProfile = async (params: PatchProfileRequest) => {
+  return await axiosInstance.patch('/mypage', params)
 }
 
 // 내가 만든 모각방 리스트 조회
