@@ -10,10 +10,11 @@ import { ChipSize, ChipTheme, ChipVariant, DetailTextArrow, IconArrow } from '@/
 import TextChip from '@/components/global/chip/TextChip'
 import MogakRoom from '@/components/app/home/MogakRoom'
 import NoMogakRoom from '@/components/app/home/NoMogakRoom'
-import { getAllRoomList, getRecentRoomList } from './api/home/api'
-import { WorkHours } from './api/room/room.types'
-import { Room } from './api/home/home.types'
+import { getAllRoomList, getRecentRoomList } from '../api/home/api'
+import { WorkHours } from '../api/room/room.types'
+import { Room } from '../api/home/home.types'
 import { getDescriptionByWorkTimeId, getNameByWorkTimeId, ROOM_CAPACITY } from '@/constants/Room'
+import HomeBanner from './components/HomeBanner'
 
 export default function Home() {
   // 모각방 페이지
@@ -216,8 +217,7 @@ export default function Home() {
   return (
     <div className="flex justify-center items-center mt-[40px] w-full">
       <div className="grid grid-cols-1">
-        <Image src={AreaIcon} alt="area" />
-
+        <HomeBanner />
         <div className="flex-row mt-[64px]">
           <p className="reg-14 text-grayscale-400">최근에 만들어진 모각방</p>
           <p className="semi-20 text-white">갓 나온 따끈따끈한 모각방</p>
