@@ -10,10 +10,14 @@ import useOpenViduSession from '../hooks/useOpenViduSession'
 import { useGetRoomMembers, useGetTimerList } from '../api/queries'
 import { useUserStore } from '@/store/userStore'
 import { useRoomStore } from '@/store/roomStore'
+import { useLeavePrevention } from '@/hooks/useLeavePrevention'
+import LeavePreventionModal from '@/components/global/modal/LeavePreventionModal'
 
 export default function MogakPage() {
   const roomId = useParams().id as string
   const { userID } = useUserStore()
+
+ const { isModalOpen, confirmLeave, cancelLeave } = useLeavePrevention()
 
   const { publisher, subscribers, joinSession, leaveSession, startScreenShare, stopScreenShare, isScreenSharing } =
     useOpenViduSession(roomId, userID ?? '')
@@ -61,27 +65,32 @@ export default function MogakPage() {
   }, [members, timers, subscribers, userID])
 
   return (
-    <div className="min-w-[1280px] overflow-hidden">
-      <MogakHeader id={roomId} />
-      <div className="px-80 pt-16 flex gap-15 min-h-500 h-full">
-        <MyStatus
-          startScreenShare={startScreenShare}
-          stopScreenShare={stopScreenShare}
-          publisher={publisher as Publisher}
-          isScreenSharing={isScreenSharing}
-        />
-        <div className="grid grid-cols-2 grid-rows-2 gap-4">
-          {mappedMembers.map(({ userId, nickName, subscriber, timer }) => (
-            <ScreenBox
-              key={subscriber?.stream.streamId || userId}
-              nickname={nickName}
-              time={timer.time}
-              isRunning={timer.isRunning}
-              subscriber={subscriber}
-            />
-          ))}
+    <>
+      <div className="min-w-[1280px] overflow-hidden">
+        <MogakHeader id={roomId} />
+
+        <div className="px-80 pt-16 flex gap-15 min-h-500 h-full">
+          <MyStatus
+            startScreenShare={startScreenShare}
+            stopScreenShare={stopScreenShare}
+            publisher={publisher as Publisher}
+            isScreenSharing={isScreenSharing}
+          />
+          <div className="grid grid-cols-2 grid-rows-2 gap-4">
+            {mappedMembers.map(({ userId, nickName, subscriber, timer }) => (
+              <ScreenBox
+                key={subscriber?.stream.streamId || userId}
+                nickname={nickName}
+                time={timer.time}
+                isRunning={timer.isRunning}
+                subscriber={subscriber}
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+
+      <LeavePreventionModal isOpen={isModalOpen} onClose={cancelLeave} onConfirm={confirmLeave} />
+    </>
   )
 }
