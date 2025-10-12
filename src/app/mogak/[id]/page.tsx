@@ -17,7 +17,7 @@ export default function MogakPage() {
   const roomId = useParams().id as string
   const { userID } = useUserStore()
 
- const { isModalOpen, confirmLeave, cancelLeave } = useLeavePrevention()
+  const { isModalOpen, confirmLeave, cancelLeave } = useLeavePrevention()
 
   const { publisher, subscribers, joinSession, leaveSession, startScreenShare, stopScreenShare, isScreenSharing } =
     useOpenViduSession(roomId, String(userID) ?? '')

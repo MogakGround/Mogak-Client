@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { OpenVidu, Session as OVSession, Publisher, StreamManager, Subscriber } from 'openvidu-browser'
 
 export default function useHandleController(sessionId: string, userId: string) {
-  const [session, setSession] = useState<OVSession | undefined>()
+  const [session, setSession] = useState<OVSession>()
   const [subscribers, setSubscribers] = useState<Subscriber[]>([])
   const [publisher, setPublisher] = useState<Publisher | undefined>()
   const [connectionError, setConnectionError] = useState<Error | null>(null)
@@ -74,6 +74,17 @@ export default function useHandleController(sessionId: string, userId: string) {
   const leaveSession = useCallback(() => {
     if (session) {
       try {
+        // 화면 공유 스트림 정리
+        if (publisher) {
+          const stream = publisher.stream.getMediaStream()
+          if (stream) {
+            stream.getTracks().forEach((track) => {
+              track.stop()
+              console.log('🛑 세션 종료 시 화면 공유 트랙 정리됨')
+            })
+          }
+        }
+
         session.disconnect()
       } catch (error) {
         console.warn('세션 해제 중 오류:', error)
@@ -87,7 +98,7 @@ export default function useHandleController(sessionId: string, userId: string) {
     setConnectionError(null)
     setIsConnecting(false)
     setIsConnected(false)
-  }, [session])
+  }, [session, publisher])
 
   const createSession = useCallback(async (sessionId: string) => {
     const res = await fetch('/api/openvidu/session', {
@@ -115,12 +126,13 @@ export default function useHandleController(sessionId: string, userId: string) {
 
   // 세션 연결 관리
   useEffect(() => {
-    if (!session || isConnecting) return
+    if (!session) return
 
     let isConnectingRef = true
     setIsConnecting(true)
 
     const handleConnect = async () => {
+      console.log('🔗 OpenVidu 세션 연결 시작')
       try {
         const token = await getToken()
         if (!isConnectingRef) return
