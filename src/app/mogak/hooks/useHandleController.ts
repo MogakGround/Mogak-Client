@@ -26,8 +26,6 @@ export default function useHandleController(sessionId: string, userId: string) {
   const setupSessionEventHandlers = useCallback(
     (mySession: OVSession) => {
       mySession.on('streamCreated', (event) => {
-        if (!isConnected) return // 연결 완료 전에는 처리하지 않음
-
         const subscriber = mySession.subscribe(event.stream, undefined)
         subscriber.on('streamPlaying', () => {
           console.log('✅ Subscriber stream playing')
@@ -52,6 +50,7 @@ export default function useHandleController(sessionId: string, userId: string) {
 
       mySession.on('connectionCreated', () => {
         console.log('🔗 OpenVidu 연결 생성됨')
+        setIsConnected(true)
       })
 
       mySession.on('connectionDestroyed', () => {
@@ -59,17 +58,24 @@ export default function useHandleController(sessionId: string, userId: string) {
         setIsConnected(false)
       })
     },
-    [deleteSubscriber, isConnected]
+    [deleteSubscriber]
   )
 
   const joinSession = useCallback(() => {
+    // 이미 세션이 존재하면 새로 생성하지 않음
+    if (session) {
+      console.log('⚠️ 세션이 이미 존재합니다.')
+      return
+    }
+
+    console.log('🆕 새 세션 생성')
     const mySession = OV.current.initSession()
 
     // 이벤트 핸들러 설정
     setupSessionEventHandlers(mySession)
 
     setSession(mySession)
-  }, [setupSessionEventHandlers])
+  }, [session, setupSessionEventHandlers])
 
   const leaveSession = useCallback(() => {
     if (session) {

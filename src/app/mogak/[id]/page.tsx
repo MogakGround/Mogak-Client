@@ -6,12 +6,13 @@ import ScreenBox from '../components/ScreenBox'
 import MyStatus from '../components/MyStatus'
 import MogakHeader from '../components/MogakHeader'
 import { Publisher } from 'openvidu-browser'
-import useOpenViduSession from '../hooks/useOpenViduSession'
 import { useGetRoomMembers, useGetTimerList } from '../api/queries'
 import { useUserStore } from '@/store/userStore'
 import { useRoomStore } from '@/store/roomStore'
 import { useLeavePrevention } from '@/hooks/useLeavePrevention'
 import LeavePreventionModal from '@/components/global/modal/LeavePreventionModal'
+import useHandleController from '../hooks/useHandleController'
+import useScreenShare from '../hooks/useScreenShare'
 
 export default function MogakPage() {
   const roomId = useParams().id as string
@@ -19,19 +20,41 @@ export default function MogakPage() {
 
   const { isModalOpen, confirmLeave, cancelLeave } = useLeavePrevention()
 
-  const { publisher, subscribers, joinSession, leaveSession, startScreenShare, stopScreenShare, isScreenSharing } =
-    useOpenViduSession(roomId, String(userID) ?? '')
+  // OpenVidu 세션 관리
+  const { session, subscribers, publisher, isConnected, OV, joinSession, leaveSession, setPublisher } =
+    useHandleController(roomId, String(userID || ''))
+
+  // 화면 공유 기능
+  const { startScreenShare, stopScreenShare, isScreenSharing } = useScreenShare({
+    session,
+    OV,
+    publisher,
+    setPublisher,
+    isConnected,
+  })
+
+  // 세션 초기화
+  useEffect(() => {
+    console.log('📋 세션 초기화 체크 - userID:', userID, 'session:', !!session, 'isConnected:', isConnected)
+    if (userID && !session) {
+      console.log('🔗 세션 생성 시작')
+      joinSession()
+    }
+
+    return () => {
+      if (session) {
+        console.log('🔌 세션 정리')
+        leaveSession()
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomId, userID])
 
   const { data: TimerList } = useGetTimerList(roomId)
   const timers = TimerList?.timers ?? []
 
   const { data } = useGetRoomMembers(roomId)
   const { members, setMembers } = useRoomStore()
-
-  useEffect(() => {
-    joinSession()
-    return () => leaveSession()
-  }, [roomId, userID])
 
   useEffect(() => {
     if (data?.users) {
@@ -41,8 +64,6 @@ export default function MogakPage() {
 
   const mappedMembers = useMemo(() => {
     if (!timers.length || !members.length) return []
-
-    console.log(userID)
 
     return members
       .filter((member) => member.userId !== Number(userID))
