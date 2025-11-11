@@ -3,6 +3,7 @@
 import { useAuthStore } from '@/store/authStore'
 import { useRoomStore } from '@/store/roomStore'
 import { useUserStore } from '@/store/userStore'
+import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef } from 'react'
 
 export default function useSocket(roomId: string) {
@@ -12,6 +13,8 @@ export default function useSocket(roomId: string) {
   const { userID } = useUserStore.getState()
   const addMember = useRoomStore((s) => s.addMember)
   const removeMember = useRoomStore((s) => s.removeMember)
+
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     const ws = new WebSocket(`${process.env.NEXT_PUBLIC_SOCKET_URL}?token=${accessToken}&roomId=${roomId}`)
@@ -32,6 +35,7 @@ export default function useSocket(roomId: string) {
       if (data.type === 'participant-joined') {
         if (data.data != undefined && data.data.userId != userID) {
           addMember(data.data)
+          queryClient.invalidateQueries({ queryKey: ['roomMembers', roomId] })
           console.log('유저 참가', data)
         }
       }
