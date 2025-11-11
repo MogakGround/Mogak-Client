@@ -6,6 +6,12 @@ const protectedRoutes = ['/mypage', '/rank', '/mogak', '/room']
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // 프리페칭 요청은 인증 체크를 건너뜀
+  const purpose = request.headers.get('purpose') || request.headers.get('x-middleware-prefetch')
+  if (purpose === 'prefetch') {
+    return NextResponse.next()
+  }
+
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
 
   if (!isProtectedRoute) {
