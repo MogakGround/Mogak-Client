@@ -15,8 +15,11 @@ export const useGetMyStatus = (id: string) => {
   return useQuery<MyStatusResponse>({
     queryKey: ['mystatus', id],
     queryFn: () => getMyStatus(id),
+    staleTime: 0,
+    refetchOnMount: true,
   })
 }
+
 export const useGetRoomMembers = (id: string) => {
   const { userID } = useUserStore()
 
