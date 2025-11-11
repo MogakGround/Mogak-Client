@@ -24,8 +24,8 @@ const GNB = () => {
   }
 
   return (
-    <div className=" bg-bg h-[60px] z-[60] px-80 w-full  min-w-720 flex items-center">
-      <div className="w-full flex justify-between items-center text-center max-w-[1280px] mx-auto">
+    <div className=" bg-bg h-[60px] z-[60] px-80 w-full flex items-center">
+      <div className="w-full flex justify-between items-center text-center max-w-[1280px] mx-auto flex-wrap">
         <Link href="/">
           <Image src={LogoIcon} alt="로고" className="cursor-pointer flex-shrink-0" width={48} height={24} />
         </Link>
