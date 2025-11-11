@@ -23,8 +23,6 @@ export const getAllRoomList = async (params: GetRoomsRequest) => {
         })
       }
 
-      //console.log(queryParams.toString()) // url 확인
-
       return queryParams.toString()
     },
   })

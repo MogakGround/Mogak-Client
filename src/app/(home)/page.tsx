@@ -110,12 +110,14 @@ export default function Home() {
       if (workHours) data = await getAllRoomList({ page: currentPage, size: itemsPerPage, workHours: workHours })
       else data = await getAllRoomList({ page: currentPage, size: itemsPerPage })
       console.log('시간대별 모각방 조회를 성공했습니다.')
-      //console.log(data)
+
+      setTotalPage(data.data.totalPages)
       //console.log(data.data.rooms)
 
       const rooms = data.data.rooms
       setRoomsByWorkHours(rooms)
-      resetCurrentPage(rooms)
+      // 서버에서 이미 페이지네이션된 방들을 반환하므로 바로 설정
+      setCurrentPageRoomsByWorkHours(rooms)
     } catch (error) {
       console.error(error)
     }
@@ -175,16 +177,6 @@ export default function Home() {
     return false
   }
 
-  // 페이지 계산
-  const resetCurrentPage = (rooms: Room[]) => {
-    if (rooms) {
-      // 총 페이지 수 계산
-      setTotalPage(Math.ceil(rooms.length / itemsPerPage))
-      // 현재 페이지에 해당하는 방들 설정
-      setCurrentPageRoomsByWorkHours(rooms.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage))
-    }
-  }
-
   useEffect(() => {
     // API
     searchAllRoomList() // 시간대별 조회
@@ -209,9 +201,9 @@ export default function Home() {
     }
   }, [toggleTimes])
 
-  // 페이지네이션 및 필터링을 고려한 현재 페이지의 방들을 설정
+  // 페이지 변경 시 API 다시 호출
   useEffect(() => {
-    resetCurrentPage(currentPageRoomsByWorkHours)
+    searchAllRoomList()
   }, [currentPage])
 
   return (

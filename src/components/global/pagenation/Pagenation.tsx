@@ -65,7 +65,7 @@ const Pagenation = ({ currentPageNumber, lastPageNumber, handlePageChange }: Pag
   }
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center justify-center">
       {/* << 버튼 - 첫 페이지로 이동 */}
       <button onClick={handleFirstPage} disabled={isFirstGroup}>
         <Image
