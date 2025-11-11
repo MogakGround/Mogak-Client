@@ -31,6 +31,7 @@ export interface RoomMemberResponse {
 }
 
 export interface RoomMembers {
+  usersWithMe: User[]
   users: User[]
   myUser: User | undefined
   userCnt: number

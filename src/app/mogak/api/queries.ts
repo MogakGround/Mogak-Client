@@ -28,6 +28,7 @@ export const useGetRoomMembers = (id: string) => {
       const otherUsers = res.users.filter((u) => u.userId !== Number(userID))
 
       return {
+        usersWithMe: res.users,
         users: otherUsers,
         myUser,
         userCnt: res.userCnt,

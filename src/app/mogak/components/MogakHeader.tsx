@@ -37,7 +37,6 @@ export default function MogakHeader({ id }: MogakHeaderProps) {
   }
 
   const { roomName, roomExplain, isHost, isLocked } = data!
-  const { users } = memberData!
 
   return (
     <div className="relative w-full min-h-142">
@@ -70,7 +69,7 @@ export default function MogakHeader({ id }: MogakHeaderProps) {
             iconWidth={24}
           >
             <div className="ml-5">
-              <span className="med-14">{users.length} </span>
+              <span className="med-14">{memberData?.userCnt} </span>
               <span className="reg-14 text-gray-400">/ 5</span>
             </div>
           </IconTextButton>
@@ -101,7 +100,7 @@ export default function MogakHeader({ id }: MogakHeaderProps) {
           </div>
         </div>
       </div>
-      <MemberModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} users={users} />
+      <MemberModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} users={memberData?.usersWithMe ?? []} />
       <RoomEditModal
         roomId={id}
         isOpen={isEditModalOpen}
