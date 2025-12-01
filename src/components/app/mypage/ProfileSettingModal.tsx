@@ -32,6 +32,7 @@ export default function ProfileSettingModal({
   // 중복 확인 이벤트
   const [isValidateNickname, setIsValidateNickname] = useState<boolean>(true)
   const [isNicknameChecked, setIsNicknameChecked] = useState<boolean>(false)
+  const [isPortfolioLinkChecked, setIsPortfolioLinkChecked] = useState<boolean>(false)
   const [error, setError] = useState('') // 에러 메시지 상태
 
   // 모달이 열릴 때마다 초기 상태 설정
@@ -82,6 +83,18 @@ export default function ProfileSettingModal({
 
   const handlePortfoloLink = (e: ChangeEvent<HTMLInputElement>) => {
     setNewLink(e.target.value)
+    if (link !== e.target.value) {
+      if (newNickname === nickname) {
+        setIsNicknameChecked(true)
+      } 
+      setIsPortfolioLinkChecked(true)
+    } else {
+      if (isNicknameChecked && newNickname !== nickname) {
+        setIsPortfolioLinkChecked(true)
+        return
+      }
+      setIsPortfolioLinkChecked(false)
+    }
   }
 
   // 닉네임 중복 확인
@@ -94,6 +107,7 @@ export default function ProfileSettingModal({
 
       setError('') // 에러가 없음
       setIsNicknameChecked(true)
+      setIsPortfolioLinkChecked(true)
     } catch (error: any) {
       console.error(error)
       if (error.response) {
@@ -188,11 +202,12 @@ export default function ProfileSettingModal({
         </div>
 
         {/* 포트폴리오 입력 */}
-        <input
-          type="text"
-          className="bg-grayscale-800 rounded-[8px] w-[368px] mt-[6px] cursor-pointer reg-16 text-grayscale-50 px-[16px] py-[11px] focus:outline-none focus:outline-[1px] focus:bg-accentT-5 focus:outline-accentT-30"
-          placeholder={link ? link : '포트폴리오 링크를 입력해주세요.'}
-          onChange={handlePortfoloLink}
+        <BasicInput
+          placeHolder="포트폴리오 링크를 입력해주세요."
+          size="small"
+          name="nickname"
+          value={newLink}
+          handleChange={handlePortfoloLink}
         />
 
         {/* 모달 버튼 */}
@@ -209,13 +224,13 @@ export default function ProfileSettingModal({
           </div>
           <div className="w-[259px]">
             <BasicButton
-              theme={isNicknameChecked ? ButtonTheme.white : ButtonTheme.primary}
-              variant={!isNicknameChecked ? ButtonVariant.default : ButtonVariant.filled}
+              theme={isNicknameChecked && isPortfolioLinkChecked ? ButtonTheme.white : ButtonTheme.primary}
+              variant={!isNicknameChecked && isPortfolioLinkChecked ? ButtonVariant.default : ButtonVariant.filled}
               size={ButtonSize.xxl}
               text="수정 완료하기"
               fullWidth={true}
               handleClick={handleSubmit}
-              disabled={!isNicknameChecked}
+              disabled={!isNicknameChecked || !isPortfolioLinkChecked}
             />
           </div>
         </div>
