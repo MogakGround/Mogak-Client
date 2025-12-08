@@ -19,6 +19,8 @@ interface ScreenBoxProps {
 export default function ScreenBox({ nickname, time: initialTime, isRunning, subscriber }: ScreenBoxProps) {
   const [time, setTime] = useState(initialTime)
 
+  console.log(subscriber, 'subscriber?????????????')
+
   useEffect(() => {
     setTime(initialTime)
   }, [initialTime])
@@ -42,7 +44,7 @@ export default function ScreenBox({ nickname, time: initialTime, isRunning, subs
   const { hours, minutes, seconds } = convertTime(time)
 
   return (
-    <div className="relative bg-grayscale-800 rounded-10 min-w-300">
+    <div className="relative bg-grayscale-800 rounded-10 min-w-300 max-h-300">
       <div className="absolute top-16 left-16 flex gap-12">
         <IconTextButton
           variant={ButtonVariant.default}

@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
+import axios from 'axios'
 import { OpenVidu, Session as OVSession, Publisher, StreamManager, Subscriber } from 'openvidu-browser'
 
 export default function useHandleController(sessionId: string, userId: string) {
@@ -8,89 +9,171 @@ export default function useHandleController(sessionId: string, userId: string) {
   const [connectionError, setConnectionError] = useState<Error | null>(null)
   const [isConnecting, setIsConnecting] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
+  const [hasFailed, setHasFailed] = useState(false)
 
   const OV = useRef(new OpenVidu())
+  const publisherRef = useRef<Publisher>()
 
-  const deleteSubscriber = useCallback((streamManager: StreamManager) => {
-    setSubscribers((prevSubscribers) => {
-      const index = prevSubscribers.indexOf(streamManager as Subscriber)
-      if (index > -1) {
-        const newSubscribers = [...prevSubscribers]
-        newSubscribers.splice(index, 1)
-        return newSubscribers
-      }
-      return prevSubscribers
-    })
+  const applicationServerUrl = useMemo(() => {
+    const envUrl = process.env.NEXT_PUBLIC_OPENVIDU_SERVER_URL
+    const base = envUrl && envUrl.trim().length > 0 ? envUrl : 'https://demos.openvidu.io'
+    return base.endsWith('/') ? base.slice(0, -1) : base
   }, [])
 
-  const setupSessionEventHandlers = useCallback(
-    (mySession: OVSession) => {
-      mySession.on('streamCreated', (event) => {
-        const subscriber = mySession.subscribe(event.stream, undefined)
-        subscriber.on('streamPlaying', () => {
-          console.log('✅ Subscriber stream playing')
-        })
-        setSubscribers((prevSubscribers) => {
-          // 중복 구독 방지
-          if (prevSubscribers.some((sub) => sub.stream.streamId === subscriber.stream.streamId)) {
-            return prevSubscribers
-          }
-          return [...prevSubscribers, subscriber]
-        })
+  const openviduSecret = useMemo(() => process.env.NEXT_PUBLIC_OPENVIDU_SECRET || 'MYSECRET', [])
+
+  useEffect(() => {
+    publisherRef.current = publisher
+  }, [publisher])
+
+  const cleanupPublisher = useCallback((target?: Publisher) => {
+    if (!target) return
+
+    const mediaStream = target.stream?.getMediaStream()
+    mediaStream?.getTracks().forEach((track) => track.stop())
+
+    setPublisher((prev) => (prev === target ? undefined : prev))
+  }, [])
+
+  const removeSubscriber = useCallback((streamManager: StreamManager) => {
+    setSubscribers((prevSubscribers) => prevSubscribers.filter((sub) => sub.stream.streamManager !== streamManager))
+  }, [])
+
+  const attachSessionEvents = useCallback(
+    (ovSession: OVSession) => {
+      ovSession.on('streamCreated', (event) => {
+        try {
+          const subscriber = ovSession.subscribe(event.stream, undefined)
+          subscriber.on('streamPlaying', () => {
+            console.log('✅ Subscriber stream playing')
+          })
+
+          setSubscribers((prev) => {
+            if (prev.some((sub) => sub.stream.streamId === subscriber.stream.streamId)) {
+              return prev
+            }
+            return [...prev, subscriber]
+          })
+        } catch (err) {
+          console.error('🚨 구독 중 오류:', err)
+        }
       })
 
-      mySession.on('streamDestroyed', (event) => {
-        deleteSubscriber(event.stream.streamManager)
+      ovSession.on('streamDestroyed', (event) => {
+        removeSubscriber(event.stream.streamManager)
       })
 
-      mySession.on('exception', (exception) => {
+      ovSession.on('sessionDisconnected', () => {
+        console.log('🔌 OpenVidu 세션 해제됨')
+        setIsConnected(false)
+        setSubscribers([])
+        cleanupPublisher(publisherRef.current)
+      })
+
+      ovSession.on('exception', (exception) => {
         console.warn('OpenVidu Exception:', exception)
         setConnectionError(new Error(exception.message))
       })
-
-      mySession.on('connectionCreated', () => {
-        console.log('🔗 OpenVidu 연결 생성됨')
-        setIsConnected(true)
-      })
-
-      mySession.on('connectionDestroyed', () => {
-        console.log('🔌 OpenVidu 연결 해제됨')
-        setIsConnected(false)
-      })
     },
-    [deleteSubscriber]
+    [cleanupPublisher, removeSubscriber]
   )
 
-  const joinSession = useCallback(() => {
-    // 이미 세션이 존재하면 새로 생성하지 않음
+  const ensureSession = useCallback(() => {
     if (session) {
-      console.log('⚠️ 세션이 이미 존재합니다.')
-      return
+      return session
     }
 
-    console.log('🆕 새 세션 생성')
-    const mySession = OV.current.initSession()
+    const newSession = OV.current.initSession()
+    attachSessionEvents(newSession)
+    setSession(newSession)
+    return newSession
+  }, [attachSessionEvents, session])
 
-    // 이벤트 핸들러 설정
-    setupSessionEventHandlers(mySession)
+  const createSessionOnServer = useCallback(async () => {
+    try {
+      const response = await axios.post(
+        `${applicationServerUrl}/api/sessions`,
+        { customSessionId: sessionId },
+        {
+          headers: {
+            Authorization: `Basic ${btoa(`OPENVIDUAPP:${openviduSecret}`)}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      return (response.data.id || response.data) as string
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        return sessionId
+      }
+      const message =
+        axios.isAxiosError(error) && error.response?.data
+          ? JSON.stringify(error.response.data)
+          : (error as Error).message
+      throw new Error(message || '세션 생성 실패')
+    }
+  }, [applicationServerUrl, openviduSecret, sessionId])
 
-    setSession(mySession)
-  }, [session, setupSessionEventHandlers])
+  const createTokenOnServer = useCallback(
+    async (targetSessionId: string) => {
+      try {
+        const response = await axios.post(
+          `${applicationServerUrl}/api/sessions/${targetSessionId}/connections`,
+          {},
+          {
+            headers: {
+              Authorization: `Basic ${btoa(`OPENVIDUAPP:${openviduSecret}`)}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        return (response.data.token || response.data) as string
+      } catch (error) {
+        const message =
+          axios.isAxiosError(error) && error.response?.data
+            ? JSON.stringify(error.response.data)
+            : (error as Error).message
+        throw new Error(message || '토큰 발급 실패')
+      }
+    },
+    [applicationServerUrl, openviduSecret]
+  )
+
+  const fetchToken = useCallback(async () => {
+    const newSessionId = await createSessionOnServer()
+    return createTokenOnServer(newSessionId)
+  }, [])
+
+  const joinSession = useCallback(async () => {
+    if (isConnecting || isConnected || hasFailed) {
+      return session
+    }
+
+    const activeSession = ensureSession()
+    setIsConnecting(true)
+
+    try {
+      const token = await fetchToken()
+      await activeSession.connect(token, { clientData: userId })
+      setConnectionError(null)
+      setIsConnected(true)
+      return activeSession
+    } catch (error) {
+      console.error('🚨 OpenVidu 연결 실패:', error)
+      setConnectionError(error as Error)
+      setHasFailed(true)
+      throw error
+    } finally {
+      setIsConnecting(false)
+    }
+  }, [ensureSession, fetchToken, hasFailed, isConnected, isConnecting, session, userId])
 
   const leaveSession = useCallback(() => {
     if (session) {
       try {
-        // 화면 공유 스트림 정리
         if (publisher) {
-          const stream = publisher.stream.getMediaStream()
-          if (stream) {
-            stream.getTracks().forEach((track) => {
-              track.stop()
-              console.log('🛑 세션 종료 시 화면 공유 트랙 정리됨')
-            })
-          }
+          cleanupPublisher(publisher)
         }
-
         session.disconnect()
       } catch (error) {
         console.warn('세션 해제 중 오류:', error)
@@ -104,75 +187,13 @@ export default function useHandleController(sessionId: string, userId: string) {
     setConnectionError(null)
     setIsConnecting(false)
     setIsConnected(false)
-  }, [session, publisher])
+    setHasFailed(false)
+  }, [cleanupPublisher, publisher, session])
 
-  const createSession = useCallback(async (sessionId: string) => {
-    const res = await fetch('/api/openvidu/session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId }),
-    })
-    const data = await res.json()
-    return data.id
-  }, [])
-
-  const createToken = useCallback(async (sessionId: string) => {
-    const res = await fetch('/api/openvidu/token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId }),
-    })
-    const data = await res.json()
-    return data.token
-  }, [])
-
-  const getToken = useCallback(async () => {
-    return createSession(sessionId).then((id) => createToken(id))
-  }, [sessionId, createSession, createToken])
-
-  // 세션 연결 관리
   useEffect(() => {
-    if (!session) return
-
-    let isConnectingRef = true
-    setIsConnecting(true)
-
-    const handleConnect = async () => {
-      console.log('🔗 OpenVidu 세션 연결 시작')
-      try {
-        const token = await getToken()
-        if (!isConnectingRef) return
-
-        await session.connect(token, userId)
-        console.log('🔗 OpenVidu 세션에 연결됨')
-        setConnectionError(null)
-        setIsConnected(true)
-      } catch (error) {
-        console.error('🚨 OpenVidu 연결 실패:', error)
-        setConnectionError(error as Error)
-
-        // 연결 실패 시 재시도 (최대 3회)
-        if (isConnectingRef) {
-          setTimeout(handleConnect, 2000)
-        }
-      } finally {
-        if (isConnectingRef) {
-          setIsConnecting(false)
-        }
-      }
-    }
-
-    handleConnect()
-
-    return () => {
-      isConnectingRef = false
-    }
-  }, [session, userId, getToken])
-
-  // 브라우저 종료 시 세션 정리
-  useEffect(() => {
-    window.addEventListener('beforeunload', leaveSession)
-    return () => window.removeEventListener('beforeunload', leaveSession)
+    const handleBeforeUnload = () => leaveSession()
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
   }, [leaveSession])
 
   return {
@@ -182,6 +203,7 @@ export default function useHandleController(sessionId: string, userId: string) {
     connectionError,
     isConnecting,
     isConnected,
+    hasFailed,
     OV,
     joinSession,
     leaveSession,
