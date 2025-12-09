@@ -11,7 +11,7 @@ interface UseScreenShareProps {
 
 export default function useScreenShare({ session, OV, publisher, setPublisher, isConnected }: UseScreenShareProps) {
   const [isScreenSharing, setIsScreenSharing] = useState(false)
-  const screenPublisherRef = useRef<Publisher>()
+  const screenPublisherRef = useRef<Publisher | undefined>(undefined)
 
   const finalizeStop = useCallback(
     (screenPublisher?: Publisher) => {
