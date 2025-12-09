@@ -180,7 +180,7 @@ export default function MogakPage() {
         videoSource: 'screen',
         audioSource: undefined,
         publishAudio: false,
-        publishVideo: true,
+        publishVideo: false,
         mirror: false,
       })
 
