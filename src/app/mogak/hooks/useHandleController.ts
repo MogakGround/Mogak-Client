@@ -12,15 +12,11 @@ export default function useHandleController(sessionId: string, userId: string) {
   const [hasFailed, setHasFailed] = useState(false)
 
   const OV = useRef(new OpenVidu())
-  const publisherRef = useRef<Publisher>()
+  const publisherRef = useRef<Publisher | undefined>(undefined)
 
-  const applicationServerUrl = useMemo(() => {
-    const envUrl = process.env.NEXT_PUBLIC_OPENVIDU_SERVER_URL
-    const base = envUrl && envUrl.trim().length > 0 ? envUrl : 'https://demos.openvidu.io'
-    return base.endsWith('/') ? base.slice(0, -1) : base
-  }, [])
+  const applicationServerUrl = process.env.NEXT_PUBLIC_OPENVIDU_SERVER_URL
 
-  const openviduSecret = useMemo(() => process.env.NEXT_PUBLIC_OPENVIDU_SECRET || 'MYSECRET', [])
+  const openviduSecret = process.env.NEXT_PUBLIC_OPENVIDU_SECRET
 
   useEffect(() => {
     publisherRef.current = publisher
