@@ -5,7 +5,7 @@ import IconTextButton from '@/components/global/button/IconTextButton'
 import IconPerson from '@/assets/svg/person.svg'
 import IconClock from '@/assets/svg/clock.svg'
 import convertTime from '@/utils/convertTime'
-import { Subscriber } from 'openvidu-browser'
+import { StreamManager } from 'openvidu-browser'
 import Video from './Video'
 import { useEffect, useState } from 'react'
 
@@ -13,11 +13,13 @@ interface ScreenBoxProps {
   nickname: string
   time: number
   isRunning: boolean
-  subscriber: Subscriber | undefined
+  subscriber: StreamManager | undefined
 }
 
 export default function ScreenBox({ nickname, time: initialTime, isRunning, subscriber }: ScreenBoxProps) {
   const [time, setTime] = useState(initialTime)
+
+  console.log(subscriber, 'subscriber?????????????')
 
   useEffect(() => {
     setTime(initialTime)
@@ -42,7 +44,7 @@ export default function ScreenBox({ nickname, time: initialTime, isRunning, subs
   const { hours, minutes, seconds } = convertTime(time)
 
   return (
-    <div className="relative bg-grayscale-800 rounded-10 min-w-300">
+    <div className="relative bg-grayscale-800 rounded-10 min-w-300 max-h-300">
       <div className="absolute top-16 left-16 flex gap-12">
         <IconTextButton
           variant={ButtonVariant.default}

@@ -13,6 +13,7 @@
 - 토큰 생성 및 관리
 - 연결 상태 관리
 - 에러 처리
+- `/api/openvidu/sessions`, `/api/openvidu/tokens` API 라우트를 호출하여 세션 생성/토큰 발급
 
 **주요 기능**:
 
