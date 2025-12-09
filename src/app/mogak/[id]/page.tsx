@@ -161,26 +161,39 @@ export default function MogakPage() {
   }, [userID, isConnected, isConnecting, hasFailed, connectionError, joinSession])
 
   // screen share control
+  const [isStartingScreenShare, setIsStartingScreenShare] = useState(false)
+
   const stopScreenShare = useCallback(() => {
-    if (!session || !screenPublisher) return
+    if (!screenPublisher) return
     try {
-      session.unpublish(screenPublisher)
+      if (session) {
+        session.unpublish(screenPublisher)
+      }
       cleanupPublisher(screenPublisher)
     } catch (err) {
-      console.error(err)
+      console.error('화면 공유 중지 오류:', err)
+    } finally {
+      setScreenPublisher(null)
+      setPublisher(null)
     }
-    setScreenPublisher(null)
-    setPublisher(null)
   }, [cleanupPublisher, screenPublisher, session])
 
   const startScreenShare = useCallback(async () => {
-    if (!session || !ovRef.current || screenPublisher) return
+    if (!session || !ovRef.current) return
+    if (screenPublisher || isStartingScreenShare) {
+      console.log('이미 화면 공유 중이거나 시작 중입니다.')
+      return
+    }
+
+    setIsStartingScreenShare(true)
+    let screenPub: Publisher | null = null
+
     try {
-      const screenPub = await ovRef.current.initPublisherAsync(undefined, {
+      screenPub = await ovRef.current.initPublisherAsync(undefined, {
         videoSource: 'screen',
         audioSource: undefined,
         publishAudio: false,
-        publishVideo: false,
+        publishVideo: true,
         mirror: false,
       })
 
@@ -193,9 +206,15 @@ export default function MogakPage() {
       setScreenPublisher(screenPub)
       setPublisher(screenPub)
     } catch (err) {
-      console.error(err)
+      console.error('화면 공유 시작 오류:', err)
+      // 에러 발생 시 생성된 publisher 정리
+      if (screenPub) {
+        cleanupPublisher(screenPub)
+      }
+    } finally {
+      setIsStartingScreenShare(false)
     }
-  }, [screenPublisher, session, stopScreenShare])
+  }, [cleanupPublisher, isStartingScreenShare, screenPublisher, session, stopScreenShare])
 
   const isScreenSharing = !!screenPublisher
 

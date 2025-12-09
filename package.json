@@ -20,7 +20,7 @@
     "globals": "^15.14.0",
     "inherits": "^2.0.4",
     "next": "15.3.6",
-    "openvidu-browser": "^2.31.0",
+    "openvidu-browser": "2.31.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.0.1",
