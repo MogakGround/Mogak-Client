@@ -241,11 +241,6 @@ export default function MogakPage() {
       })
   }, [members, timers, subscribers, userID])
 
-  const orphanSubscribers = useMemo(() => {
-    const knownIds = new Set(mappedMembers.map((m) => m.subscriber?.stream.streamId))
-    return subscribers.filter((sub) => !knownIds.has(sub.stream.streamId))
-  }, [mappedMembers, subscribers])
-
   return (
     <>
       <div className="min-w-[1280px] overflow-hidden">
@@ -258,21 +253,12 @@ export default function MogakPage() {
             isScreenSharing={isScreenSharing}
           />
           <div className="grid grid-cols-2 grid-rows-2 gap-4">
-            {/* {mappedMembers.map(({ userId, nickName, subscriber, timer }) => (
+            {mappedMembers.map(({ userId, nickName, subscriber, timer }) => (
               <ScreenBox
-                key={subscriber?.stream.streamId || userId}
+                key={userId}
                 nickname={nickName}
                 time={timer.time}
                 isRunning={timer.isRunning}
-                subscriber={subscriber}
-              />
-            ))} */}
-            {orphanSubscribers.map((subscriber) => (
-              <ScreenBox
-                key={subscriber.stream.streamId}
-                nickname={JSON.parse(subscriber.stream.connection.data).nickName}
-                time={0}
-                isRunning={false}
                 subscriber={subscriber}
               />
             ))}

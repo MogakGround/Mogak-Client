@@ -5,7 +5,7 @@ import IconTextButton from '@/components/global/button/IconTextButton'
 import IconPerson from '@/assets/svg/person.svg'
 import IconClock from '@/assets/svg/clock.svg'
 import convertTime from '@/utils/convertTime'
-import { Subscriber } from 'openvidu-browser'
+import { StreamManager } from 'openvidu-browser'
 import Video from './Video'
 import { useEffect, useState } from 'react'
 
@@ -13,7 +13,7 @@ interface ScreenBoxProps {
   nickname: string
   time: number
   isRunning: boolean
-  subscriber: Subscriber | undefined
+  subscriber: StreamManager | undefined
 }
 
 export default function ScreenBox({ nickname, time: initialTime, isRunning, subscriber }: ScreenBoxProps) {
