@@ -20,7 +20,7 @@ export default function Video({ streamManager, isVideoOn }: Props) {
 
   return (
     <>
-      <video autoPlay={autoplay} ref={videoRef} className="w-full h-full object-cover rounded-10">
+      <video autoPlay={autoplay} ref={videoRef} className="w-full object-cover max-h-300 aspect-[476/248] rounded-10">
         <track kind="captions" />
       </video>
       {(!isVideoOn || !streamManager) && (

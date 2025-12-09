@@ -250,7 +250,6 @@ export default function MogakPage() {
     <>
       <div className="min-w-[1280px] overflow-hidden">
         <MogakHeader id={roomId} />
-
         <div className="px-80 pt-16 flex gap-15 min-h-500 h-full">
           <MyStatus
             startScreenShare={startScreenShare}
@@ -259,7 +258,7 @@ export default function MogakPage() {
             isScreenSharing={isScreenSharing}
           />
           <div className="grid grid-cols-2 grid-rows-2 gap-4">
-            {mappedMembers.map(({ userId, nickName, subscriber, timer }) => (
+            {/* {mappedMembers.map(({ userId, nickName, subscriber, timer }) => (
               <ScreenBox
                 key={subscriber?.stream.streamId || userId}
                 nickname={nickName}
@@ -267,11 +266,11 @@ export default function MogakPage() {
                 isRunning={timer.isRunning}
                 subscriber={subscriber}
               />
-            ))}
+            ))} */}
             {orphanSubscribers.map((subscriber) => (
               <ScreenBox
                 key={subscriber.stream.streamId}
-                nickname="참가자"
+                nickname={JSON.parse(subscriber.stream.connection.data).nickName}
                 time={0}
                 isRunning={false}
                 subscriber={subscriber}
