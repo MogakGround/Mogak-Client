@@ -28,9 +28,6 @@ export default function MogakPage() {
   const [hasFailed, setHasFailed] = useState(false)
   const [connectionError, setConnectionError] = useState<Error | null>(null)
 
-  const serverUrl = useMemo(() => (process.env.NEXT_PUBLIC_OPENVIDU_SERVER_URL || '').replace(/\/$/, ''), [])
-  const serverSecret = useMemo(() => process.env.NEXT_PUBLIC_OPENVIDU_SECRET || '', [])
-
   useEffect(() => {
     ovRef.current = new OpenVidu()
     return () => {
@@ -73,49 +70,40 @@ export default function MogakPage() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload)
   }, [leaveSession])
 
-  const getToken = useCallback(
-    async (targetSessionId: string) => {
-      if (!serverUrl || !serverSecret) {
-        throw new Error('서버 URL 또는 Secret이 설정되지 않았습니다 (.env 확인).')
-      }
+  const getToken = useCallback(async (targetSessionId: string) => {
+    // 프록시 API를 통해 세션 생성
+    const createSessionRes = await fetch('/api/openvidu/sessions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ customSessionId: targetSessionId }),
+    })
 
-      const auth = `Basic ${btoa(`OPENVIDUAPP:${serverSecret}`)}`
+    if (!createSessionRes.ok) {
+      const data = await createSessionRes.json()
+      throw new Error(data.error || '세션 생성 실패')
+    }
 
-      const createSessionRes = await fetch(`${serverUrl}/api/sessions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: auth,
-        },
-        body: JSON.stringify({ customSessionId: targetSessionId }),
-      })
+    const sessionJson = await createSessionRes.json()
+    const finalSessionId = sessionJson.id || targetSessionId
 
-      if (![200, 201, 409].includes(createSessionRes.status)) {
-        const text = await createSessionRes.text()
-        throw new Error(`세션 생성 실패 (${createSessionRes.status}): ${text}`)
-      }
+    // 프록시 API를 통해 토큰 생성
+    const tokenRes = await fetch(`/api/openvidu/sessions/${finalSessionId}/connection`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
 
-      const sessionJson = createSessionRes.status === 409 ? { id: targetSessionId } : await createSessionRes.json()
-      const finalSessionId = sessionJson.id || targetSessionId
+    if (!tokenRes.ok) {
+      const data = await tokenRes.json()
+      throw new Error(data.error || '토큰 생성 실패')
+    }
 
-      const tokenRes = await fetch(`${serverUrl}/api/sessions/${finalSessionId}/connection`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: auth,
-        },
-      })
-
-      if (!tokenRes.ok) {
-        const text = await tokenRes.text()
-        throw new Error(`토큰 생성 실패 (${tokenRes.status}): ${text}`)
-      }
-
-      const { token } = await tokenRes.json()
-      return token as string
-    },
-    [serverSecret, serverUrl]
-  )
+    const { token } = await tokenRes.json()
+    return token as string
+  }, [])
 
   const joinSession = useCallback(async () => {
     if (!ovRef.current || isConnecting || isConnected || hasFailed) return
