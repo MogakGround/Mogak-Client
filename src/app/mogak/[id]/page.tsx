@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
 import MogakHeader from '../components/MogakHeader'
 import MyStatus from '../components/MyStatus'
@@ -11,6 +11,7 @@ import { useUserStore } from '@/store/userStore'
 import { useRoomStore } from '@/store/roomStore'
 import { useLeavePrevention } from '@/hooks/useLeavePrevention'
 import LeavePreventionModal from '@/components/global/modal/LeavePreventionModal'
+import HeaderFallback from '../components/HeaderFallback'
 
 export default function MogakPage() {
   const roomId = useParams().id as string
@@ -219,7 +220,7 @@ export default function MogakPage() {
   const { data: TimerList } = useGetTimerList(roomId)
   const timers = TimerList?.timers ?? []
 
-  const { data } = useGetRoomMembers(roomId)
+  const { data } = useGetRoomMembers(roomId, userID!)
 
   useEffect(() => {
     if (data?.users) {
@@ -260,7 +261,10 @@ export default function MogakPage() {
   return (
     <>
       <div className="min-w-[1280px] overflow-hidden">
-        <MogakHeader id={roomId} />
+        <Suspense fallback={<HeaderFallback />}>
+          <MogakHeader id={roomId} />
+        </Suspense>
+
         <div className="px-80 pt-16 flex gap-15 min-h-500 h-full">
           <MyStatus
             startScreenShare={startScreenShare}

@@ -16,6 +16,7 @@ import MemberModal from './MemberModal'
 import { useRouter } from 'next/navigation'
 import cn from '@/utils/cn'
 import RoomEditModal from './RoomEditModal'
+import { useUserStore } from '@/store/userStore'
 
 interface MogakHeaderProps {
   id: string
@@ -23,18 +24,15 @@ interface MogakHeaderProps {
 
 export default function MogakHeader({ id }: MogakHeaderProps) {
   const router = useRouter()
+  const userID = useUserStore((state) => state.userID)
 
-  const { data, isLoading } = useGetRoomInfo(id)
-  const { data: memberData, isLoading: isLoading2 } = useGetRoomMembers(id)
+  const { data } = useGetRoomInfo(id)
+  const { data: memberData } = useGetRoomMembers(id, userID!)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isStopModalOpen, setIsStopModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-
-  if (isLoading || isLoading2) {
-    return <div></div>
-  }
 
   const { roomName, roomExplain, isHost, isLocked } = data!
 

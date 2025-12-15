@@ -1,18 +1,17 @@
 import { useUserStore } from '@/store/userStore'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { MyStatusResponse, RoomMembers, RoomResponse, ScreenShareMembersResponse, TimerListResponse } from './type'
 import { getMyStatus, getRoomInfo, getRoomMembers, getScreenShareMembers, getTimerList } from './api'
 
 export const useGetRoomInfo = (id: string) => {
-  return useQuery<RoomResponse>({
+  return useSuspenseQuery<RoomResponse>({
     queryKey: ['roomInfo', id],
     queryFn: () => getRoomInfo(id),
-    enabled: !!id,
   })
 }
 
 export const useGetMyStatus = (id: string) => {
-  return useQuery<MyStatusResponse>({
+  return useSuspenseQuery<MyStatusResponse>({
     queryKey: ['mystatus', id],
     queryFn: () => getMyStatus(id),
     staleTime: 0,
@@ -20,11 +19,9 @@ export const useGetMyStatus = (id: string) => {
   })
 }
 
-export const useGetRoomMembers = (id: string) => {
-  const { userID } = useUserStore()
-
-  return useQuery<RoomMembers>({
-    queryKey: ['roomMembers', id],
+export const useGetRoomMembers = (id: string, userID: number) => {
+  return useSuspenseQuery<RoomMembers>({
+    queryKey: ['roomMembers', id, userID],
     queryFn: async () => {
       const res = await getRoomMembers(id)
       const myUser = res.users.find((u) => u.userId === Number(userID))

@@ -13,6 +13,7 @@ export default function QueryProvider({ children }: StrictPropsWithChildren) {
           queries: {
             refetchOnMount: false,
             refetchOnWindowFocus: false,
+            retry: 2,
             staleTime: 60 * 1000,
           },
         },
