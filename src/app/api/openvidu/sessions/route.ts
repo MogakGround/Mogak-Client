@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const OPENVIDU_URL = process.env.OPENVIDU_SERVER_URL
+const OPENVIDU_URL = process.env.OPENVIDU_URL
 const OPENVIDU_SECRET = process.env.OPENVIDU_SECRET
 
 export async function POST(request: NextRequest) {

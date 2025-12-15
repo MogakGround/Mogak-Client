@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const OPENVIDU_URL = process.env.OPENVIDU_SERVER_URL
+const OPENVIDU_URL = process.env.OPENVIDU_URL
 const OPENVIDU_SECRET = process.env.OPENVIDU_SECRET
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ sessionId: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ sessionId: string }> }) {
   try {
     const { sessionId } = await params
 
@@ -22,20 +19,13 @@ export async function POST(
 
     if (!response.ok) {
       const text = await response.text()
-      return NextResponse.json(
-        { error: `토큰 생성 실패: ${text}` },
-        { status: response.status }
-      )
+      return NextResponse.json({ error: `토큰 생성 실패: ${text}` }, { status: response.status })
     }
 
     const data = await response.json()
     return NextResponse.json(data)
   } catch (error) {
     console.error('OpenVidu 토큰 생성 에러:', error)
-    return NextResponse.json(
-      { error: '서버 에러가 발생했습니다.' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: '서버 에러가 발생했습니다.' }, { status: 500 })
   }
 }
-

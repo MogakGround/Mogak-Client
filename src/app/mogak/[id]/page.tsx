@@ -179,7 +179,7 @@ export default function MogakPage() {
     try {
       screenPub = await ovRef.current.initPublisherAsync(undefined, {
         videoSource: 'screen',
-        audioSource: undefined,
+        audioSource: false,
         publishAudio: false,
         publishVideo: true,
         mirror: false,
@@ -195,9 +195,18 @@ export default function MogakPage() {
       setPublisher(screenPub)
     } catch (err) {
       console.error('화면 공유 시작 오류:', err)
+
       // 에러 발생 시 생성된 publisher 정리
       if (screenPub) {
         cleanupPublisher(screenPub)
+      }
+
+      // 권한 거부 에러 처리
+      const error = err as { name?: string }
+      if (error.name === 'DEVICE_ACCESS_DENIED' || error.name === 'NotAllowedError') {
+        setIsStartingScreenShare(false)
+        startScreenShare()
+        return
       }
     } finally {
       setIsStartingScreenShare(false)
