@@ -220,7 +220,7 @@ export default function MogakPage() {
   const { data: TimerList } = useGetTimerList(roomId)
   const timers = TimerList?.timers ?? []
 
-  const { data } = useGetRoomMembers(roomId, userID!)
+  const { data } = useGetRoomMembers(roomId, userID!, isConnected)
 
   useEffect(() => {
     if (data?.users) {
