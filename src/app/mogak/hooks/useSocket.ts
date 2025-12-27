@@ -4,10 +4,11 @@ import { useAuthStore } from '@/store/authStore'
 import { useRoomStore } from '@/store/roomStore'
 import { useUserStore } from '@/store/userStore'
 import { useQueryClient } from '@tanstack/react-query'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export default function useSocket(roomId: string) {
   const wsRef = useRef<WebSocket | null>(null)
+  const [isConnected, setIsConnected] = useState(false)
 
   const { accessToken } = useAuthStore.getState()
   const { userID } = useUserStore.getState()
@@ -17,12 +18,16 @@ export default function useSocket(roomId: string) {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    const ws = new WebSocket(`${process.env.NEXT_PUBLIC_SOCKET_URL}?token=${accessToken}&roomId=${roomId}`)
+    const wsUrl = `${process.env.NEXT_PUBLIC_SOCKET_URL}?token=${accessToken}&roomId=${roomId}`
+    console.log('🔌 WebSocket 연결 시도:', wsUrl)
+
+    const ws = new WebSocket(wsUrl)
 
     wsRef.current = ws
 
     ws.onopen = () => {
       console.log('✅ WebSocket 연결 성공')
+      setIsConnected(true)
     }
 
     ws.onmessage = (event) => {
@@ -45,12 +50,14 @@ export default function useSocket(roomId: string) {
       }
     }
 
-    ws.onclose = () => {
-      console.log('❌ WebSocket 연결 종료')
+    ws.onclose = (event) => {
+      console.log('❌ WebSocket 연결 종료:', { code: event.code, reason: event.reason })
+      setIsConnected(false)
     }
 
     ws.onerror = (err) => {
       console.error('🚨 WebSocket 오류:', err)
+      console.error('🔗 연결 URL:', wsUrl)
     }
 
     return () => {
@@ -71,10 +78,14 @@ export default function useSocket(roomId: string) {
   }
 
   const startTimer = () => {
-    wsRef.current?.send(JSON.stringify({ type: 'timer-start' }))
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: 'timer-start' }))
+    }
   }
   const stopTimer = () => {
-    wsRef.current?.send(JSON.stringify({ type: 'timer-stop' }))
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: 'timer-stop' }))
+    }
   }
 
   return {
@@ -83,5 +94,6 @@ export default function useSocket(roomId: string) {
     startTimer,
     stopTimer,
     socket: wsRef.current,
+    isConnected,
   }
 }

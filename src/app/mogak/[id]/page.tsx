@@ -7,6 +7,7 @@ import MyStatus from '../components/MyStatus'
 import ScreenBox from '../components/ScreenBox'
 import { OpenVidu, Publisher, StreamManager } from 'openvidu-browser'
 import { useGetRoomMembers, useGetTimerList } from '../api/queries'
+import useSocket from '../hooks/useSocket'
 import { useUserStore } from '@/store/userStore'
 import { useRoomStore } from '@/store/roomStore'
 import { useLeavePrevention } from '@/hooks/useLeavePrevention'
@@ -18,6 +19,13 @@ export default function MogakPage() {
   const { userID } = useUserStore()
   const { members, setMembers } = useRoomStore()
   const { isModalOpen, confirmLeave, cancelLeave } = useLeavePrevention()
+  const {
+    isConnected: isSocketConnected,
+    sendStartScreenShare,
+    sendStopScreenShare,
+    startTimer,
+    stopTimer,
+  } = useSocket(roomId)
 
   const ovRef = useRef<OpenVidu | null>(null)
   const [session, setSession] = useState<ReturnType<OpenVidu['initSession']> | null>(null)
@@ -25,7 +33,7 @@ export default function MogakPage() {
   const [screenPublisher, setScreenPublisher] = useState<Publisher | null>(null)
   const [subscribers, setSubscribers] = useState<StreamManager[]>([])
   const [isConnecting, setIsConnecting] = useState(false)
-  const [isConnected, setIsConnected] = useState(false)
+  const isConnectingRef = useRef(false)
   const [hasFailed, setHasFailed] = useState(false)
   const [connectionError, setConnectionError] = useState<Error | null>(null)
 
@@ -58,7 +66,6 @@ export default function MogakPage() {
     setPublisher(null)
     setScreenPublisher(null)
     setSubscribers([])
-    setIsConnected(false)
     setIsConnecting(false)
     setHasFailed(false)
     setConnectionError(null)
@@ -72,7 +79,6 @@ export default function MogakPage() {
   }, [leaveSession])
 
   const getToken = useCallback(async (targetSessionId: string) => {
-    // 프록시 API를 통해 세션 생성
     const createSessionRes = await fetch('/api/openvidu/sessions', {
       method: 'POST',
       headers: {
@@ -89,7 +95,6 @@ export default function MogakPage() {
     const sessionJson = await createSessionRes.json()
     const finalSessionId = sessionJson.id || targetSessionId
 
-    // 프록시 API를 통해 토큰 생성
     const tokenRes = await fetch(`/api/openvidu/sessions/${finalSessionId}/connection`, {
       method: 'POST',
       headers: {
@@ -107,8 +112,9 @@ export default function MogakPage() {
   }, [])
 
   const joinSession = useCallback(async () => {
-    if (!ovRef.current || isConnecting || isConnected || hasFailed) return
+    if (!ovRef.current || isConnectingRef.current || session || hasFailed) return
 
+    isConnectingRef.current = true
     setIsConnecting(true)
     try {
       const token = await getToken(roomId)
@@ -131,23 +137,23 @@ export default function MogakPage() {
       await newSession.connect(token, { clientData: String(userID || '') })
 
       setSession(newSession)
-      setIsConnected(true)
       setConnectionError(null)
     } catch (error) {
       console.error('🚨 OpenVidu 연결 실패:', error)
       setConnectionError(error as Error)
       setHasFailed(true)
     } finally {
+      isConnectingRef.current = false
       setIsConnecting(false)
     }
-  }, [getToken, hasFailed, isConnected, isConnecting, roomId, userID])
+  }, [getToken, hasFailed, session, roomId, userID])
 
   // auto-join
   useEffect(() => {
-    if (userID && !isConnected && !isConnecting && !hasFailed && !connectionError) {
+    if (userID && !session && !isConnecting && !hasFailed && !connectionError) {
       joinSession()
     }
-  }, [userID, isConnected, isConnecting, hasFailed, connectionError, joinSession])
+  }, [userID, session, isConnecting, hasFailed, connectionError, joinSession])
 
   // screen share control
   const [isStartingScreenShare, setIsStartingScreenShare] = useState(false)
@@ -220,7 +226,7 @@ export default function MogakPage() {
   const { data: TimerList } = useGetTimerList(roomId)
   const timers = TimerList?.timers ?? []
 
-  const { data } = useGetRoomMembers(roomId, userID!, isConnected)
+  const { data } = useGetRoomMembers(roomId, userID!, isSocketConnected)
 
   useEffect(() => {
     if (data?.users) {
@@ -271,6 +277,10 @@ export default function MogakPage() {
             stopScreenShare={stopScreenShare}
             publisher={publisher as Publisher}
             isScreenSharing={isScreenSharing}
+            sendStartScreenShare={sendStartScreenShare}
+            sendStopScreenShare={sendStopScreenShare}
+            startTimer={startTimer}
+            stopTimer={stopTimer}
           />
           <div className="grid grid-cols-2 grid-rows-2 gap-4">
             {mappedMembers.map(({ userId, nickName, subscriber, timer }) => (

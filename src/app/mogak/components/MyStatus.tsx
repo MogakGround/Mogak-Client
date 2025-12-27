@@ -2,7 +2,7 @@
 
 import TextToggle from '@/components/global/toggle/TextToggle'
 import { ToggleTheme } from '@/components/global/toggle/toggle.types'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import Timer from './Timer'
 import TextChip from '@/components/global/chip/TextChip'
 import { ChipSize, ChipTheme, ChipVariant } from '@/components/global/chip/chip.types'
@@ -11,23 +11,29 @@ import { Publisher } from 'openvidu-browser'
 import { useRoomStore } from '@/store/roomStore'
 import { useGetMyStatus } from '../api/queries'
 import { useParams } from 'next/navigation'
-import useSocket from '../hooks/useSocket'
 
 interface MyStatusProps {
   publisher?: Publisher
   startScreenShare: () => void
   stopScreenShare: () => void
   isScreenSharing?: boolean
+  sendStartScreenShare: () => void
+  sendStopScreenShare: () => void
+  startTimer: () => void
+  stopTimer: () => void
 }
 export default function MyStatus({
   publisher,
   startScreenShare,
   stopScreenShare,
   isScreenSharing: propIsScreenSharing,
+  sendStartScreenShare,
+  sendStopScreenShare,
+  startTimer,
+  stopTimer,
 }: MyStatusProps) {
   const roomId = useParams().id as string
   const { screenShareOn, setScreenShareOn } = useRoomStore()
-  const { sendStartScreenShare, sendStopScreenShare, startTimer, stopTimer } = useSocket(roomId)
 
   const { data } = useGetMyStatus(roomId)
 
