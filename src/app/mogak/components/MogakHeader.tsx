@@ -17,6 +17,8 @@ import { useRouter } from 'next/navigation'
 import cn from '@/utils/cn'
 import RoomEditModal from './RoomEditModal'
 import { useUserStore } from '@/store/userStore'
+import AutoDisappearIconToast from '@/components/global/toast/AutoDisappearIconToast'
+import { ToastTheme, ToastSize } from '@/components/global/toast/toast.types'
 
 interface MogakHeaderProps {
   id: string
@@ -33,6 +35,18 @@ export default function MogakHeader({ id }: MogakHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isStopModalOpen, setIsStopModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [showInviteToast, setShowInviteToast] = useState(false)
+
+  const handleCopyInviteUrl = async () => {
+    const inviteUrl = `${window.location.origin}/mogak/${id}`
+    try {
+      await navigator.clipboard.writeText(inviteUrl)
+      setShowInviteToast(true)
+      setTimeout(() => setShowInviteToast(false), 2000)
+    } catch (err) {
+      console.error('클립보드 복사 실패:', err)
+    }
+  }
 
   const { roomName, roomExplain, isHost, isLocked } = data!
 
@@ -40,6 +54,19 @@ export default function MogakHeader({ id }: MogakHeaderProps) {
     <div className="relative w-full min-h-142">
       <Image src={MogakSvg} alt="모각방 배경" layout="fill" objectFit="cover" />
       <div className="absolute inset-0 bg-[#0F1220] opacity-90"></div>
+      {showInviteToast && (
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[416px]">
+          <AutoDisappearIconToast
+            duration={2000}
+            theme={ToastTheme.DARK}
+            size={ToastSize.md}
+            text="초대 URL이 복사되었어요."
+            detailText="초대하고자 하는 곳에 붙여넣기 해주세요"
+            success={true}
+            handleClick={() => setShowInviteToast(false)}
+          />
+        </div>
+      )}
       <div className="relative z-10 flex justify-between h-full px-80 py-40">
         <div className="flex flex-col">
           <h1 className="text-24 font-ria">{roomName}</h1>
@@ -51,7 +78,7 @@ export default function MogakHeader({ id }: MogakHeaderProps) {
             theme={ButtonTheme.white}
             size={ButtonSize.md}
             text="초대하기"
-            handleClick={() => {}}
+            handleClick={handleCopyInviteUrl}
             iconArrow={IconArrow.right}
             iconSrc={IconLink}
           />
