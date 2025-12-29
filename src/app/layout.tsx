@@ -37,7 +37,7 @@ export default function RootLayout({
         <QueryProvider>
           <div id="portalModal" />
           <GNB />
-          <main className="w-full h-[calc(100%-60px)] overflow-y-auto">{children}</main>
+          <main className="w-full h-[calc(100%-60px)] overflow-y-auto pb-50">{children}</main>
         </QueryProvider>
       </body>
     </html>

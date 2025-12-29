@@ -73,8 +73,8 @@ export default function MogakRoom({
     <div className="flex flex-col gap-[16px]">
       <div
         className={cn(
-          'relative w-[305px] rounded-[10px] ',
-          hover && 'border-[1.5px] border-accentT-40 shadow-accentT60-25'
+          'relative w-[305px] rounded-[10px] border-[1.5px] border-transparent',
+          hover && 'border-accentT-40 shadow-accentT60-25'
         )}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
