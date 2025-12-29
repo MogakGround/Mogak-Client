@@ -17,7 +17,7 @@ import HeaderFallback from '../components/HeaderFallback'
 export default function MogakPage() {
   const roomId = useParams().id as string
   const { userID } = useUserStore()
-  const { members, setMembers } = useRoomStore()
+  const { members, setMembers, setScreenShareOn } = useRoomStore()
   const { isModalOpen, confirmLeave, cancelLeave } = useLeavePrevention()
   const {
     isConnected: isSocketConnected,
@@ -159,19 +159,21 @@ export default function MogakPage() {
   const [isStartingScreenShare, setIsStartingScreenShare] = useState(false)
 
   const stopScreenShare = useCallback(() => {
-    if (!screenPublisher) return
     try {
-      if (session) {
-        session.unpublish(screenPublisher)
+      if (screenPublisher) {
+        if (session) {
+          session.unpublish(screenPublisher)
+        }
+        cleanupPublisher(screenPublisher)
       }
-      cleanupPublisher(screenPublisher)
     } catch (err) {
       console.error('화면 공유 중지 오류:', err)
     } finally {
       setScreenPublisher(null)
       setPublisher(null)
+      setScreenShareOn(false)
     }
-  }, [cleanupPublisher, screenPublisher, session])
+  }, [cleanupPublisher, screenPublisher, session, setScreenShareOn])
 
   const startScreenShare = useCallback(async () => {
     if (!session || !ovRef.current) return
@@ -208,17 +210,12 @@ export default function MogakPage() {
         cleanupPublisher(screenPub)
       }
 
-      // 권한 거부 에러 처리
-      const error = err as { name?: string }
-      if (error.name === 'DEVICE_ACCESS_DENIED' || error.name === 'NotAllowedError') {
-        setIsStartingScreenShare(false)
-        startScreenShare()
-        return
-      }
+      // 화면 공유 거부/취소 시 토글 끄기
+      setScreenShareOn(false)
     } finally {
       setIsStartingScreenShare(false)
     }
-  }, [cleanupPublisher, isStartingScreenShare, screenPublisher, session, stopScreenShare])
+  }, [cleanupPublisher, isStartingScreenShare, screenPublisher, session, stopScreenShare, setScreenShareOn])
 
   const isScreenSharing = !!screenPublisher
 
