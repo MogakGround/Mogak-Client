@@ -46,6 +46,7 @@ export default function MogakRoom({
 }: MogakRoomProps) {
   const [hover, setHover] = useState(false)
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const { push } = useRouter()
 
@@ -54,6 +55,8 @@ export default function MogakRoom({
       setIsPasswordModalOpen(true)
       return
     }
+    if (isLoading) return
+    setIsLoading(true)
     try {
       await postEnterRoom(index, {
         isScreenShared: false,
@@ -62,6 +65,7 @@ export default function MogakRoom({
       push(`/mogak/${index}`)
     } catch (error) {
       console.error(error)
+      setIsLoading(false)
     }
   }
 
@@ -100,6 +104,11 @@ export default function MogakRoom({
           </div>
         </div>
         <Image src={thumbnailImageSrc} alt="thumbnail" width={305} height={160} />
+        {isLoading && (
+          <div className="absolute inset-0 bg-black/60 rounded-[10px] flex items-center justify-center">
+            <div className="w-24 h-24 border-4 border-accent-100 border-t-transparent rounded-full animate-spin" />
+          </div>
+        )}
       </div>
       <div className="mx-[8px] h-[96px] flex flex-col justify-between">
         <p className={cn('semi-16', hover ? 'text-accent-100' : 'text-white')}>{title}</p>
