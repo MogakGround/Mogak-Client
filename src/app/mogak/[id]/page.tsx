@@ -279,17 +279,26 @@ export default function MogakPage() {
             startTimer={startTimer}
             stopTimer={stopTimer}
           />
-          <div className="grid grid-cols-2 grid-rows-2 gap-4">
-            {mappedMembers.map(({ userId, nickName, subscriber, timer }) => (
-              <ScreenBox
-                key={userId}
-                nickname={nickName}
-                time={timer.time}
-                isRunning={timer.isRunning}
-                subscriber={subscriber}
-              />
-            ))}
-          </div>
+          {mappedMembers.length > 0 ? (
+            <div className="grid grid-cols-2 grid-rows-2 gap-4">
+              {mappedMembers.map(({ userId, nickName, subscriber, timer }) => (
+                <ScreenBox
+                  key={userId}
+                  nickname={nickName}
+                  time={timer.time}
+                  isRunning={timer.isRunning}
+                  subscriber={subscriber}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="flex flex-col items-center gap-[2px] w-[273px]">
+                <p className="text-white text-lg font-semibold">아직 모각방에 입장한 사람이 없어요.</p>
+                <p className="text-gray-400 text-sm">모각방에 같이 작업할 사람을 초대해보세요!</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
