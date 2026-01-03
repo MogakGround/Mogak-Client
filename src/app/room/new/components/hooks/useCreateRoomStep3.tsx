@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useMutation } from '@tanstack/react-query'
 import { validateCommonText } from '@/utils/validate'
 import { IRoomNewForm } from './useCreateRoom'
 import { WorkHours, PostCreateRoomRequest } from '@/app/api/room/room.types'
@@ -15,21 +16,28 @@ export function useCreateRoomStep3({ roomNewForm, setRoomNewForm }: IUseCreateRo
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(false)
   const { push } = useRouter()
 
-  const handleClickComplete = async () => {
-    try {
-      const body: PostCreateRoomRequest = {
-        roomName: roomNewForm.name,
-        roomImg: roomNewForm.thumbnail,
-        workHours: roomNewForm.time,
-        isLocked: roomNewForm.isLocked,
-        ...(roomNewForm.isLocked && { roomPassword: roomNewForm.password }),
-        ...(roomNewForm.description && { roomExplain: roomNewForm.description }),
-      }
-      const { roomId } = await postCreateRoom(body)
-      push(`/mogak/${roomId}`)
-    } catch (error) {
-      console.error('Failed to create room:', error)
+  const {
+    mutate: mutateCreateRoom,
+    isPending: isCreatingRoom,
+    isSuccess: isCreatedRoom,
+  } = useMutation({
+    mutationFn: postCreateRoom,
+    onSuccess: ({ roomId }) => push(`/mogak/${roomId}`),
+    onError: (error) => console.error('Failed to create room:', error),
+  })
+
+  const handleClickComplete = () => {
+    if (isCreatingRoom || isCreatedRoom) return
+
+    const body: PostCreateRoomRequest = {
+      roomName: roomNewForm.name,
+      roomImg: roomNewForm.thumbnail,
+      workHours: roomNewForm.time,
+      isLocked: roomNewForm.isLocked,
+      ...(roomNewForm.isLocked && { roomPassword: roomNewForm.password }),
+      ...(roomNewForm.description && { roomExplain: roomNewForm.description }),
     }
+    mutateCreateRoom(body)
   }
 
   const handleTagChange = (tag: WorkHours) => {
@@ -57,10 +65,12 @@ export function useCreateRoomStep3({ roomNewForm, setRoomNewForm }: IUseCreateRo
 
   useEffect(() => {
     setIsNextButtonDisabled(
-      roomNewForm.time.length === 0 ||
+      isCreatingRoom ||
+        isCreatedRoom ||
+        roomNewForm.time.length === 0 ||
         (roomNewForm.isLocked && (!passwordValidations.lengthValid || !passwordValidations.formatValid))
     )
-  }, [roomNewForm.time, roomNewForm.isLocked, passwordValidations])
+  }, [roomNewForm.time, roomNewForm.isLocked, passwordValidations, isCreatingRoom, isCreatedRoom])
 
   return {
     handleTagChange,
