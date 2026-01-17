@@ -219,7 +219,6 @@ export default function MogakPage() {
 
   const isScreenSharing = !!screenPublisher
 
-  // Data queries
   const { data: TimerList } = useGetTimerList(roomId)
   const timers = TimerList?.timers ?? []
 
@@ -232,7 +231,7 @@ export default function MogakPage() {
   }, [data, setMembers])
 
   const mappedMembers = useMemo(() => {
-    if (!timers.length || !members.length) return []
+    if (!members.length) return []
 
     return members
       .filter((member) => member.userId !== Number(userID))
