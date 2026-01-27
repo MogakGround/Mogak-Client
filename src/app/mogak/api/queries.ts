@@ -14,6 +14,7 @@ export const useGetMyStatus = (id: string) => {
   return useSuspenseQuery<MyStatusResponse>({
     queryKey: ['mystatus', id],
     queryFn: () => getMyStatus(id),
+    refetchOnMount: 'always',
   })
 }
 
