@@ -11,8 +11,6 @@ export default function QueryProvider({ children }: StrictPropsWithChildren) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            refetchOnMount: false,
-            refetchOnWindowFocus: false,
             retry: 2,
             staleTime: 60 * 1000,
           },

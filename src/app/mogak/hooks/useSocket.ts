@@ -4,11 +4,12 @@ import { useAuthStore } from '@/store/authStore'
 import { useRoomStore } from '@/store/roomStore'
 import { useUserStore } from '@/store/userStore'
 import { useQueryClient } from '@tanstack/react-query'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 export default function useSocket(roomId: string) {
   const wsRef = useRef<WebSocket | null>(null)
   const [isConnected, setIsConnected] = useState(false)
+  const [screenSharingUsers, setScreenSharingUsers] = useState<Set<number>>(new Set())
 
   const { accessToken } = useAuthStore.getState()
   const { userID } = useUserStore.getState()
@@ -16,6 +17,18 @@ export default function useSocket(roomId: string) {
   const removeMember = useRoomStore((s) => s.removeMember)
 
   const queryClient = useQueryClient()
+
+  const addScreenSharingUser = useCallback((userId: number) => {
+    setScreenSharingUsers((prev) => new Set(prev).add(userId))
+  }, [])
+
+  const removeScreenSharingUser = useCallback((userId: number) => {
+    setScreenSharingUsers((prev) => {
+      const next = new Set(prev)
+      next.delete(userId)
+      return next
+    })
+  }, [])
 
   useEffect(() => {
     const wsUrl = `${process.env.NEXT_PUBLIC_SOCKET_URL}?token=${accessToken}&roomId=${roomId}`
@@ -35,7 +48,16 @@ export default function useSocket(roomId: string) {
       console.log('📩 서버 메시지:', data)
 
       if (data.type === 'screen-share-start') {
-        console.log('🖥️ 화면 공유 시작됨!')
+        console.log('🖥️ 화면 공유 시작됨! userId:', data.userId)
+        if (data.userId != null) {
+          addScreenSharingUser(Number(data.userId))
+        }
+      }
+      if (data.type === 'screen-share-stop') {
+        console.log('🖥️ 화면 공유 종료됨! userId:', data.userId)
+        if (data.userId != null) {
+          removeScreenSharingUser(Number(data.userId))
+        }
       }
       if (data.type === 'participant-joined') {
         if (data.data != undefined && data.data.userId != userID) {
@@ -46,6 +68,7 @@ export default function useSocket(roomId: string) {
       }
       if (data.type === 'participant-left') {
         removeMember(data.userId)
+        removeScreenSharingUser(Number(data.userId))
         console.log('유저 연결 종료')
       }
     }
@@ -63,7 +86,7 @@ export default function useSocket(roomId: string) {
     return () => {
       ws.close()
     }
-  }, [roomId])
+  }, [roomId, addScreenSharingUser, removeScreenSharingUser])
 
   const sendStartScreenShare = () => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
@@ -95,5 +118,6 @@ export default function useSocket(roomId: string) {
     stopTimer,
     socket: wsRef.current,
     isConnected,
+    screenSharingUsers,
   }
 }

@@ -19,12 +19,6 @@ interface ScreenBoxProps {
 export default function ScreenBox({ nickname, time: initialTime, isRunning, subscriber }: ScreenBoxProps) {
   const [time, setTime] = useState(initialTime)
 
-  console.log(subscriber, 'subscriber?????????????')
-
-  useEffect(() => {
-    setTime(initialTime)
-  }, [initialTime])
-
   useEffect(() => {
     let intervalId: NodeJS.Timeout
 

@@ -25,6 +25,7 @@ export default function MogakPage() {
     sendStopScreenShare,
     startTimer,
     stopTimer,
+    screenSharingUsers,
   } = useSocket(roomId)
 
   const ovRef = useRef<OpenVidu | null>(null)
@@ -247,6 +248,7 @@ export default function MogakPage() {
         })
 
         const timer = timers.find((t) => t.userId === member.userId)
+        const isScreenSharing = screenSharingUsers.has(member.userId)
 
         return {
           userId: member.userId,
@@ -254,11 +256,11 @@ export default function MogakPage() {
           subscriber,
           timer: {
             time: timer ? timer.hour * 3600 + timer.min * 60 + timer.sec : 0,
-            isRunning: timer?.isRunning ?? false,
+            isRunning: isScreenSharing || (timer?.isRunning ?? false),
           },
         }
       })
-  }, [members, timers, subscribers, userID])
+  }, [members, timers, subscribers, userID, screenSharingUsers])
 
   return (
     <>
