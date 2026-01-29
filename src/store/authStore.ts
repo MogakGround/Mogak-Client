@@ -12,7 +12,12 @@ export const useAuthStore = create<AuthStore>()((set) => ({
   accessToken: getCookie('accessToken') as string | null,
 
   setAccessToken: (accessToken: string) => {
-    setCookie('accessToken', accessToken)
+    setCookie('accessToken', accessToken, {
+      path: '/',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24, // 1 day
+    })
     set({ accessToken })
   },
   clearTokens: () => {

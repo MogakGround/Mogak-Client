@@ -18,7 +18,7 @@ export const useGetMyStatus = (id: string) => {
   })
 }
 
-export const useGetRoomMembers = (id: string, userID: number, enabled: boolean = true) => {
+export const useGetRoomMembers = (id: string, userID: number | null, enabled: boolean = true) => {
   return useQuery<RoomMembers>({
     queryKey: ['roomMembers', id, userID],
     queryFn: async () => {
@@ -33,7 +33,7 @@ export const useGetRoomMembers = (id: string, userID: number, enabled: boolean =
         userCnt: res.userCnt,
       }
     },
-    enabled,
+    enabled: enabled && userID != null,
   })
 }
 

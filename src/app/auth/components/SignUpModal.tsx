@@ -46,11 +46,13 @@ export default function SignUpModal({ isOpen, handleCloseModal, handleSignUpChan
       if (res.accessToken) {
         setAccessToken(res.accessToken)
       }
+
+      handleSignUpChange()
+      setIsSignUpComplete(true)
     } catch (error) {
       console.error(error)
+      handleShowIconToast('회원가입에 실패했습니다. 다시 시도해주세요.', false)
     }
-    handleSignUpChange()
-    setIsSignUpComplete(true)
   }
 
   return (
