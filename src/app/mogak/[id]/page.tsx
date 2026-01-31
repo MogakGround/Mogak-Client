@@ -7,6 +7,7 @@ import MyStatus from '../components/MyStatus'
 import ScreenBox from '../components/ScreenBox'
 import { OpenVidu, Publisher, StreamManager } from 'openvidu-browser'
 import { useGetRoomMembers, useGetTimerList } from '../api/queries'
+import { postLeaveRoomBeacon } from '../api/api'
 import useSocket from '../hooks/useSocket'
 import { useUserStore } from '@/store/userStore'
 import { useRoomStore } from '@/store/roomStore'
@@ -74,10 +75,17 @@ export default function MogakPage() {
   }, [cleanupPublisher, publisher, screenPublisher, session])
 
   useEffect(() => {
-    const handleBeforeUnload = () => leaveSession()
+    const handleBeforeUnload = () => {
+      postLeaveRoomBeacon(Number(roomId)) // sendBeacon으로 방 나가기 요청
+      leaveSession() // OpenVidu 세션 정리
+    }
     window.addEventListener('beforeunload', handleBeforeUnload)
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
-  }, [leaveSession])
+
+    return () => {
+      postLeaveRoomBeacon(Number(roomId)) // 페이지 언마운트 시에도 방 나가기
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [leaveSession, roomId])
 
   const getToken = useCallback(async (targetSessionId: string) => {
     const createSessionRes = await fetch('/api/openvidu/sessions', {

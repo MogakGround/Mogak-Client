@@ -42,3 +42,16 @@ export async function getTimerList(id: string) {
 
   return data
 }
+export const postLeaveRoom = async (roomId: number) => {
+  return await axiosInstance.post(`/room/${roomId}/quit`)
+}
+
+export const postLeaveRoomBeacon = (roomId: number) => {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/room/${roomId}/quit`
+  const blob = new Blob([JSON.stringify({})], { type: 'application/json' })
+  
+  // sendBeacon은 페이지가 unload되어도 요청을 보장
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(url, blob)
+  }
+}

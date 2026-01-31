@@ -1,7 +1,7 @@
 import { useUserStore } from '@/store/userStore'
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { MyStatusResponse, RoomMembers, RoomResponse, ScreenShareMembersResponse, TimerListResponse } from './type'
-import { getMyStatus, getRoomInfo, getRoomMembers, getScreenShareMembers, getTimerList } from './api'
+import { getMyStatus, getRoomInfo, getRoomMembers, getScreenShareMembers, getTimerList, postLeaveRoom } from './api'
 
 export const useGetRoomInfo = (id: string) => {
   return useSuspenseQuery<RoomResponse>({
@@ -48,5 +48,13 @@ export const useGetScreenShareMembers = (id: string) => {
   return useQuery<ScreenShareMembersResponse>({
     queryKey: ['screenShareMembers', id],
     queryFn: () => getScreenShareMembers(id),
+  })
+}
+
+export const usePostLeaveRoom = () => {
+  return useMutation<void, Error, number>({
+    mutationFn: async (roomId) => {
+      await postLeaveRoom(roomId)
+    },
   })
 }
