@@ -11,6 +11,13 @@ export default function useSocket(roomId: string, enabled: boolean = true) {
   const [isConnected, setIsConnected] = useState(false)
   const [screenSharingUsers, setScreenSharingUsers] = useState<Set<number>>(new Set())
 
+  const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const reconnectAttemptRef = useRef(0)
+  const intentionalCloseRef = useRef(false)
+
+  const MAX_RECONNECT_ATTEMPTS = 10
+  const BASE_DELAY_MS = 1000
+
   const { accessToken } = useAuthStore.getState()
   const { userID } = useUserStore.getState()
   const addMember = useRoomStore((s) => s.addMember)
@@ -30,22 +37,8 @@ export default function useSocket(roomId: string, enabled: boolean = true) {
     })
   }, [])
 
-  useEffect(() => {
-    if (!enabled) return
-
-    const wsUrl = `${process.env.NEXT_PUBLIC_SOCKET_URL}?token=${accessToken}&roomId=${roomId}`
-    console.log('🔌 WebSocket 연결 시도:', wsUrl)
-
-    const ws = new WebSocket(wsUrl)
-
-    wsRef.current = ws
-
-    ws.onopen = () => {
-      console.log('✅ WebSocket 연결 성공')
-      setIsConnected(true)
-    }
-
-    ws.onmessage = (event) => {
+  const handleMessage = useCallback(
+    (event: MessageEvent) => {
       const data = JSON.parse(event.data)
       console.log('📩 서버 메시지:', data)
 
@@ -73,22 +66,63 @@ export default function useSocket(roomId: string, enabled: boolean = true) {
         removeScreenSharingUser(Number(data.userId))
         console.log('유저 연결 종료')
       }
+    },
+    [addScreenSharingUser, removeScreenSharingUser, addMember, removeMember, queryClient, roomId, userID],
+  )
+
+  useEffect(() => {
+    if (!enabled) return
+
+    const connect = () => {
+      const wsUrl = `${process.env.NEXT_PUBLIC_SOCKET_URL}?token=${accessToken}&roomId=${roomId}`
+      console.log('🔌 WebSocket 연결 시도:', wsUrl)
+
+      const ws = new WebSocket(wsUrl)
+      wsRef.current = ws
+
+      ws.onopen = () => {
+        console.log('✅ WebSocket 연결 성공')
+        setIsConnected(true)
+        reconnectAttemptRef.current = 0
+      }
+
+      ws.onmessage = handleMessage
+
+      ws.onclose = (event) => {
+        console.log('❌ WebSocket 연결 종료:', { code: event.code, reason: event.reason })
+        setIsConnected(false)
+        wsRef.current = null
+
+        if (!intentionalCloseRef.current && reconnectAttemptRef.current < MAX_RECONNECT_ATTEMPTS) {
+          const delay = Math.min(BASE_DELAY_MS * Math.pow(2, reconnectAttemptRef.current), 30000)
+          console.log(`🔄 ${delay}ms 후 재연결 시도 (${reconnectAttemptRef.current + 1}/${MAX_RECONNECT_ATTEMPTS})`)
+          reconnectTimerRef.current = setTimeout(() => {
+            reconnectAttemptRef.current += 1
+            connect()
+          }, delay)
+        } else if (reconnectAttemptRef.current >= MAX_RECONNECT_ATTEMPTS) {
+          console.error('🚫 최대 재연결 횟수 초과, 재연결을 중단합니다.')
+        }
+      }
+
+      ws.onerror = (err) => {
+        console.error('🚨 WebSocket 오류:', err)
+      }
     }
 
-    ws.onclose = (event) => {
-      console.log('❌ WebSocket 연결 종료:', { code: event.code, reason: event.reason })
-      setIsConnected(false)
-    }
-
-    ws.onerror = (err) => {
-      console.error('🚨 WebSocket 오류:', err)
-      console.error('🔗 연결 URL:', wsUrl)
-    }
+    intentionalCloseRef.current = false
+    reconnectAttemptRef.current = 0
+    connect()
 
     return () => {
-      ws.close()
+      intentionalCloseRef.current = true
+      if (reconnectTimerRef.current) {
+        clearTimeout(reconnectTimerRef.current)
+        reconnectTimerRef.current = null
+      }
+      wsRef.current?.close()
     }
-  }, [roomId, enabled, addScreenSharingUser, removeScreenSharingUser])
+  }, [roomId, enabled, accessToken, handleMessage])
 
   const sendStartScreenShare = () => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {

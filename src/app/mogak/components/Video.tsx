@@ -16,6 +16,11 @@ export default function Video({ streamManager, isVideoOn }: Props) {
     if (streamManager && videoRef.current) {
       streamManager.addVideoElement(videoRef.current)
     }
+    return () => {
+      if (videoRef.current) {
+        videoRef.current.srcObject = null
+      }
+    }
   }, [streamManager])
 
   return (

@@ -2,7 +2,7 @@
 
 import TextToggle from '@/components/global/toggle/TextToggle'
 import { ToggleTheme } from '@/components/global/toggle/toggle.types'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import Timer from './Timer'
 import TextChip from '@/components/global/chip/TextChip'
 import { ChipSize, ChipTheme, ChipVariant } from '@/components/global/chip/chip.types'
@@ -43,12 +43,24 @@ export default function MyStatus({
     setScreenShareOn(isScreenSharing)
   }, [isScreenSharing])
 
+  const startScreenShareRef = useRef(startScreenShare)
+  const stopScreenShareRef = useRef(stopScreenShare)
+  const sendStartRef = useRef(sendStartScreenShare)
+  const sendStopRef = useRef(sendStopScreenShare)
+
+  useEffect(() => {
+    startScreenShareRef.current = startScreenShare
+    stopScreenShareRef.current = stopScreenShare
+    sendStartRef.current = sendStartScreenShare
+    sendStopRef.current = sendStopScreenShare
+  }, [startScreenShare, stopScreenShare, sendStartScreenShare, sendStopScreenShare])
+
   useEffect(() => {
     if (screenShareOn) {
       const start = async () => {
         try {
-          await startScreenShare()
-          sendStartScreenShare()
+          await startScreenShareRef.current()
+          sendStartRef.current()
         } catch {
           setScreenShareOn(false)
         }
@@ -56,9 +68,9 @@ export default function MyStatus({
       start()
       return
     }
-    stopScreenShare()
-    sendStopScreenShare()
-  }, [screenShareOn, startScreenShare, stopScreenShare, sendStartScreenShare, sendStopScreenShare, setScreenShareOn])
+    stopScreenShareRef.current()
+    sendStopRef.current()
+  }, [screenShareOn, setScreenShareOn])
 
   const handleToggleScreenOn = () => {
     setScreenShareOn(!screenShareOn)
