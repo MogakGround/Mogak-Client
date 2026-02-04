@@ -248,6 +248,7 @@ export default function MogakPage() {
 
       // 화면 공유 거부/취소 시 토글 끄기
       setScreenShareOn(false)
+      throw err
     } finally {
       setIsStartingScreenShare(false)
     }

@@ -154,6 +154,7 @@ export default function MogakHeader({ id }: MogakHeaderProps) {
             fullWidth
             text="모각방 나가기"
             handleClick={() => {
+              usePostLeaveRoom().mutate(Number(id))
               router.push('/')
             }}
           />

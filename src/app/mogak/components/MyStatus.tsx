@@ -14,7 +14,7 @@ import { useParams } from 'next/navigation'
 
 interface MyStatusProps {
   publisher?: Publisher
-  startScreenShare: () => void
+  startScreenShare: () => Promise<void> | void
   stopScreenShare: () => void
   isScreenSharing?: boolean
   sendStartScreenShare: () => void
@@ -45,14 +45,20 @@ export default function MyStatus({
 
   useEffect(() => {
     if (screenShareOn) {
-      console.log('publisher', publisher)
-      startScreenShare()
-      sendStartScreenShare()
+      const start = async () => {
+        try {
+          await startScreenShare()
+          sendStartScreenShare()
+        } catch {
+          setScreenShareOn(false)
+        }
+      }
+      start()
       return
     }
     stopScreenShare()
     sendStopScreenShare()
-  }, [screenShareOn])
+  }, [screenShareOn, startScreenShare, stopScreenShare, sendStartScreenShare, sendStopScreenShare, setScreenShareOn])
 
   const handleToggleScreenOn = () => {
     setScreenShareOn(!screenShareOn)
