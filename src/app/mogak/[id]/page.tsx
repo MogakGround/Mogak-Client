@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import MogakHeader from '../components/MogakHeader'
 import MyStatus from '../components/MyStatus'
@@ -50,13 +50,25 @@ export default function MogakPage() {
     enterRoom()
   }, [roomId, router])
 
+  const queryClient = useQueryClient()
+
+  const handleSocketMessage = useCallback(
+    (data: Record<string, unknown>) => {
+      const type = String(data?.type ?? '')
+      if (type.includes('timer')) {
+        queryClient.invalidateQueries({ queryKey: ['timerList', roomId] })
+      }
+    },
+    [queryClient, roomId],
+  )
+
   const {
     isConnected: isSocketConnected,
     sendStartScreenShare,
     sendStopScreenShare,
     startTimer,
     stopTimer,
-  } = useSocket(roomId, isRoomEntered)
+  } = useSocket(roomId, isRoomEntered, { onMessage: handleSocketMessage })
 
   const { session, subscribers, screenSharingUsers, leaveSession, ovRef, cleanupPublisher } = useOpenVidu(
     roomId,
@@ -96,8 +108,6 @@ export default function MogakPage() {
       setMembers(data.users)
     }
   }, [data, setMembers])
-
-  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (!session) return

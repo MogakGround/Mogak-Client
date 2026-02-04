@@ -20,6 +20,10 @@ export default function ScreenBox({ nickname, time: initialTime, isRunning, subs
   const [time, setTime] = useState(initialTime)
 
   useEffect(() => {
+    setTime(initialTime)
+  }, [initialTime])
+
+  useEffect(() => {
     let intervalId: NodeJS.Timeout
 
     if (isRunning) {

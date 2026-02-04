@@ -3,22 +3,32 @@
 import { useAuthStore } from '@/store/authStore'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-export default function useSocket(roomId: string, enabled: boolean = true) {
+interface UseSocketOptions {
+  onMessage?: (data: Record<string, unknown>) => void
+}
+
+export default function useSocket(roomId: string, enabled: boolean = true, options?: UseSocketOptions) {
   const wsRef = useRef<WebSocket | null>(null)
   const [isConnected, setIsConnected] = useState(false)
 
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const reconnectAttemptRef = useRef(0)
   const intentionalCloseRef = useRef(false)
+  const onMessageRef = useRef(options?.onMessage)
 
   const MAX_RECONNECT_ATTEMPTS = 10
   const BASE_DELAY_MS = 1000
 
   const { accessToken } = useAuthStore.getState()
 
+  useEffect(() => {
+    onMessageRef.current = options?.onMessage
+  }, [options?.onMessage])
+
   const handleMessage = useCallback((event: MessageEvent) => {
     const data = JSON.parse(event.data)
     console.log('📩 서버 메시지:', data)
+    onMessageRef.current?.(data)
   }, [])
 
   useEffect(() => {

@@ -42,6 +42,7 @@ export const useGetTimerList = (id: string, enabled: boolean = true) => {
     queryKey: ['timerList', id],
     queryFn: () => getTimerList(id),
     enabled,
+    refetchInterval: 10_000,
   })
 }
 
