@@ -1,15 +1,11 @@
 'use client'
 
 import { useAuthStore } from '@/store/authStore'
-import { useRoomStore } from '@/store/roomStore'
-import { useUserStore } from '@/store/userStore'
-import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 export default function useSocket(roomId: string, enabled: boolean = true) {
   const wsRef = useRef<WebSocket | null>(null)
   const [isConnected, setIsConnected] = useState(false)
-  const [screenSharingUsers, setScreenSharingUsers] = useState<Set<number>>(new Set())
 
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const reconnectAttemptRef = useRef(0)
@@ -19,56 +15,11 @@ export default function useSocket(roomId: string, enabled: boolean = true) {
   const BASE_DELAY_MS = 1000
 
   const { accessToken } = useAuthStore.getState()
-  const { userID } = useUserStore.getState()
-  const addMember = useRoomStore((s) => s.addMember)
-  const removeMember = useRoomStore((s) => s.removeMember)
 
-  const queryClient = useQueryClient()
-
-  const addScreenSharingUser = useCallback((userId: number) => {
-    setScreenSharingUsers((prev) => new Set(prev).add(userId))
+  const handleMessage = useCallback((event: MessageEvent) => {
+    const data = JSON.parse(event.data)
+    console.log('📩 서버 메시지:', data)
   }, [])
-
-  const removeScreenSharingUser = useCallback((userId: number) => {
-    setScreenSharingUsers((prev) => {
-      const next = new Set(prev)
-      next.delete(userId)
-      return next
-    })
-  }, [])
-
-  const handleMessage = useCallback(
-    (event: MessageEvent) => {
-      const data = JSON.parse(event.data)
-      console.log('📩 서버 메시지:', data)
-
-      if (data.type === 'screen-share-start') {
-        console.log('🖥️ 화면 공유 시작됨! userId:', data.userId)
-        if (data.userId != null) {
-          addScreenSharingUser(Number(data.userId))
-        }
-      }
-      if (data.type === 'screen-share-stop') {
-        console.log('🖥️ 화면 공유 종료됨! userId:', data.userId)
-        if (data.userId != null) {
-          removeScreenSharingUser(Number(data.userId))
-        }
-      }
-      if (data.type === 'participant-joined') {
-        if (data.data != undefined && data.data.userId != userID) {
-          addMember(data.data)
-          queryClient.invalidateQueries({ queryKey: ['roomMembers', roomId] })
-          console.log('유저 참가', data)
-        }
-      }
-      if (data.type === 'participant-left') {
-        removeMember(data.userId)
-        removeScreenSharingUser(Number(data.userId))
-        console.log('유저 연결 종료')
-      }
-    },
-    [addScreenSharingUser, removeScreenSharingUser, addMember, removeMember, queryClient, roomId, userID],
-  )
 
   useEffect(() => {
     if (!enabled) return
@@ -154,6 +105,5 @@ export default function useSocket(roomId: string, enabled: boolean = true) {
     stopTimer,
     socket: wsRef.current,
     isConnected,
-    screenSharingUsers,
   }
 }
