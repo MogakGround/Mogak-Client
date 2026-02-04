@@ -6,6 +6,7 @@ import MogakHeader from '../components/MogakHeader'
 import MyStatus from '../components/MyStatus'
 import ScreenBox from '../components/ScreenBox'
 import { Publisher } from 'openvidu-browser'
+import { useQueryClient } from '@tanstack/react-query'
 import { useGetRoomMembers, useGetTimerList } from '../api/queries'
 import { postLeaveRoomBeacon } from '../api/api'
 import { postEnterRoom } from '@/app/api/home/api'
@@ -22,7 +23,7 @@ export default function MogakPage() {
   const roomId = useParams().id as string
   const router = useRouter()
   const { userID } = useUserStore()
-  const { members, setMembers } = useRoomStore()
+  const { members, setMembers, removeMember } = useRoomStore()
   const { isModalOpen, confirmLeave, cancelLeave } = useLeavePrevention()
   const [isRoomEntered, setIsRoomEntered] = useState(false)
 
@@ -55,15 +56,20 @@ export default function MogakPage() {
     sendStopScreenShare,
     startTimer,
     stopTimer,
-    screenSharingUsers,
   } = useSocket(roomId, isRoomEntered)
 
-  const { session, subscribers, leaveSession, ovRef, cleanupPublisher } = useOpenVidu(roomId, userID ?? undefined, isRoomEntered)
+  const { session, subscribers, screenSharingUsers, leaveSession, ovRef, cleanupPublisher } = useOpenVidu(
+    roomId,
+    userID ?? undefined,
+    isRoomEntered,
+  )
 
   const { publisher, startScreenShare, stopScreenShare, isScreenSharing } = useScreenShare({
     session,
     ovRef,
     cleanupPublisher,
+    sendStartScreenShare,
+    sendStopScreenShare,
   })
 
   useEffect(() => {
@@ -90,6 +96,44 @@ export default function MogakPage() {
       setMembers(data.users)
     }
   }, [data, setMembers])
+
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    if (!session) return
+
+    const parseUserId = (connectionData: string): number | null => {
+      try {
+        const parsed = JSON.parse(connectionData)
+        return Number(parsed?.clientData ?? parsed)
+      } catch {
+        const num = Number(connectionData)
+        return isNaN(num) ? null : num
+      }
+    }
+
+    const handleConnectionCreated = (event: { connection: { data: string } }) => {
+      const connUserId = parseUserId(event.connection.data)
+      if (connUserId != null && connUserId !== Number(userID)) {
+        queryClient.invalidateQueries({ queryKey: ['roomMembers', roomId] })
+      }
+    }
+
+    const handleConnectionDestroyed = (event: { connection: { data: string } }) => {
+      const connUserId = parseUserId(event.connection.data)
+      if (connUserId != null && connUserId !== Number(userID)) {
+        removeMember(connUserId)
+      }
+    }
+
+    session.on('connectionCreated', handleConnectionCreated)
+    session.on('connectionDestroyed', handleConnectionDestroyed)
+
+    return () => {
+      session.off('connectionCreated', handleConnectionCreated)
+      session.off('connectionDestroyed', handleConnectionDestroyed)
+    }
+  }, [session, userID, queryClient, roomId, removeMember])
 
   const mappedMembers = useMemo(() => {
     if (!members.length) return []
@@ -135,8 +179,6 @@ export default function MogakPage() {
             stopScreenShare={stopScreenShare}
             publisher={publisher as Publisher}
             isScreenSharing={isScreenSharing}
-            sendStartScreenShare={sendStartScreenShare}
-            sendStopScreenShare={sendStopScreenShare}
             startTimer={startTimer}
             stopTimer={stopTimer}
           />

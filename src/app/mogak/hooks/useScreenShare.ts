@@ -8,9 +8,17 @@ interface UseScreenShareParams {
   session: ReturnType<OpenVidu['initSession']> | null
   ovRef: React.MutableRefObject<OpenVidu | null>
   cleanupPublisher: (target?: Publisher | null) => void
+  sendStartScreenShare: () => void
+  sendStopScreenShare: () => void
 }
 
-export default function useScreenShare({ session, ovRef, cleanupPublisher }: UseScreenShareParams) {
+export default function useScreenShare({
+  session,
+  ovRef,
+  cleanupPublisher,
+  sendStartScreenShare,
+  sendStopScreenShare,
+}: UseScreenShareParams) {
   const [publisher, setPublisher] = useState<Publisher | null>(null)
   const [screenPublisher, setScreenPublisher] = useState<Publisher | null>(null)
   const [isStartingScreenShare, setIsStartingScreenShare] = useState(false)
@@ -31,8 +39,9 @@ export default function useScreenShare({ session, ovRef, cleanupPublisher }: Use
       setScreenPublisher(null)
       setPublisher(null)
       setScreenShareOn(false)
+      sendStopScreenShare()
     }
-  }, [cleanupPublisher, screenPublisher, session, setScreenShareOn])
+  }, [cleanupPublisher, screenPublisher, session, setScreenShareOn, sendStopScreenShare])
 
   const startScreenShare = useCallback(async () => {
     if (!session || !ovRef.current) return
@@ -61,6 +70,7 @@ export default function useScreenShare({ session, ovRef, cleanupPublisher }: Use
       await session.publish(screenPub)
       setScreenPublisher(screenPub)
       setPublisher(screenPub)
+      sendStartScreenShare()
     } catch (err) {
       console.error('화면 공유 시작 오류:', err)
 
@@ -73,7 +83,7 @@ export default function useScreenShare({ session, ovRef, cleanupPublisher }: Use
     } finally {
       setIsStartingScreenShare(false)
     }
-  }, [cleanupPublisher, isStartingScreenShare, screenPublisher, session, ovRef, stopScreenShare, setScreenShareOn])
+  }, [cleanupPublisher, isStartingScreenShare, screenPublisher, session, ovRef, stopScreenShare, setScreenShareOn, sendStartScreenShare])
 
   const isScreenSharing = !!screenPublisher
 

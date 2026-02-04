@@ -17,8 +17,6 @@ interface MyStatusProps {
   startScreenShare: () => Promise<void> | void
   stopScreenShare: () => void
   isScreenSharing?: boolean
-  sendStartScreenShare: () => void
-  sendStopScreenShare: () => void
   startTimer: () => void
   stopTimer: () => void
 }
@@ -27,8 +25,6 @@ export default function MyStatus({
   startScreenShare,
   stopScreenShare,
   isScreenSharing: propIsScreenSharing,
-  sendStartScreenShare,
-  sendStopScreenShare,
   startTimer,
   stopTimer,
 }: MyStatusProps) {
@@ -45,22 +41,17 @@ export default function MyStatus({
 
   const startScreenShareRef = useRef(startScreenShare)
   const stopScreenShareRef = useRef(stopScreenShare)
-  const sendStartRef = useRef(sendStartScreenShare)
-  const sendStopRef = useRef(sendStopScreenShare)
 
   useEffect(() => {
     startScreenShareRef.current = startScreenShare
     stopScreenShareRef.current = stopScreenShare
-    sendStartRef.current = sendStartScreenShare
-    sendStopRef.current = sendStopScreenShare
-  }, [startScreenShare, stopScreenShare, sendStartScreenShare, sendStopScreenShare])
+  }, [startScreenShare, stopScreenShare])
 
   useEffect(() => {
     if (screenShareOn) {
       const start = async () => {
         try {
           await startScreenShareRef.current()
-          sendStartRef.current()
         } catch {
           setScreenShareOn(false)
         }
@@ -69,7 +60,6 @@ export default function MyStatus({
       return
     }
     stopScreenShareRef.current()
-    sendStopRef.current()
   }, [screenShareOn, setScreenShareOn])
 
   const handleToggleScreenOn = () => {

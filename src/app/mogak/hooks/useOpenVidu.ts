@@ -3,10 +3,21 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { OpenVidu, Publisher, StreamManager } from 'openvidu-browser'
 
+function parseUserId(connectionData: string): number | null {
+  try {
+    const parsed = JSON.parse(connectionData)
+    return Number(parsed?.clientData ?? parsed)
+  } catch {
+    const num = Number(connectionData)
+    return isNaN(num) ? null : num
+  }
+}
+
 export default function useOpenVidu(roomId: string, userId: number | undefined, isRoomEntered: boolean) {
   const ovRef = useRef<OpenVidu | null>(null)
   const [session, setSession] = useState<ReturnType<OpenVidu['initSession']> | null>(null)
   const [subscribers, setSubscribers] = useState<StreamManager[]>([])
+  const [screenSharingUsers, setScreenSharingUsers] = useState<Set<number>>(new Set())
   const [isConnecting, setIsConnecting] = useState(false)
   const isConnectingRef = useRef(false)
   const [hasFailed, setHasFailed] = useState(false)
@@ -72,10 +83,28 @@ export default function useOpenVidu(roomId: string, userId: number | undefined, 
       newSession.on('streamCreated', (event) => {
         const subscriber = newSession.subscribe(event.stream, undefined)
         setSubscribers((prev) => [...prev, subscriber])
+
+        if (event.stream.typeOfVideo === 'SCREEN') {
+          const streamUserId = parseUserId(event.stream.connection.data)
+          if (streamUserId != null) {
+            setScreenSharingUsers((prev) => new Set(prev).add(streamUserId))
+          }
+        }
       })
 
       newSession.on('streamDestroyed', (event) => {
         setSubscribers((prev) => prev.filter((sub) => sub !== event.stream.streamManager))
+
+        if (event.stream.typeOfVideo === 'SCREEN') {
+          const streamUserId = parseUserId(event.stream.connection.data)
+          if (streamUserId != null) {
+            setScreenSharingUsers((prev) => {
+              const next = new Set(prev)
+              next.delete(streamUserId)
+              return next
+            })
+          }
+        }
       })
 
       newSession.on('exception', (event) => {
@@ -106,6 +135,7 @@ export default function useOpenVidu(roomId: string, userId: number | undefined, 
     }
     setSession(null)
     setSubscribers([])
+    setScreenSharingUsers(new Set())
     setIsConnecting(false)
     setHasFailed(false)
     setConnectionError(null)
@@ -122,6 +152,7 @@ export default function useOpenVidu(roomId: string, userId: number | undefined, 
   return {
     session,
     subscribers,
+    screenSharingUsers,
     isConnecting,
     hasFailed,
     connectionError,
