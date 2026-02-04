@@ -166,6 +166,14 @@ export default function MogakPage() {
       })
   }, [members, timers, subscribers, userID, screenSharingUsers])
 
+  if (!isRoomEntered) {
+    return (
+      <div className="min-w-[1280px] overflow-hidden">
+        <HeaderFallback />
+      </div>
+    )
+  }
+
   return (
     <>
       <div className="min-w-[1280px] overflow-hidden">
