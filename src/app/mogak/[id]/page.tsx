@@ -186,10 +186,10 @@ export default function MogakPage() {
 
   // auto-join
   useEffect(() => {
-    if (userID && !session && !isConnecting && !hasFailed && !connectionError) {
+    if (isRoomEntered && userID && !session && !isConnecting && !hasFailed && !connectionError) {
       joinSession()
     }
-  }, [userID, session, isConnecting, hasFailed, connectionError, joinSession])
+  }, [isRoomEntered, userID, session, isConnecting, hasFailed, connectionError, joinSession])
 
   // screen share control
   const [isStartingScreenShare, setIsStartingScreenShare] = useState(false)
@@ -255,10 +255,10 @@ export default function MogakPage() {
 
   const isScreenSharing = !!screenPublisher
 
-  const { data: TimerList } = useGetTimerList(roomId)
+  const { data: TimerList } = useGetTimerList(roomId, isRoomEntered)
   const timers = TimerList?.timers ?? []
 
-  const { data } = useGetRoomMembers(roomId, userID!, isSocketConnected)
+  const { data } = useGetRoomMembers(roomId, userID!, isRoomEntered && isSocketConnected)
 
   useEffect(() => {
     if (data?.users) {
