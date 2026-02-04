@@ -37,6 +37,8 @@ export default function MogakHeader({ id }: MogakHeaderProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [showInviteToast, setShowInviteToast] = useState(false)
 
+  const leaveRoomMutation = usePostLeaveRoom()
+
   const handleCopyInviteUrl = async () => {
     const inviteUrl = `${window.location.origin}/mogak/${id}`
     try {
@@ -154,8 +156,16 @@ export default function MogakHeader({ id }: MogakHeaderProps) {
             fullWidth
             text="모각방 나가기"
             handleClick={() => {
-              usePostLeaveRoom().mutate(Number(id))
-              router.push('/')
+              leaveRoomMutation.mutate(Number(id), {
+                onSuccess: () => {
+                  router.push('/')
+                },
+                onError: (error) => {
+                  console.error('모각방 나가기 실패:', error)
+                  // 에러가 발생해도 페이지를 이동할지는 요구사항에 따라 결정
+                  router.push('/')
+                },
+              })
             }}
           />
         </div>
