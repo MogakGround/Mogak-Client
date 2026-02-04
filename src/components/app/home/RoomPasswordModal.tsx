@@ -33,6 +33,7 @@ export default function RoomPasswordModal({ roomId, isOpen, handleCloseModal }: 
         isScreenShared: false,
         isVideoLargeAllowed: false,
       })
+      sessionStorage.setItem('enteredRoom', String(roomId))
       push(`/mogak/${roomId}`)
     } catch (err) {
       if (err instanceof ErrorResponse && err.status === 401) {

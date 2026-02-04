@@ -62,6 +62,7 @@ export default function MogakRoom({
         isScreenShared: false,
         isVideoLargeAllowed: false,
       })
+      sessionStorage.setItem('enteredRoom', String(index))
       push(`/mogak/${index}`)
     } catch (error) {
       console.error(error)

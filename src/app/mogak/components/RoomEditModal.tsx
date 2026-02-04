@@ -30,6 +30,7 @@ export default function RoomEditModal({
 }: RoomEditModalProps) {
   const [roomName, setRoomName] = useState(currentRoomName)
   const [isPublic, setIsPublic] = useState(currentIsPublic)
+  const [password, setPassword] = useState('')
 
   const { isRoomNameChecked, isLoading, checkRoomNameAvailability, resetRoomNameCheck } = useRoomNameCheck()
   const { isToastShow, toastMessage, handleShowIconToast, handleCloseToast, handleResetToast } = useToast()
@@ -56,7 +57,7 @@ export default function RoomEditModal({
     if (!roomName.trim() || !isRoomNameChecked) return
 
     try {
-      await patchRoomInfo(roomId, { roomName, isLocked: !isPublic, roomPassword: '' })
+      await patchRoomInfo(roomId, { roomName, isLocked: !isPublic, roomPassword: isPublic ? '' : password })
       handleCloseModal()
     } catch (error) {
       console.error('모각방 정보 수정 실패:', error)
@@ -67,7 +68,11 @@ export default function RoomEditModal({
   const isCharacterValid = /^[a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ\s]*$/.test(roomName)
   const isValidationPassed = isLengthValid && isCharacterValid
 
-  const isFormValid = roomName.trim() && isRoomNameChecked
+  const isPasswordLengthValid = password.length >= 1 && password.length <= 16
+  const isPasswordFormatValid = /^[a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ\s]*$/.test(password)
+  const isPasswordValid = isPublic || (isPasswordLengthValid && isPasswordFormatValid)
+
+  const isFormValid = roomName.trim() && isRoomNameChecked && isPasswordValid
 
   return (
     <Modal
@@ -123,16 +128,34 @@ export default function RoomEditModal({
         </div>
       </div>
 
-      <div className="flex justify-between mb-[40px]">
-        <label className="block text-white semi-16 mb-12">모각방 공개 여부</label>
+      <div className={`flex justify-between mb-6`}>
+        <label className="block text-white semi-16">모각방 공개 여부</label>
         <TextToggle
           theme={ToggleTheme.DARK}
           isOn={isPublic}
-          onToggle={() => setIsPublic(!isPublic)}
+          onToggle={() => {
+            setIsPublic(!isPublic)
+            if (isPublic) setPassword('')
+          }}
           textl="공개"
           textr="비공개"
         />
       </div>
+      {!isPublic && (
+        <div className="flex flex-col gap-[8px] mb-[40px]">
+          <BasicInput
+            placeHolder="입장에 필요한 비밀번호를 입력해주세요. "
+            size="medium"
+            name="password"
+            value={password}
+            handleChange={(e) => setPassword(e.target.value)}
+          />
+          <div className="flex items-center gap-[16px]">
+            <ValidationCheck isValid={isPasswordLengthValid} text="공백 포함 1~16자" />
+            <ValidationCheck isValid={isPasswordFormatValid} text="한글, 영어로만 구성" />
+          </div>
+        </div>
+      )}
 
       <div className="flex gap-[13px]">
         <BasicButton

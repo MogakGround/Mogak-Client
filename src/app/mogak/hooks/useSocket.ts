@@ -6,7 +6,7 @@ import { useUserStore } from '@/store/userStore'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-export default function useSocket(roomId: string) {
+export default function useSocket(roomId: string, enabled: boolean = true) {
   const wsRef = useRef<WebSocket | null>(null)
   const [isConnected, setIsConnected] = useState(false)
   const [screenSharingUsers, setScreenSharingUsers] = useState<Set<number>>(new Set())
@@ -31,6 +31,8 @@ export default function useSocket(roomId: string) {
   }, [])
 
   useEffect(() => {
+    if (!enabled) return
+
     const wsUrl = `${process.env.NEXT_PUBLIC_SOCKET_URL}?token=${accessToken}&roomId=${roomId}`
     console.log('🔌 WebSocket 연결 시도:', wsUrl)
 
@@ -86,7 +88,7 @@ export default function useSocket(roomId: string) {
     return () => {
       ws.close()
     }
-  }, [roomId, addScreenSharingUser, removeScreenSharingUser])
+  }, [roomId, enabled, addScreenSharingUser, removeScreenSharingUser])
 
   const sendStartScreenShare = () => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {

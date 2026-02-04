@@ -37,10 +37,11 @@ export const useGetRoomMembers = (id: string, userID: number, enabled: boolean =
   })
 }
 
-export const useGetTimerList = (id: string) => {
+export const useGetTimerList = (id: string, enabled: boolean = true) => {
   return useQuery<TimerListResponse>({
     queryKey: ['timerList', id],
     queryFn: () => getTimerList(id),
+    enabled,
   })
 }
 

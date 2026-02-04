@@ -1,13 +1,14 @@
 'use client'
 
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import MogakHeader from '../components/MogakHeader'
 import MyStatus from '../components/MyStatus'
 import ScreenBox from '../components/ScreenBox'
 import { OpenVidu, Publisher, StreamManager } from 'openvidu-browser'
 import { useGetRoomMembers, useGetTimerList } from '../api/queries'
 import { postLeaveRoomBeacon } from '../api/api'
+import { postEnterRoom } from '@/app/api/home/api'
 import useSocket from '../hooks/useSocket'
 import { useUserStore } from '@/store/userStore'
 import { useRoomStore } from '@/store/roomStore'
@@ -17,9 +18,35 @@ import HeaderFallback from '../components/HeaderFallback'
 
 export default function MogakPage() {
   const roomId = useParams().id as string
+  const router = useRouter()
   const { userID } = useUserStore()
   const { members, setMembers, setScreenShareOn } = useRoomStore()
   const { isModalOpen, confirmLeave, cancelLeave } = useLeavePrevention()
+  const [isRoomEntered, setIsRoomEntered] = useState(false)
+
+  useEffect(() => {
+    const enteredRoom = sessionStorage.getItem('enteredRoom')
+    if (enteredRoom === roomId) {
+      sessionStorage.removeItem('enteredRoom')
+      setIsRoomEntered(true)
+      return
+    }
+
+    const enterRoom = async () => {
+      try {
+        await postEnterRoom(Number(roomId), {
+          isScreenShared: false,
+          isVideoLargeAllowed: false,
+        })
+        setIsRoomEntered(true)
+      } catch (error) {
+        console.error('방 입장 실패:', error)
+        router.replace('/')
+      }
+    }
+    enterRoom()
+  }, [roomId, router])
+
   const {
     isConnected: isSocketConnected,
     sendStartScreenShare,
@@ -27,7 +54,7 @@ export default function MogakPage() {
     startTimer,
     stopTimer,
     screenSharingUsers,
-  } = useSocket(roomId)
+  } = useSocket(roomId, isRoomEntered)
 
   const ovRef = useRef<OpenVidu | null>(null)
   const [session, setSession] = useState<ReturnType<OpenVidu['initSession']> | null>(null)
