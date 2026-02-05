@@ -5,24 +5,6 @@ export interface PatchProfileRequest {
   portfolioUrl: string
 }
 
-export interface GetProfileResponseData {
-  nickName: string
-  portfolioUrl: string
-  rank: number
-  hour: number
-  min: number
-  sec: number
-}
-
-export interface GetRankResponseData {
-  userId: number
-  nickName: string
-  rank: number
-  hour: number
-  min: number
-  sec: number
-}
-
 export interface MyRoom {
   roomId: number
   roomName: string

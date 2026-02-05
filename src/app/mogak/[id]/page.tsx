@@ -1,54 +1,30 @@
 'use client'
 
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { Suspense, useCallback, useEffect, useMemo } from 'react'
+import { useParams } from 'next/navigation'
 import MogakHeader from '../components/MogakHeader'
 import MyStatus from '../components/MyStatus'
 import ScreenBox from '../components/ScreenBox'
 import { Publisher } from 'openvidu-browser'
 import { useQueryClient } from '@tanstack/react-query'
 import { useGetRoomMembers, useGetTimerList } from '../api/queries'
+import { RoomMembers } from '../api/type'
 import { postLeaveRoomBeacon } from '../api/api'
-import { postEnterRoom } from '@/app/api/home/api'
+import useRoomEntry from '../hooks/useRoomEntry'
 import useSocket from '../hooks/useSocket'
 import useOpenVidu from '../hooks/useOpenVidu'
 import useScreenShare from '../hooks/useScreenShare'
 import { useUserStore } from '@/store/userStore'
-import { useRoomStore } from '@/store/roomStore'
+import { useLatestRef } from '@/hooks/useLatestRef'
 import { useLeavePrevention } from '@/hooks/useLeavePrevention'
 import LeavePreventionModal from '@/components/global/modal/LeavePreventionModal'
 import HeaderFallback from '../components/HeaderFallback'
 
 export default function MogakPage() {
   const roomId = useParams().id as string
-  const router = useRouter()
   const { userID } = useUserStore()
-  const { members, setMembers, removeMember } = useRoomStore()
   const { isModalOpen, confirmLeave, cancelLeave } = useLeavePrevention()
-  const [isRoomEntered, setIsRoomEntered] = useState(false)
-
-  useEffect(() => {
-    const enteredRoom = sessionStorage.getItem('enteredRoom')
-    if (enteredRoom === roomId) {
-      sessionStorage.removeItem('enteredRoom')
-      setIsRoomEntered(true)
-      return
-    }
-
-    const enterRoom = async () => {
-      try {
-        await postEnterRoom(Number(roomId), {
-          isScreenShared: false,
-          isVideoLargeAllowed: false,
-        })
-        setIsRoomEntered(true)
-      } catch (error) {
-        console.error('방 입장 실패:', error)
-        router.replace('/')
-      }
-    }
-    enterRoom()
-  }, [roomId, router])
+  const isRoomEntered = useRoomEntry(roomId)
 
   const queryClient = useQueryClient()
 
@@ -70,10 +46,25 @@ export default function MogakPage() {
     stopTimer,
   } = useSocket(roomId, isRoomEntered, { onMessage: handleSocketMessage })
 
+  const handleMemberJoined = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['roomMembers', roomId] })
+  }, [queryClient, roomId])
+
+  const handleMemberLeft = useCallback(
+    (leftUserId: number) => {
+      queryClient.setQueryData<RoomMembers>(['roomMembers', roomId, userID], (old) => {
+        if (!old) return old
+        return { ...old, users: old.users.filter((u) => u.userId !== leftUserId) }
+      })
+    },
+    [queryClient, roomId, userID],
+  )
+
   const { session, subscribers, screenSharingUsers, leaveSession, ovRef, cleanupPublisher } = useOpenVidu(
     roomId,
     userID ?? undefined,
     isRoomEntered,
+    { onMemberJoined: handleMemberJoined, onMemberLeft: handleMemberLeft },
   )
 
   const { publisher, startScreenShare, stopScreenShare, isScreenSharing } = useScreenShare({
@@ -84,16 +75,8 @@ export default function MogakPage() {
     sendStopScreenShare,
   })
 
-  const stopScreenShareRef = useRef(stopScreenShare)
-  const leaveSessionRef = useRef(leaveSession)
-
-  useEffect(() => {
-    stopScreenShareRef.current = stopScreenShare
-  }, [stopScreenShare])
-
-  useEffect(() => {
-    leaveSessionRef.current = leaveSession
-  }, [leaveSession])
+  const stopScreenShareRef = useLatestRef(stopScreenShare)
+  const leaveSessionRef = useLatestRef(leaveSession)
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -113,79 +96,36 @@ export default function MogakPage() {
   const timers = TimerList?.timers ?? []
 
   const { data } = useGetRoomMembers(roomId, userID!, isRoomEntered && isSocketConnected)
-
-  useEffect(() => {
-    if (data?.users) {
-      setMembers(data.users)
-    }
-  }, [data, setMembers])
-
-  useEffect(() => {
-    if (!session) return
-
-    const parseUserId = (connectionData: string): number | null => {
-      try {
-        const parsed = JSON.parse(connectionData)
-        return Number(parsed?.clientData ?? parsed)
-      } catch {
-        const num = Number(connectionData)
-        return isNaN(num) ? null : num
-      }
-    }
-
-    const handleConnectionCreated = (event: { connection: { data: string } }) => {
-      const connUserId = parseUserId(event.connection.data)
-      if (connUserId != null && connUserId !== Number(userID)) {
-        queryClient.invalidateQueries({ queryKey: ['roomMembers', roomId] })
-      }
-    }
-
-    const handleConnectionDestroyed = (event: { connection: { data: string } }) => {
-      const connUserId = parseUserId(event.connection.data)
-      if (connUserId != null && connUserId !== Number(userID)) {
-        removeMember(connUserId)
-      }
-    }
-
-    session.on('connectionCreated', handleConnectionCreated)
-    session.on('connectionDestroyed', handleConnectionDestroyed)
-
-    return () => {
-      session.off('connectionCreated', handleConnectionCreated)
-      session.off('connectionDestroyed', handleConnectionDestroyed)
-    }
-  }, [session, userID, queryClient, roomId, removeMember])
+  const members = data?.users ?? []
 
   const mappedMembers = useMemo(() => {
     if (!members.length) return []
 
-    return members
-      .filter((member) => member.userId !== Number(userID))
-      .map((member) => {
-        const subscriber = subscribers.find((sub) => {
-          const raw = sub.stream.connection.data
-          try {
-            const parsed = JSON.parse(raw)
-            return Number(parsed?.clientData ?? parsed) === member.userId
-          } catch {
-            return Number(raw) === member.userId
-          }
-        })
-
-        const timer = timers.find((t) => t.userId === member.userId)
-        const isMemberScreenSharing = screenSharingUsers.has(member.userId)
-
-        return {
-          userId: member.userId,
-          nickName: member.nickName,
-          subscriber,
-          timer: {
-            time: timer ? timer.hour * 3600 + timer.min * 60 + timer.sec : 0,
-            isRunning: isMemberScreenSharing || (timer?.isRunning ?? false),
-          },
+    return members.map((member) => {
+      const subscriber = subscribers.find((sub) => {
+        const raw = sub.stream.connection.data
+        try {
+          const parsed = JSON.parse(raw)
+          return Number(parsed?.clientData ?? parsed) === member.userId
+        } catch {
+          return Number(raw) === member.userId
         }
       })
-  }, [members, timers, subscribers, userID, screenSharingUsers])
+
+      const timer = timers.find((t) => t.userId === member.userId)
+      const isMemberScreenSharing = screenSharingUsers.has(member.userId)
+
+      return {
+        userId: member.userId,
+        nickName: member.nickName,
+        subscriber,
+        timer: {
+          time: timer ? timer.hour * 3600 + timer.min * 60 + timer.sec : 0,
+          isRunning: isMemberScreenSharing || (timer?.isRunning ?? false),
+        },
+      }
+    })
+  }, [members, timers, subscribers, screenSharingUsers])
 
   if (!isRoomEntered) {
     return (

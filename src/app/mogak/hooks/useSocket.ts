@@ -1,6 +1,7 @@
 'use client'
 
 import { useAuthStore } from '@/store/authStore'
+import { useLatestRef } from '@/hooks/useLatestRef'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface UseSocketOptions {
@@ -14,16 +15,12 @@ export default function useSocket(roomId: string, enabled: boolean = true, optio
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const reconnectAttemptRef = useRef(0)
   const intentionalCloseRef = useRef(false)
-  const onMessageRef = useRef(options?.onMessage)
+  const onMessageRef = useLatestRef(options?.onMessage)
 
   const MAX_RECONNECT_ATTEMPTS = 10
   const BASE_DELAY_MS = 1000
 
   const { accessToken } = useAuthStore.getState()
-
-  useEffect(() => {
-    onMessageRef.current = options?.onMessage
-  }, [options?.onMessage])
 
   const handleMessage = useCallback((event: MessageEvent) => {
     const data = JSON.parse(event.data)

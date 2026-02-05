@@ -2,6 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { OpenVidu, Publisher, StreamManager } from 'openvidu-browser'
+import { useLatestRef } from '@/hooks/useLatestRef'
+
+interface UseOpenViduOptions {
+  onMemberJoined?: (userId: number) => void
+  onMemberLeft?: (userId: number) => void
+}
 
 function parseUserId(connectionData: string): number | null {
   try {
@@ -13,7 +19,14 @@ function parseUserId(connectionData: string): number | null {
   }
 }
 
-export default function useOpenVidu(roomId: string, userId: number | undefined, isRoomEntered: boolean) {
+export default function useOpenVidu(
+  roomId: string,
+  userId: number | undefined,
+  isRoomEntered: boolean,
+  options?: UseOpenViduOptions,
+) {
+  const onMemberJoinedRef = useLatestRef(options?.onMemberJoined)
+  const onMemberLeftRef = useLatestRef(options?.onMemberLeft)
   const ovRef = useRef<OpenVidu | null>(null)
   const [session, setSession] = useState<ReturnType<OpenVidu['initSession']> | null>(null)
   const [subscribers, setSubscribers] = useState<StreamManager[]>([])
@@ -148,6 +161,32 @@ export default function useOpenVidu(roomId: string, userId: number | undefined, 
       joinSession()
     }
   }, [isRoomEntered, userId, session, isConnecting, hasFailed, connectionError, joinSession])
+
+  useEffect(() => {
+    if (!session) return
+
+    const handleConnectionCreated = (event: { connection: { data: string } }) => {
+      const connUserId = parseUserId(event.connection.data)
+      if (connUserId != null && connUserId !== userId) {
+        onMemberJoinedRef.current?.(connUserId)
+      }
+    }
+
+    const handleConnectionDestroyed = (event: { connection: { data: string } }) => {
+      const connUserId = parseUserId(event.connection.data)
+      if (connUserId != null && connUserId !== userId) {
+        onMemberLeftRef.current?.(connUserId)
+      }
+    }
+
+    session.on('connectionCreated', handleConnectionCreated)
+    session.on('connectionDestroyed', handleConnectionDestroyed)
+
+    return () => {
+      session.off('connectionCreated', handleConnectionCreated)
+      session.off('connectionDestroyed', handleConnectionDestroyed)
+    }
+  }, [session, userId])
 
   return {
     session,
