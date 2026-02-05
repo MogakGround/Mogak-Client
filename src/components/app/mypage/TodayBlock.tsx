@@ -52,7 +52,7 @@ export default function TodayBlock({
             <p
               className={cn(
                 'font-RiaSans text-[24px] text-extrabold',
-                !isRank ? 'text-white' : data3 === '1' || '2' || '3' ? 'text-accent-100 ' : 'text-white '
+                !isRank ? 'text-white' : ['1', '2', '3'].includes(data3) ? 'text-accent-100' : 'text-white'
               )}
             >
               {data3}
@@ -62,9 +62,9 @@ export default function TodayBlock({
                 'reg-20 ml-[8px] mr-[20px]',
                 !isRank
                   ? 'text-grayscale-200'
-                  : data3 === '1' || '2' || '3'
-                    ? 'text-accent-100 '
-                    : 'text-grayscale-200 '
+                  : ['1', '2', '3'].includes(data3)
+                    ? 'text-accent-100'
+                    : 'text-grayscale-200'
               )}
             >
               {!isRank ? '초' : '위'}

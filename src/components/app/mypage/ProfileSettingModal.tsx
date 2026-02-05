@@ -3,47 +3,42 @@ import CheckAccentIcon from '@/assets/svg/check-accent.svg'
 import BasicButton from '@/components/global/button/BasicButton'
 import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { patchMyProfile } from '@/app/api/mypage/api'
 import { getCheckNickname } from '@/app/api/user/api'
 import RoundedSquareButton from '@/components/global/button/RoundedSquareButton'
 import BasicInput from '@/components/global/input/BasicInput'
+import { useGetMyProfile, useUpdateProfile } from '@/app/mypage/queries'
 
 interface ProfileSettingModalProps {
-  nickname: string
-  setNickname: (nickname: string) => void
-  link: string
-  setLink: (nickname: string) => void
   isOpen: boolean
   handleCloseModal: () => void
 }
 
-export default function ProfileSettingModal({
-  nickname,
-  setNickname,
-  link,
-  setLink,
-  isOpen,
-  handleCloseModal,
-}: ProfileSettingModalProps) {
-  const [newNickname, setNewNickname] = useState(nickname)
-  const [newLink, setNewLink] = useState(link)
+export default function ProfileSettingModal({ isOpen, handleCloseModal }: ProfileSettingModalProps) {
+  const { data: profile } = useGetMyProfile()
+  const { mutate: updateProfile } = useUpdateProfile()
+
+  const currentNickname = profile?.nickName ?? ''
+  const currentLink = profile?.portfolioUrl ?? ''
+
+  const [newNickname, setNewNickname] = useState(currentNickname)
+  const [newLink, setNewLink] = useState(currentLink)
 
   // 중복 확인 이벤트
   const [isValidateNickname, setIsValidateNickname] = useState<boolean>(true)
   const [isNicknameChecked, setIsNicknameChecked] = useState<boolean>(false)
   const [isPortfolioLinkChecked, setIsPortfolioLinkChecked] = useState<boolean>(false)
-  const [error, setError] = useState('') // 에러 메시지 상태
+  const [error, setError] = useState('')
 
   // 모달이 열릴 때마다 초기 상태 설정
   useEffect(() => {
     if (isOpen) {
-      setNewNickname(nickname)
-      setNewLink(link)
+      setNewNickname(currentNickname)
+      setNewLink(currentLink)
       setIsNicknameChecked(false)
       setError('')
       setIsValidateNickname(true)
     }
-  }, [isOpen, nickname, link])
+  }, [isOpen, currentNickname, currentLink])
 
   const handleCheckNickname = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value
@@ -51,7 +46,7 @@ export default function ProfileSettingModal({
     setIsValidateNickname(true)
     // 정규 표현식: 한글, 영어만 허용하고 공백 포함 16자 이내
     const regex = /^[a-zA-Z가-힣\s]+$/
-    
+
     // 닉네임이 비어있으면
     if (!name.trim()) {
       setError('닉네임을 입력하세요.')
@@ -68,7 +63,7 @@ export default function ProfileSettingModal({
       return
     }
 
-    // 한글, 영어, 공백 외 다른 게 있으면면
+    // 한글, 영어, 공백 외 다른 게 있으면
     if (!regex.test(name)) {
       setError('닉네임은 한글과 영어, 공백만 포함할 수 있습니다.')
       setIsValidateNickname(false)
@@ -80,15 +75,15 @@ export default function ProfileSettingModal({
     setIsNicknameChecked(false)
   }
 
-  const handlePortfoloLink = (e: ChangeEvent<HTMLInputElement>) => {
+  const handlePortfolioLink = (e: ChangeEvent<HTMLInputElement>) => {
     setNewLink(e.target.value)
-    if (link !== e.target.value) {
-      if (newNickname === nickname) {
+    if (currentLink !== e.target.value) {
+      if (newNickname === currentNickname) {
         setIsNicknameChecked(true)
-      } 
+      }
       setIsPortfolioLinkChecked(true)
     } else {
-      if (isNicknameChecked && newNickname !== nickname) {
+      if (isNicknameChecked && newNickname !== currentNickname) {
         setIsPortfolioLinkChecked(true)
         return
       }
@@ -98,50 +93,17 @@ export default function ProfileSettingModal({
 
   // 닉네임 중복 확인
   const checkNickname = async () => {
-    if (newNickname === nickname || !isValidateNickname) return
+    if (newNickname === currentNickname || !isValidateNickname) return
     try {
-      const data = await getCheckNickname({ nickname: newNickname })
-      console.log('닉네임 중복 확인을 성공했습니다.')
-      console.log(data)
-
-      setError('') // 에러가 없음
+      await getCheckNickname({ nickname: newNickname })
+      setError('')
       setIsNicknameChecked(true)
       setIsPortfolioLinkChecked(true)
-    } catch (error: any) {
-      console.error(error)
-      if (error.response) {
-        const status = error.response.status
-        switch (status) {
-          case 404:
-            //setError('요청한 리소스를 찾을 수 없습니다. (404)')
-            break
-          case 405:
-            //setError('허용되지 않은 요청입니다. (405)')
-            break
-          case 409:
-            setError('이미 사용 중인 닉네임입니다.')
-            break
-          case 500:
-            //setError('서버 내부 오류가 발생했습니다.')
-            break
-          default:
-            break
-        }
+    } catch (err: unknown) {
+      const error = err as { response?: { status?: number } }
+      if (error.response?.status === 409) {
+        setError('이미 사용 중인 닉네임입니다.')
       }
-    }
-  }
-
-  // 프로필 수정
-  const updateProfile = async () => {
-    try {
-      await patchMyProfile({
-        nickName: newNickname,
-        portfolioUrl: newLink,
-      })
-      console.log('프로필 수정을 성공했습니다.')
-      handleCloseModal()
-    } catch (error) {
-      console.error(error)
     }
   }
 
@@ -149,13 +111,14 @@ export default function ProfileSettingModal({
   const handleSubmit = () => {
     if (!isNicknameChecked) return
 
-    if (newNickname) setNickname(newNickname)
-    if (newLink) setLink(newLink)
-
-    // API
-    updateProfile()
-
-    //handleCloseModal()   // 모달창 닫기
+    updateProfile(
+      { nickName: newNickname, portfolioUrl: newLink },
+      {
+        onSuccess: () => {
+          handleCloseModal()
+        },
+      },
+    )
   }
 
   return (
@@ -179,11 +142,7 @@ export default function ProfileSettingModal({
               handleChange={handleCheckNickname}
             />
           </div>
-          <RoundedSquareButton
-            text="중복 확인"
-            handleClick={checkNickname}
-            disabled={!isValidateNickname}
-          />
+          <RoundedSquareButton text="중복 확인" handleClick={checkNickname} disabled={!isValidateNickname} />
         </div>
 
         {/* 닉네임 부가 설명 */}
@@ -191,8 +150,11 @@ export default function ProfileSettingModal({
           <CheckAccentIcon className="w-[20px] h-[20px] mr-[2px]" />
           <p className="reg-12 text-accent-100 mr-[16px]">공백 포함 16자 이내</p>
           <CheckAccentIcon className="w-[20px] h-[20px] mr-[2px]" />
-          <p className="reg-12 text-accent-100 ">한글,영어로만 구성</p>
+          <p className="reg-12 text-accent-100">한글,영어로만 구성</p>
         </div>
+
+        {/* 에러 메시지 */}
+        {error && <p className="reg-12 text-red-500 mt-[4px]">{error}</p>}
 
         {/* 포트폴리오 */}
         <div className="flex items-center mt-[32px]">
@@ -204,9 +166,9 @@ export default function ProfileSettingModal({
         <BasicInput
           placeHolder="포트폴리오 링크를 입력해주세요."
           size="small"
-          name="nickname"
+          name="portfolioLink"
           value={newLink}
-          handleChange={handlePortfoloLink}
+          handleChange={handlePortfolioLink}
         />
 
         {/* 모달 버튼 */}
