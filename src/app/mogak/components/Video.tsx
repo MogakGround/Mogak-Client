@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react'
 import { StreamManager } from 'openvidu-browser'
-import Image from 'next/image'
 import VideoFallback from '@/assets/svg/video-fallback.svg'
 
 interface Props {
@@ -29,9 +28,7 @@ export default function Video({ streamManager, isVideoOn }: Props) {
         <track kind="captions" />
       </video>
       {(!isVideoOn || !streamManager) && (
-        <Image
-          alt="Video Off"
-          src={VideoFallback}
+        <VideoFallback
           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         />
       )}

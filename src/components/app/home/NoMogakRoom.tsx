@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import NoMogakIcon from '@/assets/svg/home/no-mogakrooms.svg'
 import BasicButton from '@/components/global/button/BasicButton'
 import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
@@ -13,7 +12,7 @@ export default function NoMogakRoom({ recent }: { recent: boolean }) {
   return (
     <div className="flex-row w-full">
       <div className="flex justify-center items-center">
-        <Image src={NoMogakIcon} alt="no-mogakrooms" className="w-[117px] h-[98px]" />
+        <NoMogakIcon className="w-[117px] h-[98px]" />
       </div>
       <div className="mt-[20px]">
         <div className="flex justify-center items-center">

@@ -49,7 +49,7 @@ export default function KakaoCallbackPage() {
   return (
     <ImageBackgroundLayout>
       <div className="relative z-1 flex flex-col items-center">
-        <Image src={LogoIcon} alt="로고" width={156} height={79} className="mb-[32px]" />
+        <LogoIcon width={156} height={79} className="mb-[32px]" />
         <h3 className="semi-24 text-grayscale-50 mb-[6px]">로그인 정보를 불러오고 있어요. </h3>
         <p className="reg-14 text-grayscale-400 mb-[40px]">평균 2~3초 정도 소요돼요. 잠시만 기다려주세요!</p>
         <Image src={'/images/spinner.gif'} alt="로딩" width={52} height={52} />

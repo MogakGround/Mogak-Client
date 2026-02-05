@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import DArrowGrayIcon from '@/assets/svg/down-arrow-gray.svg'
 import DArrowWhiteIcon from '@/assets/svg/down-arrow-white.svg'
 import UArrowWhiteIcon from '@/assets/svg/up-arrow-white.svg'
-import Image from 'next/image'
 
 interface Props {
   height: number // 드롭다운 높이 (48 or 54)
@@ -49,6 +48,8 @@ const DefaultDropdown = ({ height, isDisabled, isError, isOpen, onDropdownClick,
   // 입력 필드 포커스 상태
   const [isFocused, setIsFocused] = useState(false)
 
+  const ArrowIcon = isDisabled ? DArrowGrayIcon : isFocused ? DArrowWhiteIcon : UArrowWhiteIcon
+
   return (
     <div
       className={`items-center h-[${height}px] pl-4 pr-3 text-[14pt] w-[268px] font-regular rounded-[8px]
@@ -91,27 +92,12 @@ const DefaultDropdown = ({ height, isDisabled, isError, isOpen, onDropdownClick,
         </div>
 
         {/* V, ^ 버튼 이미지 (활성화 상태에 따라 이미지 변경) */}
-        {isDisabled ? (
-          <Image src={DArrowGrayIcon} alt="화살표" className="cursor-pointer" width={28} height={28} />
-        ) : isFocused ? (
-          <Image
-            src={DArrowWhiteIcon}
-            alt="화살표"
-            className="cursor-pointer"
-            width={28}
-            height={28}
-            onClick={onDropdownClick}
-          />
-        ) : (
-          <Image
-            src={UArrowWhiteIcon}
-            alt="화살표"
-            className="cursor-pointer"
-            width={28}
-            height={28}
-            onClick={onDropdownClick}
-          />
-        )}
+        <ArrowIcon
+          className="cursor-pointer"
+          width={28}
+          height={28}
+          onClick={isDisabled ? undefined : onDropdownClick}
+        />
       </div>
 
       {/* 드롭다운 메뉴 (isOpen이 true일 때만 표시) */}

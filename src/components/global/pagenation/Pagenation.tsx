@@ -3,7 +3,6 @@ import React from 'react'
 
 import { paginationButtonStyle } from './pagenation.style'
 
-import Image from 'next/image'
 import FirstIcon from '@/assets/svg/arrow-firstpage.svg'
 import PrevIcon from '@/assets/svg/arrow-prevpage.svg'
 import NextIcon from '@/assets/svg/arrow-nextpage.svg'
@@ -71,26 +70,21 @@ const Pagination = ({ currentPageNumber, lastPageNumber, handlePageChange }: Pag
     (_, index) => currentGroupStart + index
   )
 
+  const GoFirstIcon = isFirstGroup ? DisabledFirstIcon : FirstIcon
+  const GoPrevIcon = isFirstGroup ? DisabledPrevIcon : PrevIcon
+  const GoNextIcon = isLastGroup ? DisabledNextIcon : NextIcon
+  const GoLastIcon = isLastGroup ? DisabledLastIcon : LastIcon
+
   return (
     <div className="flex items-center justify-center">
       {/* << 버튼 - 첫 페이지로 이동 */}
       <button onClick={goToFirstPage} disabled={isFirstGroup}>
-        <Image
-          src={isFirstGroup ? DisabledFirstIcon : FirstIcon}
-          alt="FirstIcon"
-          width={BUTTON_SIZE}
-          height={BUTTON_SIZE}
-        />
+        <GoFirstIcon width={BUTTON_SIZE} height={BUTTON_SIZE} />
       </button>
 
       {/* < 버튼 - 이전 페이지 그룹으로 이동 */}
       <button onClick={goToPrevGroup} disabled={isFirstGroup} className="mr-2">
-        <Image
-          src={isFirstGroup ? DisabledPrevIcon : PrevIcon}
-          alt="PrevIcon"
-          width={BUTTON_SIZE}
-          height={BUTTON_SIZE}
-        />
+        <GoPrevIcon width={BUTTON_SIZE} height={BUTTON_SIZE} />
       </button>
 
       {/* 페이지 번호 버튼들 */}
@@ -112,22 +106,12 @@ const Pagination = ({ currentPageNumber, lastPageNumber, handlePageChange }: Pag
 
       {/* > 버튼 - 다음 페이지 그룹으로 이동 */}
       <button onClick={goToNextGroup} disabled={isLastGroup} className="ml-2">
-        <Image
-          src={isLastGroup ? DisabledNextIcon : NextIcon}
-          alt="NextIcon"
-          width={BUTTON_SIZE}
-          height={BUTTON_SIZE}
-        />
+        <GoNextIcon width={BUTTON_SIZE} height={BUTTON_SIZE} />
       </button>
 
       {/* >> 버튼 - 마지막 페이지로 이동 */}
       <button onClick={goToLastPage} disabled={isLastGroup}>
-        <Image
-          src={isLastGroup ? DisabledLastIcon : LastIcon}
-          alt="LastIcon"
-          width={BUTTON_SIZE}
-          height={BUTTON_SIZE}
-        />
+        <GoLastIcon width={BUTTON_SIZE} height={BUTTON_SIZE} />
       </button>
     </div>
   )

@@ -1,21 +1,21 @@
 'use client'
 
-import Image from 'next/image'
-import top1Icon from '@/assets/svg/mypage/1st.svg'
-import top2Icon from '@/assets/svg/mypage/2nd.svg'
-import top3Icon from '@/assets/svg/mypage/3rd.svg'
+import { FC, SVGProps } from 'react'
+import Top1Icon from '@/assets/svg/mypage/1st.svg'
+import Top2Icon from '@/assets/svg/mypage/2nd.svg'
+import Top3Icon from '@/assets/svg/mypage/3rd.svg'
 import cn from '@/utils/cn'
 
 export default function TodayBlock({
   isRank,
-  icon,
+  icon: Icon,
   title,
   data1,
   data2,
   data3,
 }: {
   isRank: boolean
-  icon: string
+  icon: FC<SVGProps<SVGSVGElement>>
   title: string
   data1?: string
   data2?: string
@@ -30,7 +30,7 @@ export default function TodayBlock({
     >
       <div className="flex-row">
         <div className="flex items-center mb-[17px]">
-          <Image src={icon} alt="icon" className="w-[24px] h-[24px]" />
+          <Icon className="w-[24px] h-[24px]" />
           <p className="text-grayscale-300 semi-16 ml-[8px]">{title}</p>
         </div>
         <div className="flex items-center">
@@ -76,11 +76,11 @@ export default function TodayBlock({
       {isRank && (
         <div className="absolute right-[20px] bottom-[10px]">
           {data3 === '1' ? (
-            <Image src={top1Icon} alt="1st" className="h-[60px]" />
+            <Top1Icon className="h-[60px]" />
           ) : data3 === '2' ? (
-            <Image src={top2Icon} alt="1st" className="h-[60px]" />
+            <Top2Icon className="h-[60px]" />
           ) : data3 === '3' ? (
-            <Image src={top3Icon} alt="1st" className="h-[60px]" />
+            <Top3Icon className="h-[60px]" />
           ) : (
             <></>
           )}

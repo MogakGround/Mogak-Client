@@ -1,5 +1,3 @@
-import Image from 'next/image'
-
 import BannerLineIcon from '@/assets/svg/banner-line.svg'
 import BannerBlockIcon from '@/assets/svg/banner-block.svg'
 import RankFirstIcon from '@/assets/svg/rank-first.svg'
@@ -21,9 +19,7 @@ export default function RankBanner({ handleRefresh, currentDate }: IRankBannerPr
           <span className="font-riasans text-[44px]">작업자 랭킹</span>
         </div>
         <div className="flex items-center z-10">
-          <Image
-            src={RefreshIcon}
-            alt="refresh"
+          <RefreshIcon
             width={20}
             height={20}
             onClick={handleRefresh}
@@ -35,25 +31,19 @@ export default function RankBanner({ handleRefresh, currentDate }: IRankBannerPr
           </span>
         </div>
       </div>
-      <Image
-        src={BannerLineIcon}
-        alt="rank"
+      <BannerLineIcon
         width={558}
         height={276}
         className="absolute top-[0px] right-[22%] rotate-[2deg]"
       />
-      <Image src={BannerBlockIcon} alt="rank" width={558} height={276} className="absolute bottom-[0px] right-[0%]" />
-      <Image src={RankFirstIcon} alt="rank" width={164} height={103} className="absolute top-[-30px] right-[200px]" />
-      <Image
-        src={RankSecondIcon}
-        alt="rank"
+      <BannerBlockIcon width={558} height={276} className="absolute bottom-[0px] right-[0%]" />
+      <RankFirstIcon width={164} height={103} className="absolute top-[-30px] right-[200px]" />
+      <RankSecondIcon
         width={160}
         height={120}
         className="absolute top-[20px] right-[345px] rotate-[-12deg]"
       />
-      <Image
-        src={RankThirdIcon}
-        alt="rank"
+      <RankThirdIcon
         width={135}
         height={104}
         className="absolute top-[100px] right-[70px] rotate-[11deg]"

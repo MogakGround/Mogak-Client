@@ -5,7 +5,6 @@ import {
   iconChipSizeStyles,
   chipMoonIcon,
 } from '@/components/global/chip/chip.style'
-import Image from 'next/image'
 
 /**
  * 사용 예시
@@ -17,18 +16,14 @@ import Image from 'next/image'
   handleClick={chipEvent}
 />
  */
-const IconChip = ({ variant, theme, size, iconImageSrc, handleClick }: IconChipProps) => {
+const IconChip = ({ variant, theme, size, iconImageSrc: IconImage, handleClick }: IconChipProps) => {
+  const iconSize = size === ChipSize.sm ? 13 : size === ChipSize.md ? 16 : 20
   return (
     <div
       className={`${chipBaseStyle} ${chipBackgroundStyles[theme][variant]} ${iconChipSizeStyles[size]}`}
       onClick={handleClick}
     >
-      <Image
-        src={iconImageSrc}
-        alt="icon"
-        width={size === ChipSize.sm ? 13 : size === ChipSize.md ? 16 : 20}
-        height={size === ChipSize.sm ? 13 : size === ChipSize.md ? 16 : 20}
-      />
+      <IconImage width={iconSize} height={iconSize} />
     </div>
   )
 }

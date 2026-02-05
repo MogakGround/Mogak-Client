@@ -41,7 +41,7 @@ export default function CreateRoomStep2({ roomNewForm, setRoomNewForm, roomStatu
                 'block rounded-full bg-accentT-20 absolute top-[10px] right-[10px] w-[24px] h-[24px]'
             )}
           >
-            <Image src={CheckAccent} alt="check" className="w-full h-full" />
+            <CheckAccent className="w-full h-full" />
           </label>
           <Image src={thumbnail.image} alt="thumbnail" width={179} height={94} />
         </div>

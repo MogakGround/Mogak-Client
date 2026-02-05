@@ -6,7 +6,6 @@ import { useState } from 'react'
 import { IconInputArrow } from '@/components/global/input/input.types'
 import BasicButton from '@/components/global/button/BasicButton'
 import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
-import Image from 'next/image'
 import IconError from '@/assets/svg/toast-error.svg'
 import { postEnterRoom } from '@/app/api/home/api'
 import { ErrorResponse } from '@/app/api/api.types'
@@ -96,7 +95,7 @@ export default function RoomPasswordModal({ roomId, isOpen, handleCloseModal }: 
         handleCloseModal={() => setIsMsgOpen(false)}
       >
         <div className="flex gap-12 items-center">
-          <Image src={IconError} alt="error" width={20} height={20} />
+          <IconError width={20} height={20} />
           <p className="med-14">틀린 비밀번호예요. 비밀번호를 다시 확인해주세요.</p>
         </div>
       </Modal>

@@ -1,6 +1,5 @@
 import Modal from '@/components/global/modal/Modal'
 import CheckAccentIcon from '@/assets/svg/check-accent.svg'
-import Image from 'next/image'
 import BasicButton from '@/components/global/button/BasicButton'
 import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
 import { ChangeEvent, useEffect, useState } from 'react'
@@ -189,9 +188,9 @@ export default function ProfileSettingModal({
 
         {/* 닉네임 부가 설명 */}
         <div className="flex items-center mt-[8px]">
-          <Image src={CheckAccentIcon} alt="check" className="w-[20px] h-[20px] mr-[2px]" />
+          <CheckAccentIcon className="w-[20px] h-[20px] mr-[2px]" />
           <p className="reg-12 text-accent-100 mr-[16px]">공백 포함 16자 이내</p>
-          <Image src={CheckAccentIcon} alt="check" className="w-[20px] h-[20px] mr-[2px]" />
+          <CheckAccentIcon className="w-[20px] h-[20px] mr-[2px]" />
           <p className="reg-12 text-accent-100 ">한글,영어로만 구성</p>
         </div>
 

@@ -148,7 +148,7 @@ export default function MyPage() {
           {/* 프로필 이미지 */}
           <div className="flex justify-center items-center rounded-full border-2 border-gray-600 w-[92px] h-[92px] bg-gray-800">
             {!profileIcon ? (
-              <Image src={LogoIcon} alt="profile" width={48} height={24} />
+              <LogoIcon width={48} height={24} />
             ) : (
               <Image src={profileIcon} alt="profile" />
             )}

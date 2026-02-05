@@ -1,7 +1,6 @@
 'use client'
 
 import Modal from '@/components/global/modal/Modal'
-import Image from 'next/image'
 import IconClose from '@/assets/svg/close.svg'
 import { User } from '../api/type'
 
@@ -22,7 +21,7 @@ export default function MemberModal({ isOpen, onClose, users }: MemberModalProps
           </div>
           <button type="button" onClick={onClose} className="flex gap-6 items-center semi-16">
             <span>닫기</span>
-            <Image src={IconClose} alt="닫기" className="pb-1" />
+            <IconClose className="pb-1" />
           </button>
         </header>
 
