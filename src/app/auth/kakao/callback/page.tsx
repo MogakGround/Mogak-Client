@@ -32,6 +32,7 @@ export default function KakaoCallbackPage() {
           if (res.status === 'success') {
             setAccessToken(res.accessToken)
             await fetchUser()
+            router.refresh()
             router.push('/')
           } else {
             router.push(`/auth/signup?kakaoId=${res.kakaoId}`)
