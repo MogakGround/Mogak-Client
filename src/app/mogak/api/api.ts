@@ -7,6 +7,8 @@ import {
   TimerListResponse,
 } from './type'
 
+import { useAuthStore } from '@/store/authStore'
+
 export async function getRoomInfo(id: string) {
   const { data } = await axiosInstance.get<RoomResponse>(`/room/${id}`)
   return data
@@ -48,10 +50,16 @@ export const postLeaveRoom = async (roomId: number) => {
 
 export const postLeaveRoomBeacon = (roomId: number) => {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/room/${roomId}/quit`
-  const blob = new Blob([JSON.stringify({})], { type: 'application/json' })
-  
-  // sendBeacon은 페이지가 unload되어도 요청을 보장
-  if (navigator.sendBeacon) {
-    navigator.sendBeacon(url, blob)
-  }
+  const { accessToken } = useAuthStore.getState()
+
+  fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+    },
+    credentials: 'include',
+    body: JSON.stringify({}),
+    keepalive: true,
+  })
 }
