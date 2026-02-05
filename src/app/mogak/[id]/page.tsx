@@ -67,7 +67,7 @@ export default function MogakPage() {
     { onMemberJoined: handleMemberJoined, onMemberLeft: handleMemberLeft },
   )
 
-  const { publisher, startScreenShare, stopScreenShare, isScreenSharing } = useScreenShare({
+  const { publisher, startScreenShare, stopScreenShare, isScreenSharing, isSessionReady } = useScreenShare({
     session,
     ovRef,
     cleanupPublisher,
@@ -149,6 +149,7 @@ export default function MogakPage() {
               stopScreenShare={stopScreenShare}
               publisher={publisher as Publisher}
               isScreenSharing={isScreenSharing}
+              isSessionReady={isSessionReady}
               startTimer={startTimer}
               stopTimer={stopTimer}
             />

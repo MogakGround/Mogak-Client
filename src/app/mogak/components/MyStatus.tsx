@@ -17,6 +17,7 @@ interface MyStatusProps {
   startScreenShare: () => Promise<void> | void
   stopScreenShare: () => void
   isScreenSharing?: boolean
+  isSessionReady: boolean
   startTimer: () => void
   stopTimer: () => void
 }
@@ -25,6 +26,7 @@ export default function MyStatus({
   startScreenShare,
   stopScreenShare,
   isScreenSharing: propIsScreenSharing,
+  isSessionReady,
   startTimer,
   stopTimer,
 }: MyStatusProps) {
@@ -60,7 +62,7 @@ export default function MyStatus({
       return
     }
     stopScreenShareRef.current()
-  }, [screenShareOn, setScreenShareOn])
+  }, [screenShareOn, isSessionReady, setScreenShareOn])
 
   const handleToggleScreenOn = () => {
     setScreenShareOn(!screenShareOn)

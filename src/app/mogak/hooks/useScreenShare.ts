@@ -44,7 +44,7 @@ export default function useScreenShare({
   }, [cleanupPublisher, screenPublisher, session, setScreenShareOn, sendStopScreenShare])
 
   const startScreenShare = useCallback(async () => {
-    if (!session || !ovRef.current) return
+    if (!session || !ovRef.current) throw new Error('세션이 아직 연결되지 않았습니다.')
     if (screenPublisher || isStartingScreenShare) {
       console.log('이미 화면 공유 중이거나 시작 중입니다.')
       return
@@ -87,11 +87,14 @@ export default function useScreenShare({
 
   const isScreenSharing = !!screenPublisher
 
+  const isSessionReady = !!session
+
   return {
     publisher,
     screenPublisher,
     startScreenShare,
     stopScreenShare,
     isScreenSharing,
+    isSessionReady,
   }
 }
