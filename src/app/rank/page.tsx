@@ -4,15 +4,28 @@ import Pagenation from '@/components/global/pagenation/Pagenation'
 import RankList from '@/app/rank/components/rankList'
 import MyRank from '@/app/rank/components/MyRank'
 import RankBanner from '@/app/rank/components/RankBanner'
-import useFetchRank from './hooks/useFetchRank'
+import { useState } from 'react'
+import { useGetRankingList, useGetMyRanking } from './queries'
+import { MyRankingResponseData } from '@/app/api/user/user.types'
+
+const DEFAULT_MY_RANKING: MyRankingResponseData = { userId: 0, nickName: '', rank: 0, hour: 0, min: 0, sec: 0 }
 
 export default function RankPage() {
-  const { currentPage, lastPage, rankList, currentDate, myRanking, fetchMyRanking, handlePageChange } = useFetchRank()
+  const [currentPage, setCurrentPage] = useState(1)
+  const { data: rankingData } = useGetRankingList(currentPage)
+  const { data: myRanking, dataUpdatedAt, refetch: refetchMyRanking } = useGetMyRanking()
+
+  const rankList = rankingData?.rankings ?? []
+  const lastPage = rankingData?.lastPage ?? 1
+
+  const currentDate = dataUpdatedAt
+    ? new Date(dataUpdatedAt).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false })
+    : ''
 
   return (
     <div className="h-full mx-auto px-[80px] pt-[60px]">
       <div className="h-full max-w-[1280px] mx-auto flex flex-col gap-[40px]">
-        <RankBanner handleRefresh={fetchMyRanking} currentDate={currentDate} />
+        <RankBanner handleRefresh={() => refetchMyRanking()} currentDate={currentDate} />
         <div className="h-full w-full flex gap-[40px]">
           <div className="flex flex-col items-center justify-between gap-[40px] flex-1">
             <RankList currentPage={currentPage} lastPage={lastPage} rankList={rankList} />
@@ -25,12 +38,12 @@ export default function RankPage() {
                 <Pagenation
                   currentPageNumber={currentPage}
                   lastPageNumber={lastPage}
-                  handlePageChange={handlePageChange}
+                  handlePageChange={setCurrentPage}
                 />
               </div>
             )}
           </div>
-          <MyRank myRanking={myRanking} />
+          <MyRank myRanking={myRanking ?? DEFAULT_MY_RANKING} />
         </div>
       </div>
     </div>
