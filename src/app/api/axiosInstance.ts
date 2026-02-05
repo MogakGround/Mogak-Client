@@ -45,11 +45,10 @@ axiosInstance.interceptors.response.use(
 
     const errorResponse = new ErrorResponse(status, code, message)
 
-    if (status === 401 && !originalRequest._retry) {
+    if ((status === 401 || code === 401) && !originalRequest._retry) {
       originalRequest._retry = true
 
       const { accessToken, setAccessToken, clearTokens } = useAuthStore.getState()
-
       const { clearUser } = useUserStore.getState()
 
       if (accessToken) {
@@ -61,16 +60,15 @@ axiosInstance.interceptors.response.use(
           return axiosInstance(originalRequest)
         } catch (refreshError) {
           clearTokens()
-          clearUser();
-          navigate('/auth/signin')
-          console.error(refreshError)
-          throw errorResponse
+          clearUser()
+          window.location.href = '/auth/signin'
+          return new Promise(() => {})
         }
       } else {
         clearTokens()
         clearUser()
-        navigate('/auth/signin')
-        throw errorResponse
+        window.location.href = '/auth/signin'
+        return new Promise(() => {})
       }
     }
 
