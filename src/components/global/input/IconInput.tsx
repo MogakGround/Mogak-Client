@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import useInputStatus from './hooks/useInputStatus'
 import { IconInputProps } from './input.types'
 import { getStatusStyles, inputSizes } from './inputStyles'
@@ -27,7 +26,7 @@ export default function IconInput({
   })
   const [showPassword, setShowPassword] = useState(false)
 
-  const icon =
+  const Icon =
     iconSrc || (isSecret && showPassword)
       ? IcEyes
       : isSecret && !showPassword
@@ -47,7 +46,7 @@ export default function IconInput({
       )}
     >
       <span className="flex items-center justify-center">
-        {iconArrow === 'left' && <Image src={icon} alt="icon" width={24} height={24} />}
+        {iconArrow === 'left' && <Icon width={24} height={24} />}
       </span>
       <input
         ref={inputRef}
@@ -66,10 +65,13 @@ export default function IconInput({
         {iconArrow === 'right' &&
           (isSecret ? (
             <button type="button" onClick={() => setShowPassword((prev) => !prev)}>
-              <Image src={icon} alt={showPassword ? '숨기기' : '보기'} width={24} height={24} />
+              <Icon width={24} height={24} />
             </button>
           ) : (
-            <Image src={iconSrc ? iconSrc : !disabled ? Search : SearchDisabled} alt="icon" width={24} height={24} />
+            (() => {
+              const RightIcon = iconSrc || (!disabled ? Search : SearchDisabled)
+              return <RightIcon width={24} height={24} />
+            })()
           ))}
       </span>
     </div>

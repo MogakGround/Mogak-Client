@@ -7,7 +7,6 @@ import {
   linkButtonSizes,
 } from '@/components/global/button/buttonStyle'
 import cn from '@/utils/cn'
-import Image from 'next/image'
 
 export default function IconTextButton({
   variant,
@@ -26,6 +25,7 @@ export default function IconTextButton({
   className,
 }: IconTextButtonProps) {
   const iconSize = iconWidth ? iconWidth : size && iconSizes[size]
+  const IconComponent = iconSrc
 
   return (
     <button
@@ -42,9 +42,9 @@ export default function IconTextButton({
       type={type}
       disabled={disabled}
     >
-      {iconArrow === 'left' && <Image src={iconSrc} alt="icon" width={iconSize} height={iconSize} />}
+      {iconArrow === 'left' && <IconComponent width={iconSize} height={iconSize} />}
       <div>{text ? text : children}</div>
-      {iconArrow === 'right' && <Image src={iconSrc} alt="icon" width={iconSize} height={iconSize} />}
+      {iconArrow === 'right' && <IconComponent width={iconSize} height={iconSize} />}
     </button>
   )
 }

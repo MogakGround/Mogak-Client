@@ -7,19 +7,18 @@ import {
   chipDetailTextFont,
   textChipSizeStyles,
 } from '@/components/global/chip/chip.style'
-import Image from 'next/image'
 
 /**
  * 사용 예시
- * 
-<IconTextChip 
-  variant={ChipVariant.DEFAULT} 
-  theme={ChipTheme.PRIMARY} 
-  size={ChipSize.md} 
-  text="Primary Chip" 
-  detailText="Detailed info" 
-  iconArrow={IconArrow.LEFT} 
-  iconImageSrc="@/assets/svg/moon-accent-l.svg"
+ *
+<IconTextChip
+  variant={ChipVariant.DEFAULT}
+  theme={ChipTheme.PRIMARY}
+  size={ChipSize.md}
+  text="Primary Chip"
+  detailText="Detailed info"
+  iconArrow={IconArrow.LEFT}
+  iconImageSrc={SomeIcon}
   handleClick={chipEvent}
 />
  */
@@ -30,9 +29,11 @@ const IconTextChip = ({
   text,
   detailText,
   iconArrow,
-  iconImageSrc,
+  iconImageSrc: IconImage,
   handleClick,
 }: IconTextChipProps) => {
+  const iconSize = size === ChipSize.lg ? 20 : 16
+
   return (
     <div
       className={`${chipBaseStyle} ${chipBackgroundStyles[theme][variant]} ${textChipSizeStyles[size]}`}
@@ -40,12 +41,7 @@ const IconTextChip = ({
     >
       {iconArrow === IconArrow.LEFT && (
         <div className="mr-[8px]">
-          <Image
-            src={iconImageSrc}
-            alt={'icon'}
-            width={size === ChipSize.lg ? 20 : 16}
-            height={size === ChipSize.lg ? 20 : 16}
-          />
+          <IconImage width={iconSize} height={iconSize} />
         </div>
       )}
 
@@ -61,12 +57,7 @@ const IconTextChip = ({
 
       {iconArrow === IconArrow.RIGHT && (
         <div className="ml-[8px]">
-          <Image
-            src={iconImageSrc}
-            alt={'icon'}
-            width={size === ChipSize.lg ? 20 : 16}
-            height={size === ChipSize.lg ? 20 : 16}
-          />
+          <IconImage width={iconSize} height={iconSize} />
         </div>
       )}
     </div>

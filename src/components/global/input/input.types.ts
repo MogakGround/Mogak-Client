@@ -1,4 +1,5 @@
 import { ChangeEvent } from 'react'
+import { SvgIcon } from '@/types/svg'
 
 type InputType = 'text' | 'password'
 export type InputStatus = 'default' | 'hover' | 'error' | 'disabled' | 'success' | 'typing'
@@ -30,6 +31,6 @@ export interface InputStatusHookProps {
 
 export interface IconInputProps extends IBasicInputProps {
   iconArrow: IconInputArrow
-  iconSrc?: string
+  iconSrc?: SvgIcon
   isSecret?: boolean
 }

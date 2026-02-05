@@ -1,3 +1,5 @@
+import { SvgIcon } from '@/types/svg'
+
 // 칩 모양 종류
 export enum ChipVariant {
   DEFAULT,
@@ -57,11 +59,11 @@ export interface MoonIconTextChipProps extends TextChipProps {
 
 export interface IconTextChipProps extends TextChipProps {
   iconArrow: IconArrow
-  iconImageSrc: string
+  iconImageSrc: SvgIcon
 }
 
 // 아이콘 칩
 export interface MoonIconChipProps extends ChipProps {}
 export interface IconChipProps extends ChipProps {
-  iconImageSrc: string
+  iconImageSrc: SvgIcon
 }

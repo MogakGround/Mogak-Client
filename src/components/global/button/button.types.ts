@@ -1,3 +1,5 @@
+import { SvgIcon } from '@/types/svg'
+
 export enum ButtonVariant {
   default = 'default',
   filled = 'filled',
@@ -29,7 +31,7 @@ export interface IButtonProps {
   handleClick: () => void
   fullWidth?: boolean
   type?: 'button' | 'submit' | 'reset'
-  iconSrc?: string
+  iconSrc?: SvgIcon
   className?: string
 }
 
@@ -39,7 +41,7 @@ export interface IBasicButtonProps extends IButtonProps {
 }
 export interface ArrowIconTextButtonProps extends IBasicButtonProps {
   iconArrow: IconArrow
-  iconSrc?: string
+  iconSrc?: SvgIcon
   iconWidth?: number
 }
 
@@ -51,13 +53,13 @@ export interface IRoundedSquareButtonProps {
   type?: 'button' | 'submit' | 'reset'
 }
 export interface IconTextButtonProps extends IBasicButtonProps {
-  iconSrc: string
+  iconSrc: SvgIcon
   iconArrow: IconArrow
   iconWidth?: number
   link?: boolean
 }
 export interface IconButtonProps extends IButtonProps {
-  iconSrc: string
+  iconSrc: SvgIcon
 }
 export interface HeadcountIconTextButtonProps extends IButtonProps {
   headcount: number

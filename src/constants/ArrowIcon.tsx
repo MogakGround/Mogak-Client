@@ -1,10 +1,11 @@
+import { SvgIcon } from '@/types/svg'
 import ArrowGray from '@/assets/svg/arrow-right-gray.svg'
 import ArrowNavy from '@/assets/svg/arrow-right-navy.svg'
 import ArrowRed from '@/assets/svg/arrow-right-red.svg'
 import ArrowSky from '@/assets/svg/arrow-right-sky.svg'
 import ArrowWhite from '@/assets/svg/arrow-right-white.svg'
 
-export const ARROW_ICON_SRC = {
+export const ARROW_ICON_SRC: Record<string, SvgIcon> = {
   gray: ArrowGray,
   navy: ArrowNavy,
   red: ArrowRed,

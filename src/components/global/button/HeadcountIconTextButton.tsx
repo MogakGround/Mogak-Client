@@ -1,7 +1,6 @@
 import { ButtonSize, HeadcountIconTextButtonProps } from '@/components/global/button/button.types'
 import { baseButton, buttonStyles, iconSizes, headcountButtonSizes } from '@/components/global/button/buttonStyle'
-import userProfileIcon from '@/assets/svg/user-profile-white.svg'
-import Image from 'next/image'
+import UserProfileIcon from '@/assets/svg/user-profile-white.svg'
 import cn from '@/utils/cn'
 
 export default function HeadcountIconTextButton({
@@ -31,7 +30,7 @@ export default function HeadcountIconTextButton({
       type={type}
       disabled={disabled}
     >
-      <Image src={userProfileIcon} alt="icon" width={iconSize} height={iconSize} />
+      <UserProfileIcon width={iconSize} height={iconSize} />
       <p className="text-center ml-[1px] flex items-center">
         <span className="med-14 text-white">{headcount}</span>
         <span className="text-grayscale-400 mx-[2px]"> / </span>

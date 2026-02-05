@@ -8,7 +8,6 @@ import {
 } from '@/components/global/button/buttonStyle'
 import { ARROW_ICON_SRC } from '@/constants/ArrowIcon'
 import cn from '@/utils/cn'
-import Image from 'next/image'
 
 export default function IconButton({
   variant,
@@ -38,7 +37,10 @@ export default function IconButton({
       type={type}
       disabled={disabled}
     >
-      <Image src={iconSrc || ARROW_ICON_SRC[iconColor]} alt="icon" width={iconSize} height={iconSize} />
+      {(() => {
+        const Icon = iconSrc || ARROW_ICON_SRC[iconColor]
+        return <Icon width={iconSize} height={iconSize} />
+      })()}
     </button>
   )
 }

@@ -1,5 +1,4 @@
 import { IconToastProps } from '@/components/global/toast/toast.types'
-import Image from 'next/image'
 import {
   iconToastBaseStyle,
   toastBackgroundStyles,
@@ -31,7 +30,7 @@ const IconToast = ({ theme, size, text, detailText, success = false, handleClick
     >
       {/* 아이콘 */}
       <div className="mr-[12px]">
-        {success ? <Image src={GoodIcon} width={20} height={20} alt="success" /> : toastXIcon(theme, size)}
+        {success ? <GoodIcon width={20} height={20} /> : toastXIcon(theme, size)}
       </div>
 
       {/* 텍스트 */}

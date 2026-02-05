@@ -1,3 +1,4 @@
+import { SvgIcon } from '@/types/svg'
 import { CheckboxColor } from './checkbox.types'
 
 import CheckDefault from '@/assets/svg/check-default.svg'
@@ -5,7 +6,7 @@ import CheckWhite from '@/assets/svg/check-white.svg'
 import CheckPrimary from '@/assets/svg/check-primary.svg'
 import CheckAccent from '@/assets/svg/check-accent.svg'
 
-export const getCheckboxSrc = (color: string, isChecked: boolean): string => {
+export const getCheckboxSrc = (color: string, isChecked: boolean): SvgIcon => {
   if (!isChecked) {
     return CheckDefault
   }

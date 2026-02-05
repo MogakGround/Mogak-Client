@@ -1,6 +1,5 @@
 import { ToastTheme, ToastSize } from '@/components/global/toast/toast.types'
 
-import Image from 'next/image'
 import XDarkIcon from '@/assets/svg/x-primary-dark.svg'
 import XLightIcon from '@/assets/svg/x-primary-light.svg'
 
@@ -52,13 +51,11 @@ const toastXIconStyles = {
 }
 
 export const toastXIcon = (theme: ToastTheme, size: ToastSize) => {
-  const iconSrc = toastXIconStyles[theme]?.[size]
+  const IconComponent = toastXIconStyles[theme]?.[size]
 
-  if (!iconSrc) {
+  if (!IconComponent) {
     return null
   }
 
-  const altText = `${theme} ${size} X icon`
-
-  return <Image src={iconSrc} alt={altText} width={20} height={20} />
+  return <IconComponent width={20} height={20} />
 }

@@ -1,7 +1,6 @@
 import Image from 'next/image'
 
 import UpArrowIcon from '@/assets/svg/arrow-up-right.svg'
-import HomeBannerIcon from '@/assets/svg/home/bg-banner.svg'
 import { ButtonSize, ButtonTheme, ButtonVariant, IconArrow } from '@/components/global/button/button.types'
 import IconTextButton from '@/components/global/button/IconTextButton'
 import { useRouter } from 'next/navigation'
@@ -40,7 +39,7 @@ export default function HomeBanner() {
           />
         </div>
       </div>
-      <Image src={HomeBannerIcon} alt="home-banner" className="absolute top-0 right-0" />
+      <Image src="/images/bg-banner.svg" alt="home-banner" className="absolute top-0 right-0" width={558} height={224} />
     </div>
   )
 }

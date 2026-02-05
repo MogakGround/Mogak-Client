@@ -1,7 +1,6 @@
 'use client'
 
 import Image from 'next/image'
-import MogakSvg from '@/assets/svg/mogak-banner-bg.svg'
 import IconTextButton from '@/components/global/button/IconTextButton'
 import IconPerson from '@/assets/svg/person.svg'
 import IconLink from '@/assets/svg/link.svg'
@@ -54,7 +53,7 @@ export default function MogakHeader({ id }: MogakHeaderProps) {
 
   return (
     <div className="relative w-full min-h-142">
-      <Image src={MogakSvg} alt="모각방 배경" layout="fill" objectFit="cover" />
+      <Image src="/images/mogak-banner-bg.svg" alt="모각방 배경" fill style={{ objectFit: 'cover' }} />
       <div className="absolute inset-0 bg-[#0F1220] opacity-90"></div>
       {showInviteToast && (
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[416px]">

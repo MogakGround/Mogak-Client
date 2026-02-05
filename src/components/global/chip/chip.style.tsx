@@ -1,6 +1,5 @@
 import { ChipVariant, ChipTheme, ChipSize } from '@/components/global/chip/chip.types'
 
-import Image from 'next/image'
 import MoonGraySIcon from '@/assets/svg/moon-gray-s.svg'
 import MoonGrayMIcon from '@/assets/svg/moon-gray-m.svg'
 import MoonGrayLIcon from '@/assets/svg/moon-gray-l.svg'
@@ -123,15 +122,13 @@ const chipMoonIconStyles = {
 }
 
 export const chipMoonIcon = (theme: ChipTheme, size: ChipSize) => {
-  const iconSrc = chipMoonIconStyles[theme]?.[size]
+  const IconComponent = chipMoonIconStyles[theme]?.[size]
 
-  if (!iconSrc) {
+  if (!IconComponent) {
     return null
   }
 
-  const altText = `${theme} ${size} moon icon`
+  const iconSize = size === ChipSize.lg ? 20 : 16
 
-  return (
-    <Image src={iconSrc} alt={altText} width={size === ChipSize.lg ? 20 : 16} height={size === ChipSize.lg ? 20 : 16} />
-  )
+  return <IconComponent width={iconSize} height={iconSize} />
 }
