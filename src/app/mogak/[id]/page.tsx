@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import MogakHeader from '../components/MogakHeader'
 import MyStatus from '../components/MyStatus'
@@ -84,10 +84,21 @@ export default function MogakPage() {
     sendStopScreenShare,
   })
 
+  const stopScreenShareRef = useRef(stopScreenShare)
+  const leaveSessionRef = useRef(leaveSession)
+
+  useEffect(() => {
+    stopScreenShareRef.current = stopScreenShare
+  }, [stopScreenShare])
+
+  useEffect(() => {
+    leaveSessionRef.current = leaveSession
+  }, [leaveSession])
+
   useEffect(() => {
     const handleBeforeUnload = () => {
-      stopScreenShare()
-      leaveSession()
+      stopScreenShareRef.current()
+      leaveSessionRef.current()
       postLeaveRoomBeacon(Number(roomId))
     }
     window.addEventListener('beforeunload', handleBeforeUnload)
@@ -96,7 +107,7 @@ export default function MogakPage() {
       postLeaveRoomBeacon(Number(roomId))
       window.removeEventListener('beforeunload', handleBeforeUnload)
     }
-  }, [stopScreenShare, leaveSession, roomId])
+  }, [roomId])
 
   const { data: TimerList } = useGetTimerList(roomId, isRoomEntered)
   const timers = TimerList?.timers ?? []

@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 import ProfileIcon from '@/assets/svg/user-profile.svg'
 import { useUserStore } from '@/store/userStore'
@@ -25,7 +24,7 @@ export default function HeaderProfile() {
             className="flex items-center gap-[8px] px-[12px] py-[8px] rounded-[4px] bg-grayscale-700 w-fit"
             suppressHydrationWarning
           >
-            <Image src={ProfileIcon} alt="프로필" width={16} height={16} />
+            <ProfileIcon width={16} height={16} />
             <span className="semi-14 text-grayscale-50">{nickname} 님</span>
           </div>
         </Link>
