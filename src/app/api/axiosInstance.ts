@@ -3,6 +3,7 @@ import { useAuthStore } from '@/store/authStore'
 import { ErrorResponse } from './api.types'
 import { postRefreshToken } from './auth/api'
 import { useUserStore } from '@/store/userStore'
+import { navigate } from '@/lib/navigationRef'
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -61,14 +62,14 @@ axiosInstance.interceptors.response.use(
         } catch (refreshError) {
           clearTokens()
           clearUser();
-          window.location.href = '/auth/signin'
+          navigate('/auth/signin')
           console.error(refreshError)
           throw errorResponse
         }
       } else {
         clearTokens()
         clearUser()
-        window.location.href = '/auth/signin'
+        navigate('/auth/signin')
         throw errorResponse
       }
     }
