@@ -85,28 +85,29 @@ export default function useSocket(roomId: string, enabled: boolean = true, optio
     }
   }, [roomId, enabled, accessToken, handleMessage])
 
-  const sendStartScreenShare = () => {
+  const sendStartScreenShare = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({ type: 'screen-share-start' }))
     }
-  }
+  }, [])
 
-  const sendStopScreenShare = () => {
+  const sendStopScreenShare = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({ type: 'screen-share-stop' }))
     }
-  }
+  }, [])
 
-  const startTimer = () => {
+  const startTimer = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({ type: 'timer-start' }))
     }
-  }
-  const stopTimer = () => {
+  }, [])
+
+  const stopTimer = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({ type: 'timer-stop' }))
     }
-  }
+  }, [])
 
   return {
     sendStartScreenShare,

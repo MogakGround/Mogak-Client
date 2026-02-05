@@ -203,14 +203,16 @@ export default function MogakPage() {
         </Suspense>
 
         <div className="px-80 pt-16 flex gap-15 min-h-500 h-full">
-          <MyStatus
-            startScreenShare={startScreenShare}
-            stopScreenShare={stopScreenShare}
-            publisher={publisher as Publisher}
-            isScreenSharing={isScreenSharing}
-            startTimer={startTimer}
-            stopTimer={stopTimer}
-          />
+          <Suspense fallback={null}>
+            <MyStatus
+              startScreenShare={startScreenShare}
+              stopScreenShare={stopScreenShare}
+              publisher={publisher as Publisher}
+              isScreenSharing={isScreenSharing}
+              startTimer={startTimer}
+              stopTimer={stopTimer}
+            />
+          </Suspense>
           {mappedMembers.length > 0 ? (
             <div className="grid grid-cols-2 grid-rows-2 gap-4">
               {mappedMembers.map(({ userId, nickName, subscriber, timer }) => (
