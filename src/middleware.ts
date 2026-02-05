@@ -7,12 +7,11 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // 프리페칭 요청은 인증 체크를 건너뜀
-  const isPrefetch =
+  if (
     request.headers.get('purpose') === 'prefetch' ||
-    request.headers.get('x-middleware-prefetch') === '1' ||
-    request.headers.get('next-router-prefetch') === '1'
-
-  if (isPrefetch) {
+    request.headers.has('x-middleware-prefetch') ||
+    request.headers.has('next-router-prefetch')
+  ) {
     return NextResponse.next()
   }
 
