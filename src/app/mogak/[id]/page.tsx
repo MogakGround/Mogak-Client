@@ -109,20 +109,26 @@ export default function MogakPage() {
 
   const handleMemberLeft = useCallback(
     (leftUserId: number) => {
+      // 로컬 캐시에서 즉시 제거
       queryClient.setQueryData<RoomMembers>(['roomMembers', roomId, userID], (old) => {
         if (!old) return old
         return { ...old, users: old.users.filter((u) => u.userId !== leftUserId) }
       })
+      // 화면공유 상태 제거
       setWsScreenSharingUsers((prev) => {
         const next = new Set(prev)
         next.delete(leftUserId)
         return next
       })
+      // 타이머 상태 제거
       setTimerStates((prev) => {
         const next = new Map(prev)
         next.delete(leftUserId)
         return next
       })
+      // API도 다시 fetch하여 확실히 동기화
+      queryClient.invalidateQueries({ queryKey: ['roomMembers', roomId] })
+      queryClient.invalidateQueries({ queryKey: ['timerList', roomId] })
     },
     [queryClient, roomId, userID],
   )
@@ -154,6 +160,9 @@ export default function MogakPage() {
     window.addEventListener('beforeunload', handleBeforeUnload)
 
     return () => {
+      // 컴포넌트 언마운트 시에도 cleanup (React Router 이동 등)
+      stopScreenShareRef.current()
+      leaveSessionRef.current()
       postLeaveRoomBeacon(Number(roomId))
       window.removeEventListener('beforeunload', handleBeforeUnload)
     }
@@ -217,7 +226,13 @@ export default function MogakPage() {
     <>
       <div className="min-w-[1280px] overflow-hidden">
         <Suspense fallback={<HeaderFallback />}>
-          <MogakHeader id={roomId} />
+          <MogakHeader
+            id={roomId}
+            onLeave={() => {
+              stopScreenShare()
+              leaveSession()
+            }}
+          />
         </Suspense>
 
         <div className="px-80 pt-16 flex gap-15 min-h-500 h-full">

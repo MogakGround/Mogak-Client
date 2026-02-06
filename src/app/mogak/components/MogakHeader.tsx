@@ -21,9 +21,10 @@ import { ToastTheme, ToastSize } from '@/components/global/toast/toast.types'
 
 interface MogakHeaderProps {
   id: string
+  onLeave?: () => void
 }
 
-export default function MogakHeader({ id }: MogakHeaderProps) {
+export default function MogakHeader({ id, onLeave }: MogakHeaderProps) {
   const router = useRouter()
   const userID = useUserStore((state) => state.userID)
 
@@ -155,13 +156,14 @@ export default function MogakHeader({ id }: MogakHeaderProps) {
             fullWidth
             text="모각방 나가기"
             handleClick={() => {
+              // 화면공유/세션 정리 먼저
+              onLeave?.()
               leaveRoomMutation.mutate(Number(id), {
                 onSuccess: () => {
                   router.push('/')
                 },
                 onError: (error) => {
                   console.error('모각방 나가기 실패:', error)
-                  // 에러가 발생해도 페이지를 이동할지는 요구사항에 따라 결정
                   router.push('/')
                 },
               })
