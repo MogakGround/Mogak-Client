@@ -7,50 +7,37 @@ import IconClock from '@/assets/svg/clock.svg'
 import convertTime from '@/utils/convertTime'
 import { StreamManager } from 'openvidu-browser'
 import Video from './Video'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+
+interface TimerProps {
+  baseTime: number
+  startedAt: number | null
+  isRunning: boolean
+}
 
 interface ScreenBoxProps {
   nickname: string
-  time: number
-  isRunning: boolean
+  timer: TimerProps
   subscriber: StreamManager | undefined
 }
 
-export default function ScreenBox({ nickname, time: initialTime, isRunning, subscriber }: ScreenBoxProps) {
-  const [time, setTime] = useState(initialTime)
-  const prevSubscriberIdRef = useRef<string | undefined>(undefined)
+export default function ScreenBox({ nickname, timer, subscriber }: ScreenBoxProps) {
+  const [, setTick] = useState(0)
 
-  const currentSubscriberId = subscriber?.stream?.streamId
-
+  // isRunning일 때만 1초마다 리렌더링
   useEffect(() => {
-    if (prevSubscriberIdRef.current !== currentSubscriberId) {
-      setTime(initialTime)
-      prevSubscriberIdRef.current = currentSubscriberId
-    }
-  }, [currentSubscriberId, initialTime])
+    if (!timer.isRunning) return
+    const id = setInterval(() => setTick((t) => t + 1), 1000)
+    return () => clearInterval(id)
+  }, [timer.isRunning])
 
-  useEffect(() => {
-    setTime(initialTime)
-  }, [initialTime])
+  // 시간 계산: baseTime + 경과시간
+  const displayTime =
+    timer.isRunning && timer.startedAt
+      ? timer.baseTime + Math.floor((Date.now() - timer.startedAt) / 1000)
+      : timer.baseTime
 
-  useEffect(() => {
-    let intervalId: NodeJS.Timeout
-
-    if (isRunning) {
-      intervalId = setInterval(() => {
-        setTime((prevTime) => prevTime + 1)
-      }, 1000)
-    }
-
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId)
-      }
-    }
-  }, [isRunning])
-
-  const { hours, minutes, seconds } = convertTime(time)
-
+  const { hours, minutes, seconds } = convertTime(displayTime)
   const isVideoOn = Boolean(subscriber) && Boolean(subscriber?.stream?.videoActive)
 
   return (
@@ -64,6 +51,7 @@ export default function ScreenBox({ nickname, time: initialTime, isRunning, subs
           handleClick={() => {}}
           iconArrow={IconArrow.left}
           iconSrc={IconPerson}
+          iconWidth={16}
           className="h-36 pointer-events-none bg-grayscale-700"
         />
         <IconTextButton

@@ -20,6 +20,11 @@ import { useLeavePrevention } from '@/hooks/useLeavePrevention'
 import LeavePreventionModal from '@/components/global/modal/LeavePreventionModal'
 import HeaderFallback from '../components/HeaderFallback'
 
+interface TimerState {
+  baseTime: number
+  startedAt: number
+}
+
 export default function MogakPage() {
   const roomId = useParams().id as string
   const { userID } = useUserStore()
@@ -29,13 +34,49 @@ export default function MogakPage() {
   const queryClient = useQueryClient()
 
   const [wsScreenSharingUsers, setWsScreenSharingUsers] = useState<Set<number>>(new Set())
+  const [timerStates, setTimerStates] = useState<Map<number, TimerState>>(new Map())
+
+  const { data: TimerList } = useGetTimerList(roomId, isRoomEntered)
+  const timers = TimerList?.timers ?? []
+
+  // API에서 이미 running인 타이머 초기화
+  useEffect(() => {
+    timers.forEach((timer) => {
+      if (timer.isRunning && !timerStates.has(timer.userId)) {
+        const baseTime = timer.hour * 3600 + timer.min * 60 + timer.sec
+        setTimerStates((prev) => {
+          const next = new Map(prev)
+          next.set(timer.userId, { baseTime, startedAt: Date.now() })
+          return next
+        })
+      }
+    })
+  }, [timers])
 
   const handleSocketMessage = useCallback(
-    (data: Record<string, unknown>) => {
+    async (data: Record<string, unknown>) => {
       const type = String(data?.type ?? '')
       const eventUserId = data?.userId as number | undefined
 
-      if (type.includes('timer')) {
+      if (type === 'timer-start' && eventUserId != null) {
+        const result = await queryClient.fetchQuery({ queryKey: ['timerList', roomId] })
+        const timerData = (result as { timers: Array<{ userId: number; hour: number; min: number; sec: number }> })
+          ?.timers?.find((t) => t.userId === eventUserId)
+        const baseTime = timerData ? timerData.hour * 3600 + timerData.min * 60 + timerData.sec : 0
+
+        setTimerStates((prev) => {
+          const next = new Map(prev)
+          next.set(eventUserId, { baseTime, startedAt: Date.now() })
+          return next
+        })
+      }
+
+      if (type === 'timer-stop' && eventUserId != null) {
+        setTimerStates((prev) => {
+          const next = new Map(prev)
+          next.delete(eventUserId)
+          return next
+        })
         queryClient.invalidateQueries({ queryKey: ['timerList', roomId] })
       }
 
@@ -72,9 +113,13 @@ export default function MogakPage() {
         if (!old) return old
         return { ...old, users: old.users.filter((u) => u.userId !== leftUserId) }
       })
-      // 나간 유저의 화면공유 상태도 제거
       setWsScreenSharingUsers((prev) => {
         const next = new Set(prev)
+        next.delete(leftUserId)
+        return next
+      })
+      setTimerStates((prev) => {
+        const next = new Map(prev)
         next.delete(leftUserId)
         return next
       })
@@ -114,9 +159,6 @@ export default function MogakPage() {
     }
   }, [roomId])
 
-  const { data: TimerList } = useGetTimerList(roomId, isRoomEntered)
-  const timers = TimerList?.timers ?? []
-
   const { data } = useGetRoomMembers(roomId, userID!, isRoomEntered && isSocketConnected)
   const members = data?.users ?? []
 
@@ -142,7 +184,8 @@ export default function MogakPage() {
         }
       })
 
-      const timer = timers.find((t) => t.userId === member.userId)
+      const timerState = timerStates.get(member.userId)
+      const apiTimer = timers.find((t) => t.userId === member.userId)
       const isMemberScreenSharing =
         combinedScreenSharingUsers.has(member.userId) && !!screenSubscriber && screenSubscriber.stream?.videoActive
 
@@ -151,13 +194,16 @@ export default function MogakPage() {
         nickName: member.nickName,
         subscriber: screenSubscriber,
         isScreenSharing: isMemberScreenSharing,
-        timer: {
-          time: timer ? timer.hour * 3600 + timer.min * 60 + timer.sec : 0,
-          isRunning: timer?.isRunning ?? false,
-        },
+        timer: timerState
+          ? { baseTime: timerState.baseTime, startedAt: timerState.startedAt, isRunning: true }
+          : {
+              baseTime: apiTimer ? apiTimer.hour * 3600 + apiTimer.min * 60 + apiTimer.sec : 0,
+              startedAt: null,
+              isRunning: false,
+            },
       }
     })
-  }, [members, timers, subscribers, combinedScreenSharingUsers])
+  }, [members, timers, subscribers, combinedScreenSharingUsers, timerStates])
 
   if (!isRoomEntered) {
     return (
@@ -192,8 +238,7 @@ export default function MogakPage() {
                 <ScreenBox
                   key={`${userId}-${memberScreenSharing ? 'sharing' : 'idle'}`}
                   nickname={nickName}
-                  time={timer.time}
-                  isRunning={timer.isRunning}
+                  timer={timer}
                   subscriber={memberScreenSharing ? subscriber : undefined}
                 />
               ))}
