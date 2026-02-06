@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useCallback, useEffect, useMemo } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
 import MogakHeader from '../components/MogakHeader'
 import MyStatus from '../components/MyStatus'
@@ -28,11 +28,27 @@ export default function MogakPage() {
 
   const queryClient = useQueryClient()
 
+  const [wsScreenSharingUsers, setWsScreenSharingUsers] = useState<Set<number>>(new Set())
+
   const handleSocketMessage = useCallback(
     (data: Record<string, unknown>) => {
       const type = String(data?.type ?? '')
+      const eventUserId = data?.userId as number | undefined
+
       if (type.includes('timer')) {
         queryClient.invalidateQueries({ queryKey: ['timerList', roomId] })
+      }
+
+      if (type === 'screen-share-start' && eventUserId != null) {
+        setWsScreenSharingUsers((prev) => new Set(prev).add(eventUserId))
+      }
+
+      if (type === 'screen-share-stop' && eventUserId != null) {
+        setWsScreenSharingUsers((prev) => {
+          const next = new Set(prev)
+          next.delete(eventUserId)
+          return next
+        })
       }
     },
     [queryClient, roomId],
@@ -98,11 +114,19 @@ export default function MogakPage() {
   const { data } = useGetRoomMembers(roomId, userID!, isRoomEntered && isSocketConnected)
   const members = data?.users ?? []
 
+  const combinedScreenSharingUsers = useMemo(() => {
+    const combined = new Set(screenSharingUsers)
+    wsScreenSharingUsers.forEach((userId) => combined.add(userId))
+    return combined
+  }, [screenSharingUsers, wsScreenSharingUsers])
+
   const mappedMembers = useMemo(() => {
     if (!members.length) return []
 
     return members.map((member) => {
-      const subscriber = subscribers.find((sub) => {
+      const screenSubscriber = subscribers.find((sub) => {
+        if (sub.stream?.typeOfVideo !== 'SCREEN') return false
+
         const raw = sub.stream.connection.data
         try {
           const parsed = JSON.parse(raw)
@@ -112,20 +136,24 @@ export default function MogakPage() {
         }
       })
 
+      const hasActiveStream = Boolean(screenSubscriber?.stream?.getMediaStream()?.active)
+
       const timer = timers.find((t) => t.userId === member.userId)
-      const isMemberScreenSharing = screenSharingUsers.has(member.userId)
+      const isMemberScreenSharing =
+        combinedScreenSharingUsers.has(member.userId) && hasActiveStream && !!screenSubscriber
 
       return {
         userId: member.userId,
         nickName: member.nickName,
-        subscriber,
+        subscriber: screenSubscriber,
+        isScreenSharing: isMemberScreenSharing,
         timer: {
           time: timer ? timer.hour * 3600 + timer.min * 60 + timer.sec : 0,
-          isRunning: isMemberScreenSharing || (timer?.isRunning ?? false),
+          isRunning: timer?.isRunning ?? false,
         },
       }
     })
-  }, [members, timers, subscribers, screenSharingUsers])
+  }, [members, timers, subscribers, combinedScreenSharingUsers])
 
   if (!isRoomEntered) {
     return (
@@ -156,13 +184,13 @@ export default function MogakPage() {
           </Suspense>
           {mappedMembers.length > 0 ? (
             <div className="grid grid-cols-2 grid-rows-2 gap-4">
-              {mappedMembers.map(({ userId, nickName, subscriber, timer }) => (
+              {mappedMembers.map(({ userId, nickName, subscriber, isScreenSharing: memberScreenSharing, timer }) => (
                 <ScreenBox
-                  key={userId}
+                  key={`${userId}-${memberScreenSharing ? 'sharing' : 'idle'}`}
                   nickname={nickName}
                   time={timer.time}
                   isRunning={timer.isRunning}
-                  subscriber={subscriber}
+                  subscriber={memberScreenSharing ? subscriber : undefined}
                 />
               ))}
             </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { OpenVidu, Publisher, StreamManager } from 'openvidu-browser'
+import { OpenVidu, Publisher, StreamManager, Stream } from 'openvidu-browser'
 import { useLatestRef } from '@/hooks/useLatestRef'
 
 interface UseOpenViduOptions {
@@ -9,7 +9,8 @@ interface UseOpenViduOptions {
   onMemberLeft?: (userId: number) => void
 }
 
-function parseUserId(connectionData: string): number | null {
+function parseUserId(connectionData: string | undefined): number | null {
+  if (!connectionData) return null
   try {
     const parsed = JSON.parse(connectionData)
     return Number(parsed?.clientData ?? parsed)
@@ -17,6 +18,10 @@ function parseUserId(connectionData: string): number | null {
     const num = Number(connectionData)
     return isNaN(num) ? null : num
   }
+}
+
+function isScreenShareStream(stream: Stream | undefined): boolean {
+  return stream?.typeOfVideo === 'SCREEN'
 }
 
 export default function useOpenVidu(
@@ -93,23 +98,51 @@ export default function useOpenVidu(
       const token = await getToken(roomId)
       const newSession = ovRef.current.initSession()
 
-      newSession.on('streamCreated', (event) => {
-        const subscriber = newSession.subscribe(event.stream, undefined)
-        setSubscribers((prev) => [...prev, subscriber])
+      const subscribedStreamIds = new Set<string>()
 
-        if (event.stream.typeOfVideo === 'SCREEN') {
-          const streamUserId = parseUserId(event.stream.connection.data)
-          if (streamUserId != null) {
-            setScreenSharingUsers((prev) => new Set(prev).add(streamUserId))
-          }
+      const subscribeToStream = (stream: Stream) => {
+        if (subscribedStreamIds.has(stream.streamId)) {
+          console.log('[OpenVidu] Already subscribed to stream:', stream.streamId)
+          return null
         }
+
+        try {
+          const subscriber = newSession.subscribe(stream, undefined)
+          subscribedStreamIds.add(stream.streamId)
+
+          setSubscribers((prev) => {
+            const exists = prev.some((s) => s.stream?.streamId === stream.streamId)
+            if (exists) return prev
+            return [...prev, subscriber]
+          })
+
+          if (isScreenShareStream(stream)) {
+            const streamUserId = parseUserId(stream.connection?.data)
+            if (streamUserId != null) {
+              setScreenSharingUsers((prev) => new Set(prev).add(streamUserId))
+            }
+          }
+
+          return subscriber
+        } catch (err) {
+          console.error('[OpenVidu] Failed to subscribe to stream:', stream.streamId, err)
+          return null
+        }
+      }
+
+      newSession.on('streamCreated', (event) => {
+        console.log('[OpenVidu] streamCreated:', event.stream.streamId, event.stream.typeOfVideo)
+        subscribeToStream(event.stream)
       })
 
       newSession.on('streamDestroyed', (event) => {
-        setSubscribers((prev) => prev.filter((sub) => sub !== event.stream.streamManager))
+        console.log('[OpenVidu] streamDestroyed:', event.stream.streamId)
+        subscribedStreamIds.delete(event.stream.streamId)
 
-        if (event.stream.typeOfVideo === 'SCREEN') {
-          const streamUserId = parseUserId(event.stream.connection.data)
+        setSubscribers((prev) => prev.filter((sub) => sub.stream?.streamId !== event.stream.streamId))
+
+        if (isScreenShareStream(event.stream)) {
+          const streamUserId = parseUserId(event.stream.connection?.data)
           if (streamUserId != null) {
             setScreenSharingUsers((prev) => {
               const next = new Set(prev)
@@ -121,15 +154,33 @@ export default function useOpenVidu(
       })
 
       newSession.on('exception', (event) => {
-        console.warn('OpenVidu exception', event)
+        console.warn('[OpenVidu] exception:', event)
       })
 
       await newSession.connect(token, { clientData: String(userId || '') })
+      console.log('[OpenVidu] Connected to session')
+
+      setTimeout(() => {
+        try {
+          const remoteConnections = newSession.remoteConnections
+          if (remoteConnections && remoteConnections.size > 0) {
+            console.log('[OpenVidu] Found existing connections:', remoteConnections.size)
+            remoteConnections.forEach((connection) => {
+              if (connection.stream && !subscribedStreamIds.has(connection.stream.streamId)) {
+                console.log('[OpenVidu] Subscribing to existing stream:', connection.stream.streamId)
+                subscribeToStream(connection.stream)
+              }
+            })
+          }
+        } catch (err) {
+          console.warn('[OpenVidu] Error checking existing streams:', err)
+        }
+      }, 500)
 
       setSession(newSession)
       setConnectionError(null)
     } catch (error) {
-      console.error('OpenVidu 연결 실패:', error)
+      console.error('[OpenVidu] 연결 실패:', error)
       setConnectionError(error as Error)
       setHasFailed(true)
     } finally {

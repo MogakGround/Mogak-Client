@@ -7,7 +7,7 @@ import IconClock from '@/assets/svg/clock.svg'
 import convertTime from '@/utils/convertTime'
 import { StreamManager } from 'openvidu-browser'
 import Video from './Video'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface ScreenBoxProps {
   nickname: string
@@ -18,6 +18,16 @@ interface ScreenBoxProps {
 
 export default function ScreenBox({ nickname, time: initialTime, isRunning, subscriber }: ScreenBoxProps) {
   const [time, setTime] = useState(initialTime)
+  const prevSubscriberIdRef = useRef<string | undefined>(undefined)
+
+  const currentSubscriberId = subscriber?.stream?.streamId
+
+  useEffect(() => {
+    if (prevSubscriberIdRef.current !== currentSubscriberId) {
+      setTime(initialTime)
+      prevSubscriberIdRef.current = currentSubscriberId
+    }
+  }, [currentSubscriberId, initialTime])
 
   useEffect(() => {
     setTime(initialTime)
@@ -41,9 +51,12 @@ export default function ScreenBox({ nickname, time: initialTime, isRunning, subs
 
   const { hours, minutes, seconds } = convertTime(time)
 
+  const hasActiveStream = Boolean(subscriber?.stream?.getMediaStream()?.active)
+  const isVideoOn = Boolean(subscriber) && hasActiveStream
+
   return (
     <div className="relative bg-grayscale-800 rounded-10 min-w-300 max-h-300">
-      <div className="absolute top-16 left-16 flex gap-12">
+      <div className="absolute top-16 left-16 flex gap-12 z-10">
         <IconTextButton
           variant={ButtonVariant.default}
           theme={ButtonTheme.white}
@@ -71,7 +84,7 @@ export default function ScreenBox({ nickname, time: initialTime, isRunning, subs
           </div>
         </IconTextButton>
       </div>
-      <Video isVideoOn streamManager={subscriber} />
+      <Video isVideoOn={isVideoOn} streamManager={subscriber} />
     </div>
   )
 }
