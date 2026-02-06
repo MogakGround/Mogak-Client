@@ -51,8 +51,7 @@ export default function ScreenBox({ nickname, time: initialTime, isRunning, subs
 
   const { hours, minutes, seconds } = convertTime(time)
 
-  const hasActiveStream = Boolean(subscriber?.stream?.getMediaStream()?.active)
-  const isVideoOn = Boolean(subscriber) && hasActiveStream
+  const isVideoOn = Boolean(subscriber) && Boolean(subscriber?.stream?.videoActive)
 
   return (
     <div className="relative bg-grayscale-800 rounded-10 min-w-300 max-h-300">

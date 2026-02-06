@@ -40,8 +40,6 @@ export default function Video({ streamManager, isVideoOn }: Props) {
     }
   }, [streamManager, clearVideo])
 
-  const hasActiveStream = Boolean(streamManager?.stream?.getMediaStream()?.active)
-
   return (
     <>
       <video
@@ -53,7 +51,7 @@ export default function Video({ streamManager, isVideoOn }: Props) {
       >
         <track kind="captions" />
       </video>
-      {(!isVideoOn || !streamManager || !hasActiveStream) && (
+      {!isVideoOn && (
         <VideoFallback className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
       )}
     </>

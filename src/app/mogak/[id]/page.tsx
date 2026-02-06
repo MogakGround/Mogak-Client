@@ -72,6 +72,12 @@ export default function MogakPage() {
         if (!old) return old
         return { ...old, users: old.users.filter((u) => u.userId !== leftUserId) }
       })
+      // 나간 유저의 화면공유 상태도 제거
+      setWsScreenSharingUsers((prev) => {
+        const next = new Set(prev)
+        next.delete(leftUserId)
+        return next
+      })
     },
     [queryClient, roomId, userID],
   )
