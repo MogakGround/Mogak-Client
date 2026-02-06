@@ -136,11 +136,9 @@ export default function MogakPage() {
         }
       })
 
-      const hasActiveStream = Boolean(screenSubscriber?.stream?.getMediaStream()?.active)
-
       const timer = timers.find((t) => t.userId === member.userId)
       const isMemberScreenSharing =
-        combinedScreenSharingUsers.has(member.userId) && hasActiveStream && !!screenSubscriber
+        combinedScreenSharingUsers.has(member.userId) && !!screenSubscriber && screenSubscriber.stream?.videoActive
 
       return {
         userId: member.userId,
