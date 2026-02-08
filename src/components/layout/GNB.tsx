@@ -23,10 +23,10 @@ const GNB = () => {
   }
 
   return (
-    <div className=" bg-bg h-[60px] z-[60] px-80 w-full flex items-center">
+    <div className=" bg-bg h-[60px] z-[60] w-full flex items-center">
       <div className="w-full flex justify-between items-center text-center max-w-[1280px] mx-auto flex-wrap">
         <Link href="/">
-          <LogoIcon className="cursor-pointer flex-shrink-0" />
+          <LogoIcon width={64} height={32} className="cursor-pointer flex-shrink-0" />
         </Link>
 
         <div className="flex flex-shrink-0">

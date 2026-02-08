@@ -59,8 +59,9 @@ export default function MogakPage() {
 
       if (type === 'timer-start' && eventUserId != null) {
         const result = await queryClient.fetchQuery({ queryKey: ['timerList', roomId] })
-        const timerData = (result as { timers: Array<{ userId: number; hour: number; min: number; sec: number }> })
-          ?.timers?.find((t) => t.userId === eventUserId)
+        const timerData = (
+          result as { timers: Array<{ userId: number; hour: number; min: number; sec: number }> }
+        )?.timers?.find((t) => t.userId === eventUserId)
         const baseTime = timerData ? timerData.hour * 3600 + timerData.min * 60 + timerData.sec : 0
 
         setTimerStates((prev) => {
@@ -79,10 +80,14 @@ export default function MogakPage() {
         queryClient.invalidateQueries({ queryKey: ['timerList', roomId] })
       }
     },
-    [queryClient, roomId],
+    [queryClient, roomId]
   )
 
-  const { isConnected: isSocketConnected, startTimer, stopTimer } = useSocket(roomId, isRoomEntered, {
+  const {
+    isConnected: isSocketConnected,
+    startTimer,
+    stopTimer,
+  } = useSocket(roomId, isRoomEntered, {
     onMessage: handleSocketMessage,
   })
 
@@ -107,14 +112,14 @@ export default function MogakPage() {
       queryClient.invalidateQueries({ queryKey: ['roomMembers', roomId] })
       queryClient.invalidateQueries({ queryKey: ['timerList', roomId] })
     },
-    [queryClient, roomId, userID],
+    [queryClient, roomId, userID]
   )
 
   const { session, subscribers, screenSharingUsers, leaveSession, ovRef, cleanupPublisher } = useOpenVidu(
     roomId,
     userID ?? undefined,
     isRoomEntered,
-    { onMemberJoined: handleMemberJoined, onMemberLeft: handleMemberLeft },
+    { onMemberJoined: handleMemberJoined, onMemberLeft: handleMemberLeft }
   )
 
   const { publisher, startScreenShare, stopScreenShare, isScreenSharing, isSessionReady } = useScreenShare({

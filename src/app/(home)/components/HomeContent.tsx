@@ -42,7 +42,7 @@ export default function HomeContent() {
 
   return (
     <div className="flex justify-center items-center mt-[40px] w-full">
-      <div className="grid grid-cols-1">
+      <div className="grid grid-cols-1 max-w-[1280px] w-full mx-auto">
         <HomeBanner />
 
         <div className="flex-row mt-[64px]">
