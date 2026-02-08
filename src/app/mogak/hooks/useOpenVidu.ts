@@ -24,6 +24,13 @@ function isScreenShareStream(stream: Stream | undefined): boolean {
   return stream?.typeOfVideo === 'SCREEN'
 }
 
+// Performance logging for screen share detection comparison
+const logOpenViduScreenShare = (userId: number, action: 'start' | 'stop') => {
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`[ScreenShare:OpenVidu] detected ${action} for user ${userId} at ${Date.now()}`)
+  }
+}
+
 export default function useOpenVidu(
   roomId: string,
   userId: number | undefined,
@@ -119,6 +126,7 @@ export default function useOpenVidu(
           if (isScreenShareStream(stream)) {
             const streamUserId = parseUserId(stream.connection?.data)
             if (streamUserId != null) {
+              logOpenViduScreenShare(streamUserId, 'start')
               setScreenSharingUsers((prev) => new Set(prev).add(streamUserId))
             }
           }
@@ -144,6 +152,7 @@ export default function useOpenVidu(
         if (isScreenShareStream(event.stream)) {
           const streamUserId = parseUserId(event.stream.connection?.data)
           if (streamUserId != null) {
+            logOpenViduScreenShare(streamUserId, 'stop')
             setScreenSharingUsers((prev) => {
               const next = new Set(prev)
               next.delete(streamUserId)

@@ -167,40 +167,6 @@ describe('useSocket', () => {
       })
     })
 
-    it('screen-share-start 이벤트를 올바르게 수신한다', async () => {
-      const onMessage = vi.fn()
-      const { result } = renderHook(() => useSocket('room-1', true, { onMessage }))
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
-
-      act(() => {
-        sendToAllClients(server, { type: 'screen-share-start', userId: 5 })
-      })
-
-      await waitFor(() => {
-        expect(onMessage).toHaveBeenCalledWith({ type: 'screen-share-start', userId: 5 })
-      })
-    })
-
-    it('screen-share-stop 이벤트를 올바르게 수신한다', async () => {
-      const onMessage = vi.fn()
-      const { result } = renderHook(() => useSocket('room-1', true, { onMessage }))
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
-
-      act(() => {
-        sendToAllClients(server, { type: 'screen-share-stop', userId: 5 })
-      })
-
-      await waitFor(() => {
-        expect(onMessage).toHaveBeenCalledWith({ type: 'screen-share-stop', userId: 5 })
-      })
-    })
-
     it('여러 메시지를 연속으로 수신할 수 있다', async () => {
       const onMessage = vi.fn()
       const { result } = renderHook(() => useSocket('room-1', true, { onMessage }))
@@ -211,15 +177,15 @@ describe('useSocket', () => {
 
       act(() => {
         sendToAllClients(server, { type: 'timer-start', userId: 1 })
-        sendToAllClients(server, { type: 'screen-share-start', userId: 2 })
         sendToAllClients(server, { type: 'timer-stop', userId: 1 })
+        sendToAllClients(server, { type: 'timer-start', userId: 2 })
       })
 
       await waitFor(() => {
         expect(onMessage).toHaveBeenCalledTimes(3)
         expect(onMessage).toHaveBeenNthCalledWith(1, { type: 'timer-start', userId: 1 })
-        expect(onMessage).toHaveBeenNthCalledWith(2, { type: 'screen-share-start', userId: 2 })
-        expect(onMessage).toHaveBeenNthCalledWith(3, { type: 'timer-stop', userId: 1 })
+        expect(onMessage).toHaveBeenNthCalledWith(2, { type: 'timer-stop', userId: 1 })
+        expect(onMessage).toHaveBeenNthCalledWith(3, { type: 'timer-start', userId: 2 })
       })
     })
 
@@ -249,54 +215,6 @@ describe('useSocket', () => {
   })
 
   describe('메시지 전송', () => {
-    it('sendStartScreenShare로 메시지를 전송한다', async () => {
-      const receivedMessages: string[] = []
-
-      server.on('connection', (socket) => {
-        socket.on('message', (data) => {
-          receivedMessages.push(data as string)
-        })
-      })
-
-      const { result } = renderHook(() => useSocket('room-1', true))
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
-
-      act(() => {
-        result.current.sendStartScreenShare()
-      })
-
-      await waitFor(() => {
-        expect(receivedMessages).toContainEqual(JSON.stringify({ type: 'screen-share-start' }))
-      })
-    })
-
-    it('sendStopScreenShare로 메시지를 전송한다', async () => {
-      const receivedMessages: string[] = []
-
-      server.on('connection', (socket) => {
-        socket.on('message', (data) => {
-          receivedMessages.push(data as string)
-        })
-      })
-
-      const { result } = renderHook(() => useSocket('room-1', true))
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
-
-      act(() => {
-        result.current.sendStopScreenShare()
-      })
-
-      await waitFor(() => {
-        expect(receivedMessages).toContainEqual(JSON.stringify({ type: 'screen-share-stop' }))
-      })
-    })
-
     it('startTimer로 메시지를 전송한다', async () => {
       const receivedMessages: string[] = []
 
@@ -350,8 +268,6 @@ describe('useSocket', () => {
 
       expect(() => {
         act(() => {
-          result.current.sendStartScreenShare()
-          result.current.sendStopScreenShare()
           result.current.startTimer()
           result.current.stopTimer()
         })
@@ -377,7 +293,7 @@ describe('useSocket', () => {
       // 끊어진 상태에서 전송 시도
       expect(() => {
         act(() => {
-          result.current.sendStartScreenShare()
+          result.current.startTimer()
           result.current.stopTimer()
         })
       }).not.toThrow()
@@ -510,7 +426,7 @@ describe('useSocket', () => {
   })
 
   describe('통합 시나리오', () => {
-    it('화면공유 시작→타이머 시작→화면공유 중지→타이머 중지 시나리오', async () => {
+    it('타이머 시작→타이머 중지 시나리오', async () => {
       const onMessage = vi.fn()
       const receivedMessages: string[] = []
 
@@ -526,16 +442,6 @@ describe('useSocket', () => {
         expect(result.current.isConnected).toBe(true)
       })
 
-      // 사용자 액션: 화면공유 시작
-      act(() => {
-        result.current.sendStartScreenShare()
-      })
-
-      // 서버 응답: 다른 사용자의 화면공유 시작 알림
-      act(() => {
-        sendToAllClients(server, { type: 'screen-share-start', userId: 4 })
-      })
-
       // 사용자 액션: 타이머 시작
       act(() => {
         result.current.startTimer()
@@ -544,16 +450,6 @@ describe('useSocket', () => {
       // 서버 응답: 타이머 시작 알림
       act(() => {
         sendToAllClients(server, { type: 'timer-start', userId: 4 })
-      })
-
-      // 사용자 액션: 화면공유 중지
-      act(() => {
-        result.current.sendStopScreenShare()
-      })
-
-      // 서버 응답: 화면공유 중지 알림
-      act(() => {
-        sendToAllClients(server, { type: 'screen-share-stop', userId: 4 })
       })
 
       // 사용자 액션: 타이머 중지
@@ -568,15 +464,11 @@ describe('useSocket', () => {
 
       await waitFor(() => {
         // 전송된 메시지 확인
-        expect(receivedMessages).toContainEqual(JSON.stringify({ type: 'screen-share-start' }))
         expect(receivedMessages).toContainEqual(JSON.stringify({ type: 'timer-start' }))
-        expect(receivedMessages).toContainEqual(JSON.stringify({ type: 'screen-share-stop' }))
         expect(receivedMessages).toContainEqual(JSON.stringify({ type: 'timer-stop' }))
 
         // 수신된 메시지 확인
-        expect(onMessage).toHaveBeenCalledWith({ type: 'screen-share-start', userId: 4 })
         expect(onMessage).toHaveBeenCalledWith({ type: 'timer-start', userId: 4 })
-        expect(onMessage).toHaveBeenCalledWith({ type: 'screen-share-stop', userId: 4 })
         expect(onMessage).toHaveBeenCalledWith({ type: 'timer-stop', userId: 4 })
       })
     })

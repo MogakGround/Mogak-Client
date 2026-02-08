@@ -33,7 +33,6 @@ export default function MogakPage() {
 
   const queryClient = useQueryClient()
 
-  const [wsScreenSharingUsers, setWsScreenSharingUsers] = useState<Set<number>>(new Set())
   const [timerStates, setTimerStates] = useState<Map<number, TimerState>>(new Map())
 
   const { data: TimerList } = useGetTimerList(roomId, isRoomEntered)
@@ -79,29 +78,13 @@ export default function MogakPage() {
         })
         queryClient.invalidateQueries({ queryKey: ['timerList', roomId] })
       }
-
-      if (type === 'screen-share-start' && eventUserId != null) {
-        setWsScreenSharingUsers((prev) => new Set(prev).add(eventUserId))
-      }
-
-      if (type === 'screen-share-stop' && eventUserId != null) {
-        setWsScreenSharingUsers((prev) => {
-          const next = new Set(prev)
-          next.delete(eventUserId)
-          return next
-        })
-      }
     },
     [queryClient, roomId],
   )
 
-  const {
-    isConnected: isSocketConnected,
-    sendStartScreenShare,
-    sendStopScreenShare,
-    startTimer,
-    stopTimer,
-  } = useSocket(roomId, isRoomEntered, { onMessage: handleSocketMessage })
+  const { isConnected: isSocketConnected, startTimer, stopTimer } = useSocket(roomId, isRoomEntered, {
+    onMessage: handleSocketMessage,
+  })
 
   const handleMemberJoined = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ['roomMembers', roomId] })
@@ -113,12 +96,6 @@ export default function MogakPage() {
       queryClient.setQueryData<RoomMembers>(['roomMembers', roomId, userID], (old) => {
         if (!old) return old
         return { ...old, users: old.users.filter((u) => u.userId !== leftUserId) }
-      })
-      // 화면공유 상태 제거
-      setWsScreenSharingUsers((prev) => {
-        const next = new Set(prev)
-        next.delete(leftUserId)
-        return next
       })
       // 타이머 상태 제거
       setTimerStates((prev) => {
@@ -144,8 +121,6 @@ export default function MogakPage() {
     session,
     ovRef,
     cleanupPublisher,
-    sendStartScreenShare,
-    sendStopScreenShare,
   })
 
   const stopScreenShareRef = useLatestRef(stopScreenShare)
@@ -171,12 +146,6 @@ export default function MogakPage() {
   const { data } = useGetRoomMembers(roomId, userID!, isRoomEntered && isSocketConnected)
   const members = data?.users ?? []
 
-  const combinedScreenSharingUsers = useMemo(() => {
-    const combined = new Set(screenSharingUsers)
-    wsScreenSharingUsers.forEach((userId) => combined.add(userId))
-    return combined
-  }, [screenSharingUsers, wsScreenSharingUsers])
-
   const mappedMembers = useMemo(() => {
     if (!members.length) return []
 
@@ -196,7 +165,7 @@ export default function MogakPage() {
       const timerState = timerStates.get(member.userId)
       const apiTimer = timers.find((t) => t.userId === member.userId)
       const isMemberScreenSharing =
-        combinedScreenSharingUsers.has(member.userId) && !!screenSubscriber && screenSubscriber.stream?.videoActive
+        screenSharingUsers.has(member.userId) && !!screenSubscriber && screenSubscriber.stream?.videoActive
 
       return {
         userId: member.userId,
@@ -212,7 +181,7 @@ export default function MogakPage() {
             },
       }
     })
-  }, [members, timers, subscribers, combinedScreenSharingUsers, timerStates])
+  }, [members, timers, subscribers, screenSharingUsers, timerStates])
 
   if (!isRoomEntered) {
     return (

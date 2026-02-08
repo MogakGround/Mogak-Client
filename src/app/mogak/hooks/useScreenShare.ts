@@ -8,16 +8,12 @@ interface UseScreenShareParams {
   session: ReturnType<OpenVidu['initSession']> | null
   ovRef: React.MutableRefObject<OpenVidu | null>
   cleanupPublisher: (target?: Publisher | null) => void
-  sendStartScreenShare: () => void
-  sendStopScreenShare: () => void
 }
 
 export default function useScreenShare({
   session,
   ovRef,
   cleanupPublisher,
-  sendStartScreenShare,
-  sendStopScreenShare,
 }: UseScreenShareParams) {
   const [publisher, setPublisher] = useState<Publisher | null>(null)
   const [screenPublisher, setScreenPublisher] = useState<Publisher | null>(null)
@@ -45,9 +41,8 @@ export default function useScreenShare({
       setScreenPublisher(null)
       setPublisher(null)
       setScreenShareOn(false)
-      sendStopScreenShare()
     }
-  }, [cleanupPublisher, session, setScreenShareOn, sendStopScreenShare])
+  }, [cleanupPublisher, session, setScreenShareOn])
 
   const startScreenShare = useCallback(async () => {
     if (!session || !ovRef.current) throw new Error('세션이 아직 연결되지 않았습니다.')
@@ -80,8 +75,6 @@ export default function useScreenShare({
       if (track) {
         track.onended = () => stopScreenShare()
       }
-
-      sendStartScreenShare()
     } catch (err) {
       console.error('화면 공유 시작 오류:', err)
 
@@ -95,7 +88,7 @@ export default function useScreenShare({
     } finally {
       setIsStartingScreenShare(false)
     }
-  }, [cleanupPublisher, isStartingScreenShare, screenPublisher, session, ovRef, stopScreenShare, setScreenShareOn, sendStartScreenShare])
+  }, [cleanupPublisher, isStartingScreenShare, screenPublisher, session, ovRef, stopScreenShare, setScreenShareOn])
 
   const isScreenSharing = !!screenPublisher
 
