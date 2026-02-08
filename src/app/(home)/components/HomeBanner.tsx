@@ -42,8 +42,9 @@ export default function HomeBanner() {
       <Image
         src="/images/bg-banner.svg"
         alt="home-banner"
-        fill
-        className="absolute inset-0 hidden md:block object-cover object-right"
+        width={558}
+        height={224}
+        className="absolute bottom-0 right-0 hidden lg:block h-full w-auto "
       />
     </div>
   )
