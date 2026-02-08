@@ -30,26 +30,26 @@ export default function RoomTabs() {
 
   return (
     <>
-      <ul className="flex border-b-[2px] border-gray-800 px-[80px]">
+      <ul className="flex border-b-[2px] border-gray-800 px-[16px] md:px-[24px] lg:px-[80px] mt-[24px] md:mt-0">
         <li
-          className={`${activeTab === 'sevenDays' ? TAB_STYLES.active : TAB_STYLES.inactive} px-[11px] pb-[14px]`}
+          className={`${activeTab === 'sevenDays' ? TAB_STYLES.active : TAB_STYLES.inactive} px-[8px] md:px-[11px] pb-[14px] text-[14px] md:text-[18px]`}
           onClick={() => setActiveTab('sevenDays')}
         >
           7일 간 들어갔던 모각방
         </li>
         <li
-          className={`${activeTab === 'myRooms' ? TAB_STYLES.active : TAB_STYLES.inactive} ml-[23px] px-[11px] pb-[14px]`}
+          className={`${activeTab === 'myRooms' ? TAB_STYLES.active : TAB_STYLES.inactive} ml-[12px] md:ml-[23px] px-[8px] md:px-[11px] pb-[14px] text-[14px] md:text-[18px]`}
           onClick={() => setActiveTab('myRooms')}
         >
           내가 만든 모각방
         </li>
       </ul>
 
-      <div className="px-[80px] mt-[24px]">
+      <div className="px-[16px] md:px-[24px] lg:px-[80px] mt-[24px]">
         {rooms.length > 0 ? (
-          <div className="grid grid-cols-4 mt-[12px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[12px] md:gap-[16px] mt-[12px]">
             {rooms.map((room) => (
-              <div className="mb-[40px]" key={room.roomId}>
+              <div className="mb-[24px] md:mb-[40px]" key={room.roomId}>
                 <MogakRoom
                   index={room.roomId}
                   title={room.roomName}
@@ -67,7 +67,7 @@ export default function RoomTabs() {
             ))}
           </div>
         ) : (
-          <div className="min-h-[400px] flex justify-center items-center">
+          <div className="min-h-[300px] md:min-h-[400px] flex justify-center items-center">
             <span className="text-grayscale-50">모각방이 아직 없어요.</span>
           </div>
         )}

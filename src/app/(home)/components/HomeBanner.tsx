@@ -8,13 +8,13 @@ import { useRouter } from 'next/navigation'
 export default function HomeBanner() {
   const { push } = useRouter()
   return (
-    <div className="relative bg-grayscale-800 rounded-[12px] w-full min-h-[224px] overflow-hidden pt-[34px] px-[40px]">
-      <div className="flex flex-col gap-[20px]">
+    <div className="relative bg-grayscale-800 rounded-[12px] w-full min-h-[180px] md:min-h-[224px] overflow-hidden pt-[24px] md:pt-[34px] px-[20px] md:px-[40px]">
+      <div className="flex flex-col gap-[16px] md:gap-[20px]">
         <div className="flex flex-col text-white">
           <span className="med-20 mb-[2px]">IT 작업자들의 작업터,</span>
-          <span className="font-riasans text-[44px]">모각그라운드</span>
+          <span className="font-riasans text-[32px] md:text-[44px]">모각그라운드</span>
         </div>
-        <div className="flex gap-[9px]">
+        <div className="flex flex-wrap gap-[9px] pb-[20px] md:pb-0">
           <IconTextButton
             variant={ButtonVariant.filled}
             theme={ButtonTheme.primary}
@@ -39,7 +39,12 @@ export default function HomeBanner() {
           />
         </div>
       </div>
-      <Image src="/images/bg-banner.svg" alt="home-banner" className="absolute top-0 right-0" width={558} height={224} />
+      <Image
+        src="/images/bg-banner.svg"
+        alt="home-banner"
+        fill
+        className="absolute inset-0 hidden md:block object-cover object-right"
+      />
     </div>
   )
 }

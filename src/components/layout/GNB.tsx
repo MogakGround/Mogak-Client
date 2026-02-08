@@ -23,22 +23,22 @@ const GNB = () => {
   }
 
   return (
-    <div className=" bg-bg h-[60px] z-[60] w-full flex items-center">
-      <div className="w-full flex justify-between items-center text-center max-w-[1280px] mx-auto flex-wrap">
+    <div className="bg-bg h-[60px] z-[60] w-full flex items-center px-[16px] md:px-[24px] lg:px-[80px]">
+      <div className="w-full flex justify-between items-center text-center max-w-[1280px] mx-auto">
         <Link href="/">
           <LogoIcon width={64} height={32} className="cursor-pointer flex-shrink-0" />
         </Link>
 
-        <div className="flex flex-shrink-0">
+        <div className="hidden md:flex flex-shrink-0">
           <Link
             href="/"
-            className={`pr-[52px] text-16 font-semibold cursor-pointer transition-colors duration-200 ${pageNumber === 1 ? 'text-white' : 'text-grayscale-500'}`}
+            className={`pr-[24px] lg:pr-[52px] text-16 font-semibold cursor-pointer transition-colors duration-200 ${pageNumber === 1 ? 'text-white' : 'text-grayscale-500'}`}
           >
             홈
           </Link>
           <Link
             href="/rank"
-            className={`pr-[52px] text-16 font-semibold cursor-pointer transition-colors duration-200 ${pageNumber === 2 ? 'text-white' : 'text-grayscale-500'}`}
+            className={`pr-[24px] lg:pr-[52px] text-16 font-semibold cursor-pointer transition-colors duration-200 ${pageNumber === 2 ? 'text-white' : 'text-grayscale-500'}`}
           >
             작업자 랭킹
           </Link>

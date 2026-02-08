@@ -20,7 +20,7 @@ export default function MyPageContent() {
   return (
     <div>
       {/* 프로필 */}
-      <div className="flex justify-between items-start w-full px-[80px] mt-[40px] h-[162px]">
+      <div className="flex flex-col md:flex-row justify-between items-start w-full px-[16px] md:px-[24px] lg:px-[80px] mt-[24px] md:mt-[40px] gap-[24px] md:gap-0 md:h-[162px]">
         <ProfileSection nickname={profile?.nickName ?? ''} profileLink={profile?.portfolioUrl ?? ''} />
         <StatsSection
           workHours={profile?.hour?.toString() ?? '00'}

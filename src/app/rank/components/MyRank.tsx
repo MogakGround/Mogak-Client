@@ -7,7 +7,7 @@ interface IMyRankProps {
 
 export default function MyRank({ myRanking }: IMyRankProps) {
   return (
-    <div className="flex flex-col w-[308px] h-[169px] rounded-[12px] overflow-hidden bg-grayscale-700 p-[24px]">
+    <div className="flex flex-col w-full lg:w-[308px] h-[169px] rounded-[12px] overflow-hidden bg-grayscale-700 p-[24px]">
       <h4 className="med-18 mb-[16px] text-grayscale-50">내 랭킹</h4>
       <div className="h-[45px] flex items-end gap-[8px] text-white mb-[8px]">
         <span className="font-riasans text-[32px]">{myRanking.rank}</span>

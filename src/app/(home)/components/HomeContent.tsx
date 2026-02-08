@@ -41,11 +41,11 @@ export default function HomeContent() {
   const totalPages = allRoomsData?.totalPages ?? 1
 
   return (
-    <div className="flex justify-center items-center mt-[40px] w-full">
+    <div className="flex justify-center items-center mt-[24px] md:mt-[40px] w-full px-[16px] md:px-[24px] lg:px-0">
       <div className="grid grid-cols-1 max-w-[1280px] w-full mx-auto">
         <HomeBanner />
 
-        <div className="flex-row mt-[64px]">
+        <div className="flex-row mt-[40px] md:mt-[64px]">
           <p className="reg-14 text-grayscale-400">최근에 만들어진 모각방</p>
           <p className="semi-20 text-white">갓 나온 따끈따끈한 모각방</p>
         </div>
@@ -54,7 +54,7 @@ export default function HomeContent() {
             <NoMogakRoom recent={true} />
           </div>
         ) : (
-          <div className="grid grid-cols-4 mt-[12px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[12px] md:gap-[16px] mt-[12px]">
             {recentRooms.slice(0, 4).map((room) => (
               <div key={room.roomId}>
                 <MogakRoom
@@ -75,12 +75,12 @@ export default function HomeContent() {
           </div>
         )}
 
-        <div className="flex-row mt-[71px]">
+        <div className="flex-row mt-[48px] md:mt-[71px]">
           <p className="semi-20 text-white">시간대 별 모각방</p>
 
-          <div className="flex justify-between mt-[8px]">
-            <div>
-              <span className="mr-[12px]">
+          <div className="flex flex-col lg:flex-row lg:justify-between gap-[12px] mt-[8px]">
+            <div className="flex flex-wrap gap-[8px] md:gap-[12px]">
+              <span>
                 {isAllSelected ? (
                   <IconTextChip
                     size={ChipSize.lg}
@@ -106,7 +106,7 @@ export default function HomeContent() {
               {WORK_HOUR_FILTERS.map(({ workHour, label, description }) => {
                 const active = selectedWorkHours.has(workHour)
                 return (
-                  <span className="mr-[12px]" key={workHour}>
+                  <span key={workHour}>
                     {active ? (
                       <IconTextChip
                         size={ChipSize.lg}
@@ -132,24 +132,26 @@ export default function HomeContent() {
                 )
               })}
             </div>
-            <TextChip
-              size={ChipSize.lg}
-              theme={ChipTheme.DARK}
-              variant={ChipVariant.DEFAULT}
-              text={`${rooms.length}개`}
-              detailText="조건에 맞는 모각방"
-              detailTextArrow={DetailTextArrow.LEFT}
-              handleClick={() => null}
-            />
+            <div className="shrink-0">
+              <TextChip
+                size={ChipSize.lg}
+                theme={ChipTheme.DARK}
+                variant={ChipVariant.DEFAULT}
+                text={`${rooms.length}개`}
+                detailText="조건에 맞는 모각방"
+                detailTextArrow={DetailTextArrow.LEFT}
+                handleClick={() => null}
+              />
+            </div>
           </div>
 
           {rooms.length === 0 ? (
-            <div className="mt-[106px]">
+            <div className="mt-[60px] md:mt-[106px]">
               <NoMogakRoom recent={false} />
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-4 mt-[12px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[12px] md:gap-[16px] mt-[12px]">
                 {rooms.map((room) => (
                   <div key={room.roomId}>
                     <MogakRoom
@@ -168,7 +170,7 @@ export default function HomeContent() {
                   </div>
                 ))}
               </div>
-              <div className="flex justify-center items-center mt-[60px]">
+              <div className="flex justify-center items-center mt-[40px] md:mt-[60px]">
                 <Pagenation
                   currentPageNumber={currentPage}
                   handlePageChange={setCurrentPage}

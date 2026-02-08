@@ -74,14 +74,14 @@ export default function MogakRoom({
     <div className="flex flex-col gap-[16px]">
       <div
         className={cn(
-          'relative w-[305px] rounded-[10px] border-[1.5px] border-transparent',
+          'relative w-full aspect-[305/160] rounded-[10px] border-[1.5px] border-transparent overflow-hidden',
           hover && 'border-accentT-40 shadow-accentT60-25'
         )}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         onClick={handleClick}
       >
-        <div className="absolute top-0 right-0 mt-[16px] mr-[16px]">
+        <div className="absolute top-0 right-0 mt-[16px] mr-[16px] z-10">
           <div className="flex items-center">
             {secret && (
               <span className="mr-[8px]">
@@ -104,7 +104,7 @@ export default function MogakRoom({
             />
           </div>
         </div>
-        <Image src={thumbnailImageSrc} alt="thumbnail" width={305} height={160} />
+        <Image src={thumbnailImageSrc} alt="thumbnail" fill className="object-cover" />
         {isLoading && (
           <div className="absolute inset-0 bg-black/60 rounded-[10px] flex items-center justify-center">
             <div className="w-24 h-24 border-4 border-accent-100 border-t-transparent rounded-full animate-spin" />

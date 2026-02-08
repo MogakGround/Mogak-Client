@@ -23,18 +23,18 @@ export default function RankPage() {
     : ''
 
   return (
-    <div className="h-full mx-auto px-[80px] pt-[60px]">
-      <div className="h-full max-w-[1280px] mx-auto flex flex-col gap-[40px]">
+    <div className="h-full mx-auto px-[16px] md:px-[24px] lg:px-[80px] pt-[40px] md:pt-[60px]">
+      <div className="h-full max-w-[1280px] mx-auto flex flex-col gap-[24px] md:gap-[40px]">
         <RankBanner handleRefresh={() => refetchMyRanking()} currentDate={currentDate} />
-        <div className="h-full w-full flex gap-[40px]">
-          <div className="flex flex-col items-center justify-between gap-[40px] flex-1">
+        <div className="h-full w-full flex flex-col lg:flex-row gap-[24px] lg:gap-[40px]">
+          <div className="flex flex-col items-center justify-between gap-[24px] md:gap-[40px] flex-1 order-2 lg:order-1">
             <RankList currentPage={currentPage} lastPage={lastPage} rankList={rankList} />
             {rankList.length === 0 ? (
-              <div className="flex justify-center items-center h-full pb-[60px]">
+              <div className="flex justify-center items-center h-full pb-[40px] md:pb-[60px]">
                 <span className="text-grayscale-50">아직 등록된 랭킹이 없어요.</span>
               </div>
             ) : (
-              <div className="pb-[64px]">
+              <div className="pb-[40px] md:pb-[64px]">
                 <Pagenation
                   currentPageNumber={currentPage}
                   lastPageNumber={lastPage}
@@ -43,7 +43,9 @@ export default function RankPage() {
               </div>
             )}
           </div>
-          <MyRank myRanking={myRanking ?? DEFAULT_MY_RANKING} />
+          <div className="order-1 lg:order-2">
+            <MyRank myRanking={myRanking ?? DEFAULT_MY_RANKING} />
+          </div>
         </div>
       </div>
     </div>

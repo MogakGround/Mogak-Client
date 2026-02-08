@@ -26,7 +26,7 @@ export default function ProfileSection({ nickname, profileLink }: ProfileSection
         <LogoIcon width={48} height={24} />
       </div>
 
-      <div className="ml-[24px]">
+      <div className="ml-[24px] min-w-150">
         <div className="flex items-center gap-[16px] mb-[8px]">
           <p className="text-gray-50 bold-32">{nickname}</p>
           <IconButton
