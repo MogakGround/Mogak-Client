@@ -92,7 +92,6 @@ export default function ProfileSettingModal({ isOpen, handleCloseModal }: Profil
 
   const { newNickname, newLink, isValidateNickname, isNicknameChecked, isPortfolioLinkChecked, error } = formState
 
-  // 모달이 열릴 때마다 초기 상태 설정 (single dispatch instead of 5 setState calls)
   useEffect(() => {
     if (isOpen) {
       dispatch({ type: 'RESET', payload: { nickname: currentNickname, link: currentLink } })
@@ -112,7 +111,11 @@ export default function ProfileSettingModal({ isOpen, handleCloseModal }: Profil
     if (!formatValid) {
       dispatch({
         type: 'SET_NICKNAME',
-        payload: { value: name, isValid: false, error: '닉네임은 한글(자음/모음 포함)과 영어, 공백만 포함할 수 있습니다.' },
+        payload: {
+          value: name,
+          isValid: false,
+          error: '닉네임은 한글(자음/모음 포함)과 영어, 공백만 포함할 수 있습니다.',
+        },
       })
       return
     }

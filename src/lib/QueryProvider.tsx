@@ -47,14 +47,26 @@ function handleQueryError(error: unknown) {
   }
 }
 
-let lock = false
+const shownMessages = new Map<string, number>()
+const DEBOUNCE_MS = 3000
 
 function alertOnce(msg: string) {
-  if (lock) return
+  const now = Date.now()
+  const lastShown = shownMessages.get(msg)
 
-  lock = true
+  if (lastShown && now - lastShown < DEBOUNCE_MS) {
+    return
+  }
+
+  shownMessages.set(msg, now)
   alert(msg)
-  setTimeout(() => {
-    lock = false
-  }, 1000)
+
+  // 오래된 메시지 정리 (메모리 누수 방지)
+  if (shownMessages.size > 20) {
+    for (const [key, time] of shownMessages) {
+      if (now - time > DEBOUNCE_MS) {
+        shownMessages.delete(key)
+      }
+    }
+  }
 }
