@@ -41,7 +41,7 @@ export default function HomeContent() {
   const totalPages = allRoomsData?.totalPages ?? 1
 
   return (
-    <div className="flex justify-center items-center mt-[24px] md:mt-[40px] w-full px-[16px] md:px-[24px] lg:px-0">
+    <div className="flex justify-center items-center pt-[40px] md:pt-[60px] w-full px-[16px] md:px-[24px] lg:px-0">
       <div className="grid grid-cols-1 max-w-[1280px] w-full mx-auto">
         <HomeBanner />
 

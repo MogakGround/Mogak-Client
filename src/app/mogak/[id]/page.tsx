@@ -2,9 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
-import MogakHeader from '../components/MogakHeader'
-import MyStatus from '../components/MyStatus'
-import ScreenBox from '../components/ScreenBox'
+import dynamic from 'next/dynamic'
 import { Publisher } from 'openvidu-browser'
 import { useQueryClient } from '@tanstack/react-query'
 import { useGetRoomMembers, useGetTimerList } from '../api/queries'
@@ -17,8 +15,14 @@ import useScreenShare from '../hooks/useScreenShare'
 import { useUserStore } from '@/store/userStore'
 import { useLatestRef } from '@/hooks/useLatestRef'
 import { useLeavePrevention } from '@/hooks/useLeavePrevention'
-import LeavePreventionModal from '@/components/global/modal/LeavePreventionModal'
 import HeaderFallback from '../components/HeaderFallback'
+
+const MogakHeader = dynamic(() => import('../components/MogakHeader'), {
+  loading: () => <HeaderFallback />,
+})
+const MyStatus = dynamic(() => import('../components/MyStatus'), { ssr: false })
+const ScreenBox = dynamic(() => import('../components/ScreenBox'), { ssr: false })
+const LeavePreventionModal = dynamic(() => import('@/components/global/modal/LeavePreventionModal'), { ssr: false })
 
 interface TimerState {
   baseTime: number
@@ -151,24 +155,35 @@ export default function MogakPage() {
   const { data } = useGetRoomMembers(roomId, userID!, isRoomEntered && isSocketConnected)
   const members = data?.users ?? []
 
+  // O(n) - Build lookup maps once instead of O(n²) find() per member
+  const subscriberByUserId = useMemo(() => {
+    const map = new Map<number, (typeof subscribers)[number]>()
+    for (const sub of subscribers) {
+      if (sub.stream?.typeOfVideo !== 'SCREEN') continue
+      const raw = sub.stream.connection.data
+      try {
+        const parsed = JSON.parse(raw)
+        const userId = Number(parsed?.clientData ?? parsed)
+        if (!isNaN(userId)) map.set(userId, sub)
+      } catch {
+        const userId = Number(raw)
+        if (!isNaN(userId)) map.set(userId, sub)
+      }
+    }
+    return map
+  }, [subscribers])
+
+  const timerByUserId = useMemo(() => {
+    return new Map(timers.map((t) => [t.userId, t]))
+  }, [timers])
+
   const mappedMembers = useMemo(() => {
     if (!members.length) return []
 
     return members.map((member) => {
-      const screenSubscriber = subscribers.find((sub) => {
-        if (sub.stream?.typeOfVideo !== 'SCREEN') return false
-
-        const raw = sub.stream.connection.data
-        try {
-          const parsed = JSON.parse(raw)
-          return Number(parsed?.clientData ?? parsed) === member.userId
-        } catch {
-          return Number(raw) === member.userId
-        }
-      })
-
+      const screenSubscriber = subscriberByUserId.get(member.userId)
       const timerState = timerStates.get(member.userId)
-      const apiTimer = timers.find((t) => t.userId === member.userId)
+      const apiTimer = timerByUserId.get(member.userId)
       const isMemberScreenSharing =
         screenSharingUsers.has(member.userId) && !!screenSubscriber && screenSubscriber.stream?.videoActive
 
@@ -186,7 +201,7 @@ export default function MogakPage() {
             },
       }
     })
-  }, [members, timers, subscribers, screenSharingUsers, timerStates])
+  }, [members, subscriberByUserId, timerByUserId, screenSharingUsers, timerStates])
 
   if (!isRoomEntered) {
     return (
@@ -217,6 +232,7 @@ export default function MogakPage() {
               publisher={publisher as Publisher}
               isScreenSharing={isScreenSharing}
               isSessionReady={isSessionReady}
+              isRoomEntered={isRoomEntered}
               startTimer={startTimer}
               stopTimer={stopTimer}
             />

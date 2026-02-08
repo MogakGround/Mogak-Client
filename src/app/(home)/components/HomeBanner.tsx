@@ -44,6 +44,7 @@ export default function HomeBanner() {
         alt="home-banner"
         width={558}
         height={224}
+        loading="lazy"
         className="absolute bottom-0 right-0 hidden lg:block h-full w-auto "
       />
     </div>

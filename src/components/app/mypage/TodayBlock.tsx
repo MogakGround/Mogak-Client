@@ -1,12 +1,19 @@
 'use client'
 
-import { FC, SVGProps } from 'react'
+import { FC, SVGProps, useMemo, memo } from 'react'
 import Top1Icon from '@/assets/svg/mypage/1st.svg'
 import Top2Icon from '@/assets/svg/mypage/2nd.svg'
 import Top3Icon from '@/assets/svg/mypage/3rd.svg'
 import cn from '@/utils/cn'
 
-export default function TodayBlock({
+// Pre-defined icon map to avoid repeated conditionals
+const RANK_ICONS: Record<string, FC<SVGProps<SVGSVGElement>>> = {
+  '1': Top1Icon,
+  '2': Top2Icon,
+  '3': Top3Icon,
+}
+
+export default memo(function TodayBlock({
   isRank,
   icon: Icon,
   title,
@@ -73,19 +80,14 @@ export default function TodayBlock({
         </div>
       </div>
 
-      {isRank && (
+      {isRank && RANK_ICONS[data3] && (
         <div className="absolute right-[20px] bottom-[10px]">
-          {data3 === '1' ? (
-            <Top1Icon className="h-[60px]" />
-          ) : data3 === '2' ? (
-            <Top2Icon className="h-[60px]" />
-          ) : data3 === '3' ? (
-            <Top3Icon className="h-[60px]" />
-          ) : (
-            <></>
-          )}
+          {(() => {
+            const RankIcon = RANK_ICONS[data3]
+            return <RankIcon className="h-[60px]" />
+          })()}
         </div>
       )}
     </div>
   )
-}
+})

@@ -81,16 +81,17 @@ export default function MogakRoom({
         onMouseLeave={() => setHover(false)}
         onClick={handleClick}
       >
-        <div className="absolute top-0 right-0 mt-[16px] mr-[16px] z-10">
+        <div className="absolute top-0 right-0 mt-[10px] mr-[10px] z-10">
           <div className="flex items-center">
             {secret && (
-              <span className="mr-[8px]">
+              <span className="mr-5">
                 <IconButton
                   theme={ButtonTheme.white}
                   variant={ButtonVariant.default}
                   size={ButtonSize.xs}
                   iconSrc={SecretWhiteXSIcon}
                   handleClick={() => null}
+                  className="!bg-grayscale-600 w-30"
                 />
               </span>
             )}

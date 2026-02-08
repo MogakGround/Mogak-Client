@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useEffect, useState } from 'react'
 import { ButtonSize, ButtonTheme, ButtonVariant, IconArrow } from '@/components/global/button/button.types'
 import IconTextButton from '@/components/global/button/IconTextButton'
 import IconPerson from '@/assets/svg/person.svg'
@@ -7,7 +8,6 @@ import IconClock from '@/assets/svg/clock.svg'
 import convertTime from '@/utils/convertTime'
 import { StreamManager } from 'openvidu-browser'
 import Video from './Video'
-import { useEffect, useState } from 'react'
 
 interface TimerProps {
   baseTime: number
@@ -21,7 +21,7 @@ interface ScreenBoxProps {
   subscriber: StreamManager | undefined
 }
 
-export default function ScreenBox({ nickname, timer, subscriber }: ScreenBoxProps) {
+export default memo(function ScreenBox({ nickname, timer, subscriber }: ScreenBoxProps) {
   const [, setTick] = useState(0)
 
   // isRunning일 때만 1초마다 리렌더링
@@ -74,4 +74,4 @@ export default function ScreenBox({ nickname, timer, subscriber }: ScreenBoxProp
       <Video isVideoOn={isVideoOn} streamManager={subscriber} />
     </div>
   )
-}
+})

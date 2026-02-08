@@ -2,7 +2,7 @@ import Modal from '@/components/global/modal/Modal'
 import CheckAccentIcon from '@/assets/svg/check-accent.svg'
 import BasicButton from '@/components/global/button/BasicButton'
 import { ButtonSize, ButtonTheme, ButtonVariant } from '@/components/global/button/button.types'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useReducer } from 'react'
 import { getCheckNickname } from '@/app/api/user/api'
 import { validateCommonText } from '@/utils/validate'
 import RoundedSquareButton from '@/components/global/button/RoundedSquareButton'
@@ -14,6 +14,66 @@ interface ProfileSettingModalProps {
   handleCloseModal: () => void
 }
 
+// Consolidated form state (reduces 6 useState → 1 useReducer)
+interface FormState {
+  newNickname: string
+  newLink: string
+  isValidateNickname: boolean
+  isNicknameChecked: boolean
+  isPortfolioLinkChecked: boolean
+  error: string
+}
+
+type FormAction =
+  | { type: 'RESET'; payload: { nickname: string; link: string } }
+  | { type: 'SET_NICKNAME'; payload: { value: string; isValid: boolean; error: string } }
+  | { type: 'SET_LINK'; payload: { value: string; isChecked: boolean; isNicknameChecked?: boolean } }
+  | { type: 'NICKNAME_CHECK_SUCCESS' }
+  | { type: 'NICKNAME_CHECK_ERROR'; payload: string }
+
+function formReducer(state: FormState, action: FormAction): FormState {
+  switch (action.type) {
+    case 'RESET':
+      return {
+        newNickname: action.payload.nickname,
+        newLink: action.payload.link,
+        isValidateNickname: true,
+        isNicknameChecked: false,
+        isPortfolioLinkChecked: false,
+        error: '',
+      }
+    case 'SET_NICKNAME':
+      return {
+        ...state,
+        newNickname: action.payload.value,
+        isValidateNickname: action.payload.isValid,
+        isNicknameChecked: false,
+        error: action.payload.error,
+      }
+    case 'SET_LINK':
+      return {
+        ...state,
+        newLink: action.payload.value,
+        isPortfolioLinkChecked: action.payload.isChecked,
+        isNicknameChecked: action.payload.isNicknameChecked ?? state.isNicknameChecked,
+      }
+    case 'NICKNAME_CHECK_SUCCESS':
+      return {
+        ...state,
+        error: '',
+        isNicknameChecked: true,
+        isPortfolioLinkChecked: true,
+      }
+    case 'NICKNAME_CHECK_ERROR':
+      return {
+        ...state,
+        error: action.payload,
+      }
+    default:
+      return state
+  }
+}
+
 export default function ProfileSettingModal({ isOpen, handleCloseModal }: ProfileSettingModalProps) {
   const { data: profile } = useGetMyProfile()
   const { mutate: updateProfile } = useUpdateProfile()
@@ -21,64 +81,60 @@ export default function ProfileSettingModal({ isOpen, handleCloseModal }: Profil
   const currentNickname = profile?.nickName ?? ''
   const currentLink = profile?.portfolioUrl ?? ''
 
-  const [newNickname, setNewNickname] = useState(currentNickname)
-  const [newLink, setNewLink] = useState(currentLink)
+  const [formState, dispatch] = useReducer(formReducer, {
+    newNickname: currentNickname,
+    newLink: currentLink,
+    isValidateNickname: true,
+    isNicknameChecked: false,
+    isPortfolioLinkChecked: false,
+    error: '',
+  })
 
-  // 중복 확인 이벤트
-  const [isValidateNickname, setIsValidateNickname] = useState<boolean>(true)
-  const [isNicknameChecked, setIsNicknameChecked] = useState<boolean>(false)
-  const [isPortfolioLinkChecked, setIsPortfolioLinkChecked] = useState<boolean>(false)
-  const [error, setError] = useState('')
+  const { newNickname, newLink, isValidateNickname, isNicknameChecked, isPortfolioLinkChecked, error } = formState
 
-  // 모달이 열릴 때마다 초기 상태 설정
+  // 모달이 열릴 때마다 초기 상태 설정 (single dispatch instead of 5 setState calls)
   useEffect(() => {
     if (isOpen) {
-      setNewNickname(currentNickname)
-      setNewLink(currentLink)
-      setIsNicknameChecked(false)
-      setError('')
-      setIsValidateNickname(true)
+      dispatch({ type: 'RESET', payload: { nickname: currentNickname, link: currentLink } })
     }
   }, [isOpen, currentNickname, currentLink])
 
   const handleCheckNickname = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value
-    setNewNickname(name)
-    setIsValidateNickname(true)
-
     const { lengthValid, formatValid } = validateCommonText(name)
 
     if (!lengthValid) {
-      setError(name.trim() ? '닉네임은 16자 이내로 입력해야 합니다.' : '닉네임을 입력하세요.')
-      setIsValidateNickname(false)
-      setIsNicknameChecked(false)
+      const errorMsg = name.trim() ? '닉네임은 16자 이내로 입력해야 합니다.' : '닉네임을 입력하세요.'
+      dispatch({ type: 'SET_NICKNAME', payload: { value: name, isValid: false, error: errorMsg } })
       return
     }
 
     if (!formatValid) {
-      setError('닉네임은 한글(자음/모음 포함)과 영어, 공백만 포함할 수 있습니다.')
-      setIsValidateNickname(false)
-      setIsNicknameChecked(false)
+      dispatch({
+        type: 'SET_NICKNAME',
+        payload: { value: name, isValid: false, error: '닉네임은 한글(자음/모음 포함)과 영어, 공백만 포함할 수 있습니다.' },
+      })
       return
     }
 
-    // 닉네임이 변경되었으므로 중복확인 필요
-    setIsNicknameChecked(false)
+    // 닉네임이 유효하면 중복확인 필요
+    dispatch({ type: 'SET_NICKNAME', payload: { value: name, isValid: true, error: '' } })
   }
 
   const handlePortfolioLink = (e: ChangeEvent<HTMLInputElement>) => {
-    setNewLink(e.target.value)
-    if (currentLink !== e.target.value) {
-      if (newNickname === currentNickname) {
-        setIsNicknameChecked(true)
-      }
-      setIsPortfolioLinkChecked(true)
+    const value = e.target.value
+    if (currentLink !== value) {
+      dispatch({
+        type: 'SET_LINK',
+        payload: {
+          value,
+          isChecked: true,
+          isNicknameChecked: newNickname === currentNickname ? true : undefined,
+        },
+      })
     } else {
-      if (isNicknameChecked && newNickname !== currentNickname) {
-        setIsPortfolioLinkChecked(true)
-        return
-      }
-      setIsPortfolioLinkChecked(false)
+      const shouldCheck = isNicknameChecked && newNickname !== currentNickname
+      dispatch({ type: 'SET_LINK', payload: { value, isChecked: shouldCheck } })
     }
   }
 
@@ -87,13 +143,11 @@ export default function ProfileSettingModal({ isOpen, handleCloseModal }: Profil
     if (newNickname === currentNickname || !isValidateNickname) return
     try {
       await getCheckNickname({ nickname: newNickname })
-      setError('')
-      setIsNicknameChecked(true)
-      setIsPortfolioLinkChecked(true)
+      dispatch({ type: 'NICKNAME_CHECK_SUCCESS' })
     } catch (err: unknown) {
-      const error = err as { response?: { status?: number } }
-      if (error.response?.status === 409) {
-        setError('이미 사용 중인 닉네임입니다.')
+      const apiError = err as { response?: { status?: number } }
+      if (apiError.response?.status === 409) {
+        dispatch({ type: 'NICKNAME_CHECK_ERROR', payload: '이미 사용 중인 닉네임입니다.' })
       }
     }
   }

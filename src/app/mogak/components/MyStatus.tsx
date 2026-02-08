@@ -18,6 +18,7 @@ interface MyStatusProps {
   stopScreenShare: () => void
   isScreenSharing?: boolean
   isSessionReady: boolean
+  isRoomEntered: boolean
   startTimer: () => void
   stopTimer: () => void
 }
@@ -27,13 +28,14 @@ export default function MyStatus({
   stopScreenShare,
   isScreenSharing: propIsScreenSharing,
   isSessionReady,
+  isRoomEntered,
   startTimer,
   stopTimer,
 }: MyStatusProps) {
   const roomId = useParams().id as string
   const { screenShareOn, setScreenShareOn } = useRoomStore()
 
-  const { data } = useGetMyStatus(roomId)
+  const { data } = useGetMyStatus(roomId, isRoomEntered)
 
   const { nickName = '', isScreenSharing = false, isTimerRunning = false, hour = 0, min = 0, sec = 0 } = data ?? {}
 
