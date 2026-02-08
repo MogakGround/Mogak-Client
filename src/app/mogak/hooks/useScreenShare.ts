@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { OpenVidu, Publisher } from 'openvidu-browser'
 import { useRoomStore } from '@/store/roomStore'
 
@@ -23,25 +23,31 @@ export default function useScreenShare({
   const [screenPublisher, setScreenPublisher] = useState<Publisher | null>(null)
   const [isStartingScreenShare, setIsStartingScreenShare] = useState(false)
 
+  // Ref to hold the latest screenPublisher for use in event handlers (avoids stale closure)
+  const screenPublisherRef = useRef<Publisher | null>(null)
+
   const { setScreenShareOn } = useRoomStore()
 
   const stopScreenShare = useCallback(() => {
+    // Use ref to get the current screenPublisher value (avoids stale closure in onended handler)
+    const currentPublisher = screenPublisherRef.current
     try {
-      if (screenPublisher) {
+      if (currentPublisher) {
         if (session) {
-          session.unpublish(screenPublisher)
+          session.unpublish(currentPublisher)
         }
-        cleanupPublisher(screenPublisher)
+        cleanupPublisher(currentPublisher)
       }
     } catch (err) {
       console.error('화면 공유 중지 오류:', err)
     } finally {
+      screenPublisherRef.current = null
       setScreenPublisher(null)
       setPublisher(null)
       setScreenShareOn(false)
       sendStopScreenShare()
     }
-  }, [cleanupPublisher, screenPublisher, session, setScreenShareOn, sendStopScreenShare])
+  }, [cleanupPublisher, session, setScreenShareOn, sendStopScreenShare])
 
   const startScreenShare = useCallback(async () => {
     if (!session || !ovRef.current) throw new Error('세션이 아직 연결되지 않았습니다.')
@@ -62,14 +68,19 @@ export default function useScreenShare({
         mirror: false,
       })
 
+      await session.publish(screenPub)
+
+      // Update ref and state AFTER successful publish
+      screenPublisherRef.current = screenPub
+      setScreenPublisher(screenPub)
+      setPublisher(screenPub)
+
+      // Register onended handler AFTER publish so stopScreenShare can access the publisher via ref
       const track = screenPub.stream?.getMediaStream()?.getVideoTracks()?.[0]
       if (track) {
         track.onended = () => stopScreenShare()
       }
 
-      await session.publish(screenPub)
-      setScreenPublisher(screenPub)
-      setPublisher(screenPub)
       sendStartScreenShare()
     } catch (err) {
       console.error('화면 공유 시작 오류:', err)
@@ -78,6 +89,7 @@ export default function useScreenShare({
         cleanupPublisher(screenPub)
       }
 
+      screenPublisherRef.current = null
       setScreenShareOn(false)
       throw err
     } finally {
