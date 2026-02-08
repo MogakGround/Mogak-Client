@@ -10,7 +10,7 @@ export const getStatusStyles = (status: InputStatus) => {
     case 'disabled':
       return 'bg-grayscale-800 text-grayscale-600 placeholder-grayscale-600 border-none cursor-not-allowed'
     case 'default':
-      return 'bg-grayscale-800 text-grayscale-500 placeholder-grayscale-500 border-grayscale-700 focus:border-accentT-20'
+      return 'bg-grayscale-800 text-grayscale-500 placeholder-grayscale-500 border-grayscale-800 focus:border-accentT-20'
     case 'hover':
       return 'bg-grayscale-800 text-accentT-5 placeholder-grayscale-400 border-accentT-20'
     case 'error':
