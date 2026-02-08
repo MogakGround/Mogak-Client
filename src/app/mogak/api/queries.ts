@@ -1,4 +1,3 @@
-import { useUserStore } from '@/store/userStore'
 import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { MyStatusResponse, RoomMembers, RoomResponse, ScreenShareMembersResponse, TimerListResponse } from './type'
 import { getMyStatus, getRoomInfo, getRoomMembers, getScreenShareMembers, getTimerList, postLeaveRoom } from './api'
@@ -10,11 +9,14 @@ export const useGetRoomInfo = (id: string) => {
   })
 }
 
-export const useGetMyStatus = (id: string) => {
-  return useSuspenseQuery<MyStatusResponse>({
+export const useGetMyStatus = (id: string, enabled: boolean = true) => {
+  return useQuery<MyStatusResponse>({
     queryKey: ['mystatus', id],
     queryFn: () => getMyStatus(id),
     refetchOnMount: 'always',
+    enabled,
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(500 * 2 ** attemptIndex, 2000),
   })
 }
 
